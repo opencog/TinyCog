@@ -1,6 +1,6 @@
 /*
   Project: OpenCogER
-  File: CamCapture.hpp
+  File: FileCapture.hpp
   Author: Mandeep Singh Bhatia
   License: AGPL
   Date: May 2017

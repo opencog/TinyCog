@@ -5,7 +5,7 @@
   License: AGPL
   Date: May 2017
 */
-#include "sense/vision/FileCapture.h"
+#include "sense/vision/FileCapture.hpp"
 #include "unistd.h"
 
 
@@ -29,8 +29,6 @@ FileCapture::FileCapture(string src_name,string fileName,
     if( capture.isOpened() )
         {
 			state="capture open";
-            capture.set(CV_CAP_PROP_FRAME_WIDTH,w);
-            capture.set(CV_CAP_PROP_FRAME_HEIGHT,h);
             run = new thread(FileCapture::thread_loop,this);
         }
     else

@@ -5,7 +5,7 @@
   License: AGPL
   Date: May 2017
 */
-#include "sense/vision/CamCapture.h"
+#include "sense/vision/CamCapture.hpp"
 #include "unistd.h"
 
 
