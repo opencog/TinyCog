@@ -17,6 +17,7 @@ CamCapture::CamCapture(string src_name,int width,int height,int cam,
     double max_fps): ImageSource(src_name),w(width),h(height),ccam(cam)
 {
     //ctor
+    cout<<endl<<"w="<<w<<",h="<<h<<",cam="<<ccam<<endl;
     wait_time = MIN_WAIT;
     running=false;
     ok=0;

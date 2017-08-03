@@ -28,7 +28,7 @@ class CamCapture: public ImageSource
 {
     public:
         CamCapture(string src_name,int width=320,int height=240,
-            int cam = -1,double max_fps=30.0);
+            int cam = 0,double max_fps=30.0);
             //max fps is not guaranteed
         virtual ~CamCapture();
         bool isOn();

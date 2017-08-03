@@ -13,6 +13,8 @@ BoxTrackerThread::BoxTrackerThread(ImageSource *img_src,Mat init_frame,
 {
 	trk = new BoxTracker(init_frame,init_box,tt);
 	if (!(ok=trk->isOk())) return;
+    currentImage=init_frame;
+    currentBox=init_box;
 	th = new thread(thread_loop,this);
 }
 

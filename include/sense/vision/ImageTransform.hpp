@@ -22,7 +22,7 @@ class ImageTransform
 	public:
 	
 	ImageTransform(string t_name):name(t_name){};
-	virtual ~ImageTransform();
+	virtual ~ImageTransform(){};
 	
 	string getName(){return name;}
 		

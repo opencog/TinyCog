@@ -24,7 +24,7 @@ class ImageSource
 {
 	public:
 	ImageSource(string src_name):name(src_name){};
-	virtual ~ImageSource();
+	virtual ~ImageSource(){};
 	
 	virtual bool isOn()=0;
 	virtual bool isOk()=0;
