@@ -12,9 +12,9 @@ add_library( sensor_vision  sense/vision/capture/CamCapture.cpp
     sense/vision/track/BoxTracker.cpp 
     sense/vision/track/BoxTrackerThread.cpp)
 target_link_libraries( sensor_vision ${OpenCV_LIBS} )
-install (TARGETS sensor_vision DESTINATION lib)
+install (TARGETS sensor_vision DESTINATION lib/OpenCogER)
 install (FILES BoxTracker.hpp BoxTrackerThread.hpp
     CamCapture.hpp FileCapture.hpp ImageSource.hpp
     ImageTransform.hpp ITColor2Gray.hpp ITEqualizeHist.hpp
     ITDetectFace.hpp ITDetectSmile.hpp
-    DESTINATION "include/sense/vision")
+    DESTINATION "include/OpenCogER/sense/vision")
