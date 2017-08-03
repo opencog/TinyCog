@@ -22,6 +22,9 @@ target_link_libraries(VisionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 add_executable(VisionTestFace examples/sense/vision/VisionTestFace.cpp)
 target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 
+configure_file(data/Haar_Cascades/haarcascade_frontalface_alt.xml haarcascade_frontalface_alt.xml COPYONLY)
+configure_file(data/Haar_Cascades/haarcascade_smile.xml haarcascade_smile.xml COPYONLY)
+
 install (TARGETS sensor_vision DESTINATION lib/OpenCogER)
 install (FILES BoxTracker.hpp BoxTrackerThread.hpp
     CamCapture.hpp FileCapture.hpp ImageSource.hpp
