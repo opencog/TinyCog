@@ -12,7 +12,7 @@
 #ifndef IMAGESOURCE_H
 #define IMAGESOURCE_H
 
-#include "opencv2/core/core.hpp"
+#include "opencv2/core.hpp"
 #include <string>
 
 using namespace std;
@@ -33,7 +33,7 @@ class ImageSource
 	
 	virtual Mat getCurrentFrame()=0;
 	
-	private:
+	protected:
 	string name;
 	string state;
 	bool running;//isOn

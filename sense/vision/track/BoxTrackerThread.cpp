@@ -9,8 +9,7 @@
 #include "unistd.h"
 
 BoxTrackerThread::BoxTrackerThread(ImageSource *img_src,Mat init_frame,
-    Rect2d init_box,BoxTracker::tracker_type tt =
-	        BoxTracker::tracker_type::MEDIAN_FLOW):imgs(img_src)
+    Rect2d init_box,BoxTracker::tracker_type tt):imgs(img_src)
 {
 	trk = new BoxTracker(init_frame,init_box,tt);
 	if (!(ok=trk->isOk())) return;
@@ -36,14 +35,15 @@ bool BoxTrackerThread::update(Mat& image,Rect2d& box)
 	return ok;
 }
 
-bool BoxTrackerThread::thread_loop(BoxTrackerThread* btt)
+void BoxTrackerThread::thread_loop(BoxTrackerThread* btt)
 {
-	while(ok)
+	while(btt->ok)
 	{
 		btt->mtx.lock();
 		btt->currentImage = btt->imgs->getCurrentFrame();
-		ok = btt->trk->update(btt->currentImage,btt->currentBox);
+		//check if blank frame is handled
+		btt->ok = btt->trk->update(btt->currentImage,btt->currentBox);
 		btt->mtx.unlock();
-		usleep(10*1000);//10 ms delay
+		usleep(20*1000);//20 ms delay
 	}
 }

@@ -16,7 +16,7 @@ ITDetectFace::ITDetectFace(string t_name):ImageTransform(t_name)
 
 vector<Rect> ITDetectFace::Transform(Mat in)
 {
-    vector<rect> out;
-    it_cascade.detectMultiScale( in, out_regions, 1.1, 4, 0|CV_HAAR_SCALE_IMAGE, Size(55, 55) );
+    vector<Rect> out;
+    it_cascade.detectMultiScale( in, out, 1.1, 4, 0|CV_HAAR_SCALE_IMAGE, Size(55, 55) );
     return out;
 }

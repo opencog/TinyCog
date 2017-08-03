@@ -16,7 +16,7 @@ ITDetectSmile::ITDetectSmile(string t_name):ImageTransform(t_name)
 
 vector<Rect> ITDetectSmile::Transform(Mat in)
 {
-    vector<rect> out;
+    vector<Rect> out;
     it_cascade.detectMultiScale( in, out,1.7, 8, 0|CV_HAAR_SCALE_IMAGE, Size(20, 20) );
     return out;
 }

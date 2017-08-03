@@ -13,7 +13,7 @@
 #define BOXTRACKERTHREAD_H
 
 #include "sense/vision/ImageSource.hpp"
-#include "sense/vision/Tracker.hpp"
+#include "sense/vision/BoxTracker.hpp"
 
 #include <iostream>
 #include <string>
@@ -31,7 +31,7 @@ class BoxTrackerThread
 	    Rect2d init_box,
 	    BoxTracker::tracker_type tt =
 	        BoxTracker::tracker_type::MEDIAN_FLOW);
-	~TrackerThread();
+	~BoxTrackerThread();
 	bool update(Mat& image,Rect2d& box);
 	bool isOk(){return ok;}
 	
@@ -45,6 +45,6 @@ class BoxTrackerThread
 	bool ok;
 	bool running;
 	static void thread_loop(BoxTrackerThread* btt);
-}
+};
 
 #endif

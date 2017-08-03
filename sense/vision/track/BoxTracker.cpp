@@ -8,13 +8,13 @@
 #include "sense/vision/BoxTracker.hpp"
 
 BoxTracker::BoxTracker(Mat init_frame,Rect2d init_box,
-    tracker_type tt=MEDIAN_FLOW)
+    tracker_type tt)
 {
 	ok=false;
 	switch(tt)
 	{
-		case BOOSTING: tracker = cv::TrackerBoosting::create(); break();
-		case TLD: tracker = cv::TrackerTLD::create(); break();
+		case BOOSTING: tracker = cv::TrackerBoosting::create(); break;
+		case TLD: tracker = cv::TrackerTLD::create(); break;
 		case MEDIAN_FLOW:
 		default: 
 		    tracker = cv::TrackerMedianFlow::create();

@@ -63,7 +63,7 @@ string CamCapture::getState()
 {
 	string r;
 	rd.lock();
-	r=state();
+	r=state;
 	rd.unlock();
 	return r;
 }
@@ -82,7 +82,7 @@ Mat CamCapture::getCurrentFrame()
 
 void CamCapture::thread_loop(CamCapture* cc)
 {
-	state = "running";
+    cc->state = "running";
     cc->running=true;
     while(cc->running)
     {
@@ -91,15 +91,15 @@ void CamCapture::thread_loop(CamCapture* cc)
         //add error check code here like blank frame
         if (cc->current.empty()) 
         {
-			if (ok==0) {ok=-2; state = "error: blank frame";}
-		} 
+            if (cc->ok==0) {cc->ok=-2; cc->state = "error: blank frame";}
+        } 
         else 
         { 
-			if (ok!=0) {ok=0; state = "ok";}
-		}
+            if (cc->ok!=0) {cc->ok=0; cc->state = "ok";}
+        }
         cc->rd.unlock();
         //don't use waitkey here
-        usleep(wait_time);//10ms min sleep between capture, adjust fps
+        usleep(cc->wait_time);//10ms min sleep between capture, adjust fps
     }
-    state = "stopped";
+    cc->state = "stopped";
 }

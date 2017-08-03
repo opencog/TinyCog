@@ -14,7 +14,7 @@
 
 #include <string>
 
-uses namespace std;
+using namespace std;
 
 template <class inp, class outp>
 class ImageTransform

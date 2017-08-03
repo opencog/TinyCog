@@ -25,12 +25,12 @@ class BoxTracker
 {
 	public:
 	enum tracker_type{BOOSTING=0,MEDIAN_FLOW,TLD};
-	BoxTracker(Mat init_frame,Rect2d init_box,tracker_type tt=MEDIAN_FLOW);
+	BoxTracker(Mat init_frame,Rect2d init_box,tracker_type tt=tracker_type::MEDIAN_FLOW);
 	~BoxTracker();
 	bool isOk(){return ok;}
 	bool update(Mat image,Rect2d& box);
 	private:
 	bool ok;
 	Ptr<Tracker> tracker;
-}
+};
 #endif
