@@ -20,7 +20,7 @@ using namespace cv;
     
 int main( int argc, char** argv )
 {    
-    CamCapture cc("c1",320,240,1,30);
+    CamCapture cc("c1",320,240,0,30);
     if (!cc.isOk()){cout<<endl<<cc.getState()<<endl;return -1;}
     
     Mat frame;
