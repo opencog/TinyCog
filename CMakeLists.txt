@@ -19,6 +19,9 @@ target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 add_executable(VisionTest examples/sense/vision/VisionTest.cpp)
 target_link_libraries(VisionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 
+add_executable(VisionTestFace examples/sense/vision/VisionTestFace.cpp)
+target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
+
 install (TARGETS sensor_vision DESTINATION lib/OpenCogER)
 install (FILES BoxTracker.hpp BoxTrackerThread.hpp
     CamCapture.hpp FileCapture.hpp ImageSource.hpp
