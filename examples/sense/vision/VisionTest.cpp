@@ -17,7 +17,13 @@
 
 using namespace std;
 using namespace cv;
-    
+ 
+/* On start image is captured and user selects roi to track with mouse and press space bar
+   then tracking starts 
+   press "q" to exit
+    * In median flow , when tracking is no longer possible the app exits
+*/
+   
 int main( int argc, char** argv )
 {    
     CamCapture cc("c1",320,240,0,30);
