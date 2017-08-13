@@ -40,6 +40,10 @@ find_package(EST REQUIRED)
 include_directories("include" "include/act/audio" ${FESTIVAL_INCLUDE_DIR} ${EST_INCLUDE_DIR})
 add_library( act_audio act/audio/FestivalTTS.cpp )
 target_link_libraries( act_audio ${FESTIVAL_LIBRARIES} ${EST_LIBRARIES})
+
+add_executable( exampleTTS examples/act/audio/exampleTTS.cpp)
+target_link_libraries( exampleTTS act_audio )
+
 install (TARGETS act_audio DESTINATION lib/OpenCogER)
 install (FILES TTS.hpp FestivalTTS.hpp 
         DESTINATION "include/OpenCogER/act/audio" )

@@ -13,8 +13,8 @@ using namespace std;
 class TTS
 {
     public:
-    TTS();
-    virtual ~TTS();
+    TTS(){};
+    virtual ~TTS(){};
     virtual bool isOk()=0;
     virtual string getMessage()=0;
     virtual bool speak(string spk)=0;

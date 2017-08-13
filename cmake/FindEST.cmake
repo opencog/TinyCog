@@ -22,12 +22,20 @@ find_path(EST_INCLUDE_DIR EST.h
 		  HINTS /usr/include/speech_tools /usr/local/include/speech_tools
 		  PATH_SUFFIXES speech_tools)
 
-find_library(EST_LIBRARIES estbase estools eststring
+find_library(EST_LIBRARIES1 estbase
 		   HINTS /usr/lib/ usr/local/lib)
-
+find_library(EST_LIBRARIES2 estools
+		   HINTS /usr/lib/ usr/local/lib)
+find_library(EST_LIBRARIES3 eststring
+		   HINTS /usr/lib/ usr/local/lib)
+           
+set(EST_LIBRARIES ${EST_LIBRARIES1} ${EST_LIBRARIES2} 
+   ${EST_LIBRARIES3})
+   
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(EST DEFAULT_MSG
-    EST_LIBRARIES EST_INCLUDE_DIR)
-
+    EST_LIBRARIES1 EST_LIBRARIES2 
+    EST_LIBRARIES3 
+    EST_INCLUDE_DIR)
 
 mark_as_advanced(EST_INCLUDE_DIR EST_LIBRARIES)

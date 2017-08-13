@@ -5,7 +5,6 @@
   License: AGPL
   Date: 2017
 */
-
 #include "act/audio/FestivalTTS.hpp"
 
 FestivalTTS::FestivalTTS():TTS()
@@ -55,7 +54,7 @@ void FestivalTTS::setSpeaker(speaker spkr)
         st="(voice_kal_diphone)";
         break;
         default:
-        st="(voice_kal_diphone)";
+        st="(voice_rab_diphone)";
     }
     festival_eval_command(st.c_str());
 }
