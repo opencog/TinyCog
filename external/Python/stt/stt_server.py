@@ -22,9 +22,10 @@ def callback(recognizer, audio):
         # for testing purposes, we're just using the default API key
         # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
         # instead of `r.recognize_google(audio)`
-        msg = recognizer.recognize_sphinx(audio, keyword_entries=
-          [("yes", 1.0), ("no", 1.0),("maybe",1.0)])
+        #msg = recognizer.recognize_sphinx(audio, keyword_entries=
+        #  [("yes", 1.0), ("no", 1.0),("maybe",1.0)])
         #yes works with yeah
+        msg = recognizer.recognize_sphinx(audio, grammar='counting.gram')
         print("<stt>"+msg)
         if len(msg)>0:
           try:
@@ -36,7 +37,8 @@ def callback(recognizer, audio):
     except sr.RequestError as e:
         print("Sphinx Error: {0}".format(e))
 
-
+print("udp ip: "+UDP_IP)
+print("udp port: "+ str(UDP_PORT))
 r = sr.Recognizer()
 m = sr.Microphone()
 print("wait.. adjusting to noise...")
@@ -47,7 +49,7 @@ print("energy = "+ str(r.energy_threshold))
 # start listening in the background (note that we don't have to do this inside a `with` statement)
 print("start..")
 #stop_listening = r.listen_in_background(m, callback,phrase_time_limit = 2)
-stop_listening = r.listen_in_background(m, callback,phrase_time_limit = 4)
+stop_listening = r.listen_in_background(m, callback,phrase_time_limit = 3)
 # `stop_listening` is now a function that, when called, stops background listening
 
 # do some other computation for 5 seconds, then stop listening and keep doing other computations
