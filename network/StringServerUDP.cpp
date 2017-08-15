@@ -100,6 +100,7 @@ string StringServerUDP::readCurrentString(string tag,string& host_addr)
     result = msg_map[tag];
     msg_map[tag] = "";
     host_addr = host_map[tag];
+    host_map[tag] = "";
     mtx.unlock();
     return result;
 }
