@@ -47,3 +47,10 @@ target_link_libraries( exampleTTS act_audio )
 install (TARGETS act_audio DESTINATION lib/OpenCogER)
 install (FILES TTS.hpp FestivalTTS.hpp 
         DESTINATION "include/OpenCogER/act/audio" )
+        
+#########network
+include_directories("include" "include/network")
+add_library( networkr network/StringServerUDP.cpp)
+target_link_libraries( networkr ${EXTRA_LIBS} )
+install (TARGETS networkr DESTINATION lib/OpenCogER)
+install (FILES StringServerUDP.hpp DESTINATION "include/OpenCogER/network")
