@@ -119,24 +119,30 @@ void StringServerUDP::threadLoop(StringServerUDP* ss)
       */
       bzero(buf, BUFSIZE);
       n = recvfrom(ss->sockfd, buf, BUFSIZE, 0,
-		 (struct sockaddr *) &(ss->clientaddr), &(ss->clientlen));
-      if (n < 0)
-        cout<<"no read in recvfrom"<<endl;
-      if (n >2 && n < BUFSIZE){
+         (struct sockaddr *) &(ss->clientaddr), &(ss->clientlen));
+      //if (n < 0)
+      //  cout<<"no read in recvfrom"<<endl;
+      if ((n > 2) && (n < BUFSIZE)){
+          //cout<<"read"<<endl;
           if (buf[n-1]!='\0')buf[n]='\0';
           //process buf
           if (buf[0]!='<') continue;
           tmp=buf;
+          //cout<<tmp<<endl;
           pos=tmp.find_first_of('>',2);
-          if (pos==string::npos)continue;
+          if (pos==string::npos){
+              cout<<"tag > not found"<<endl;
+              continue;
+          }
           //look for tag
-          tg = tmp.substr(0,pos-1);
+          tg = tmp.substr(1,pos-1);
+          //cout<<"tag: "<<tg<<endl;
           if (find(ss->tags.begin(),ss->tags.end(),tg)==ss->tags.end())continue;
           /* 
            * gethostbyaddr: determine who sent the datagram
           */
           hostp = gethostbyaddr((const char *)&(ss->clientaddr.sin_addr.s_addr), 
-			  sizeof(ss->clientaddr.sin_addr.s_addr), AF_INET);
+            sizeof(ss->clientaddr.sin_addr.s_addr), AF_INET);
           if (hostp == NULL)
               cout<<"ERROR on gethostbyaddr"<<endl;
           hostaddrp = inet_ntoa(ss->clientaddr.sin_addr);
@@ -147,7 +153,7 @@ void StringServerUDP::threadLoop(StringServerUDP* ss)
               host_addr = hostaddrp;
              
           if (pos<tmp.length()-1){
-              st = tmp.substr(pos,tmp.length()-pos-1);
+              st = tmp.substr(pos+1,tmp.length()-pos-1);
               ss->mtx.lock();
               ss->msg_map[tg]=st;
               ss->host_map[tg]=host_addr;

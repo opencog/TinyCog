@@ -52,5 +52,9 @@ install (FILES TTS.hpp FestivalTTS.hpp
 include_directories("include" "include/network")
 add_library( networkr network/StringServerUDP.cpp)
 target_link_libraries( networkr ${EXTRA_LIBS} )
+
+add_executable( exUDPserver examples/network/exUDPserver.cpp)
+target_link_libraries(exUDPserver networkr)
+
 install (TARGETS networkr DESTINATION lib/OpenCogER)
 install (FILES StringServerUDP.hpp DESTINATION "include/OpenCogER/network")
