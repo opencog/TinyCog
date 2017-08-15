@@ -34,11 +34,12 @@ public:
     StringServerUDP(vector<string>tag_names,int portno);
     ~StringServerUDP();
     bool isOk();
-    string readCurrentString(string tag);
+    string readCurrentString(string tag,string& host_addr);
 
 protected:
     bool ok;
     map<string,string> msg_map;
+    map<string,string> host_map;
     vector<string> tags;
     thread* th;
     mutex mtx;
@@ -47,11 +48,7 @@ protected:
     struct sockaddr_in serveraddr; /* server's addr */
     struct sockaddr_in clientaddr; /* client addr */
     socklen_t clientlen; /* byte size of client's address */
-    struct hostent *hostp; /* client host info */
 
-    //char *hostaddrp; /* dotted decimal host addr string */
-    //int optval; /* flag value for setsockopt */
-    //int n; /* message byte size */
 
 private:
     bool addTag(string tag);

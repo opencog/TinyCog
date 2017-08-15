@@ -85,7 +85,7 @@ bool StringServerUDP::addTag(string tag)
     return true;
 }
 
-string StringServerUDP::readCurrentString(string tag)
+string StringServerUDP::readCurrentString(string tag,string& host_addr)
 {
     string result;
     if (find(tags.begin(),tags.end(),tag)==tags.end())
@@ -93,6 +93,7 @@ string StringServerUDP::readCurrentString(string tag)
     mtx.lock();
     result = msg_map[tag];
     msg_map[tag] = "";
+    host_addr = host_map[tag];
     mtx.unlock();
     return result;
 }
@@ -100,7 +101,9 @@ string StringServerUDP::readCurrentString(string tag)
 void StringServerUDP::threadLoop(StringServerUDP* ss)
 {
     char buf[BUFSIZE]; /* message buf */
-    string tmp,tg,st;
+    struct hostent *hostp; /* client host info */
+    char *hostaddrp; /* dotted decimal host addr string */
+    string tmp,tg,st,host_addr;
     size_t pos;
     int n;
     while (ss->ok){
@@ -122,10 +125,25 @@ void StringServerUDP::threadLoop(StringServerUDP* ss)
           //look for tag
           tg = tmp.substr(0,pos-1);
           if (find(ss->tags.begin(),ss->tags.end(),tg)==ss->tags.end())continue;
+          /* 
+           * gethostbyaddr: determine who sent the datagram
+          */
+          hostp = gethostbyaddr((const char *)&(ss->clientaddr.sin_addr.s_addr), 
+			  sizeof(ss->clientaddr.sin_addr.s_addr), AF_INET);
+          if (hostp == NULL)
+              cout<<"ERROR on gethostbyaddr"<<endl;
+          hostaddrp = inet_ntoa(ss->clientaddr.sin_addr);
+          host_addr="";
+          if (hostaddrp == NULL)
+             cout<<"ERROR on inet_ntoa\n";
+          else
+              host_addr = hostaddrp;
+             
           if (pos<tmp.length()-1){
               st = tmp.substr(pos,tmp.length()-pos-1);
               ss->mtx.lock();
               ss->msg_map[tg]=st;
+              ss->host_map[tg]=host_addr;
               ss->mtx.unlock();
           }
       }
