@@ -34,6 +34,12 @@ StringServerUDP::StringServerUDP(vector<string>tag_names,int portno)
   int optval = 1;
   setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, 
 	     (const void *)&optval , sizeof(int));
+  /*set 1 sec time out*/
+  struct timeval read_timeout;
+  read_timeout.tv_sec = 1;
+  read_timeout.tv_usec = 0;
+  setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, 
+      &read_timeout, sizeof(read_timeout));
 
   /*
    * build the server's Internet address
@@ -114,7 +120,7 @@ void StringServerUDP::threadLoop(StringServerUDP* ss)
       n = recvfrom(ss->sockfd, buf, BUFSIZE, 0,
 		 (struct sockaddr *) &(ss->clientaddr), &(ss->clientlen));
       if (n < 0)
-        cout<<"ERROR in recvfrom"<<endl;
+        cout<<"no read in recvfrom"<<endl;
       if (n >2 && n < BUFSIZE){
           if (buf[n-1]!='\0')buf[n]='\0';
           //process buf
