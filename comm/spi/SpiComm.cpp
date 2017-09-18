@@ -30,10 +30,11 @@ SpiComm::SpiComm(std::string device, spi_mode sm, uint16_t freq)
 			break;
 	}
 	
+	int ret;
 	fd = open(device.c_str(), O_RDWR);
 	if(fd < 0)
 		exit_p("Couldn't Open Device");
-	if( ioctl(fd, SPI_IOC_WR_MODE, &mode)  == -1)
+	if( ioctl(fd, SPI_IOC_WR_MODE, &mode) == -1)
 		exit_p("Couldn't Set Spi Mode");
 	if( ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bpw) == -1)
 		exit_p("Couldn't Set Bits Per Word");
@@ -58,7 +59,7 @@ std::string SpiComm::send_data(std::string data)
 	uint8_t header[8] = {0xAA, 0x55, 0x0, 0x0, 0x01, 0x0, 0x0, 0x0};
 	header[PACKET_SIZE_L_IDX] = len & 0xff;
 	header[PACKET_SIZE_H_IDX] = len >> 8;
-	packet = new uint8_t[len+8];
+	packet = new uint8_t[packet_len];
 
 	/* Attach Header */
 	for (int i = 0; i < 8; i++)
@@ -67,26 +68,42 @@ std::string SpiComm::send_data(std::string data)
 	for(int i = 8; i < packet_len; i++)
 		packet[i] = (uint8_t)data.at(i-8);
 	
-	if(DEBUG)
+	if(DEBUG){
+		printf("Data in Packet:\n");
+		for(int i = 0; i < packet_len; i++)
+			printf("%.2X ", packet[i]);
+		printf("\n");
 		printf("Size of Packet: %d\nPacket Content: %s\n", packet_len+8, packet);
-	
-	uint8_t rx[len] = {0,};
+	}
+
+	uint8_t *ret_buffer;
+	ret_buffer = new uint8_t[packet_len];
 	spi_ioc_transfer tr;
-	tr.tx_buf = (unsigned long)packet;
-	tr.rx_buf = (unsigned long)rx;
+	tr.tx_buf = (unsigned long) &packet;
+	tr.rx_buf = (unsigned long) &ret_buffer;
 	tr.len = packet_len;
 	tr.delay_usecs = 0;
 	tr.speed_hz = speed;
 	tr.bits_per_word = bpw;
 
 	int ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
-	printf("Ret=%d\n");
-	//if(ret < 1)
-	//	exit_p("Couldn't Send The Message");
+	printf("Ret=%d\n", ret);
+	if(ret < 1)
+		exit_p("Couldn't Send The Message");
+	
+	printf("The Primitive Way:\n");
+	for(ret = 0; ret < packet_len; ret++){
+		if(!(ret % 6))
+			printf("\n");
+		printf("%.2X ", ret_buffer[ret]);
+	}
+	printf("\n");
+	
+	printf("\nMy Way:\n");
 	std::string ret_data;
 	for (int i = 0; i < packet_len; i++){
-		ret_data.append<int>(1, rx[i]);
-		printf("%x ", rx[i]);
+		ret_data.append<int>(1, ret_buffer[i]);
+		printf("%.2X ", ret_buffer[i]);
 	}
 	printf("\nFinal Data Size = %d\n%s\n", ret_data.size(), ret_data.c_str());
 	return ret_data;

@@ -29,6 +29,9 @@ target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 add_executable(RaspiVisionTest examples/sense/vision/RaspiVisionTest.cpp)
 target_link_libraries(RaspiVisionTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})
 
+add_executable(RaspiVisionTestFace examples/sense/vision/RaspiVisionTestFace.cpp)
+target_link_libraries(RaspiVisionTestFace sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})   
+
 configure_file(data/Haar_Cascades/haarcascade_frontalface_alt.xml haarcascade_frontalface_alt.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_smile.xml haarcascade_smile.xml COPYONLY)
 

@@ -28,6 +28,10 @@ RaspiCamCapture::RaspiCamCapture(string src_name,int width,int height,
          
     capture.set(CV_CAP_PROP_FRAME_WIDTH, w);
     capture.set(CV_CAP_PROP_FRAME_HEIGHT, h);
+    capture.set(CV_CAP_PROP_BRIGHTNESS, 55);
+    capture.set(CV_CAP_PROP_CONTRAST, 55);
+    capture.set(CV_CAP_PROP_SATURATION, 60);
+
     if(capture.open())
         {
 	    state="capture open";

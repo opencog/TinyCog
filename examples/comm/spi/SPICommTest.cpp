@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 	std::string data, ret;
 	data = "Hello, SPI";
 	ret = spi_comm.send_data(data);
-	printf("Data Sent Size=%d\nRet=<%s>\n", ret.size(), ret.c_str());
+	printf("Data Sent Size=%d\nRet=%s\n", ret.size(), ret.c_str());
 
 return 0;
 }
