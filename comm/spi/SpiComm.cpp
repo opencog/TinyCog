@@ -79,6 +79,7 @@ std::string SpiComm::send_data(std::string data)
 
 	uint8_t *ret_buffer;
 	ret_buffer = new uint8_t[packet_len];
+	
 	spi_ioc_transfer tr;
 	tr.tx_buf = (unsigned long) &packet;
 	tr.rx_buf = (unsigned long) &ret_buffer;
@@ -88,6 +89,7 @@ std::string SpiComm::send_data(std::string data)
 	tr.bits_per_word = bpw;
 
 	int ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
+	if(DEBUG) printf("Ret=%d\n", ret);
 	if(ret < 1)
 		exit_p("Couldn't Send The Message");
 	

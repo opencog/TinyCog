@@ -19,6 +19,10 @@ int main(int argc, char **argv)
 	data = "Hello, SPI";
 	ret = spi_comm.send_data(data);
 	printf("Data Sent Size=%d\nRet=%s\n", ret.size(), ret.c_str());
+	for (int i = 8 ; i < ret.size(); i++)
+		printf("%c", ret[i]);
+	printf("\n");
+
 
 return 0;
 }
