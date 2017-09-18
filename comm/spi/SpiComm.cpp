@@ -73,7 +73,8 @@ std::string SpiComm::send_data(std::string data)
 		for(int i = 0; i < packet_len; i++)
 			printf("%.2X ", packet[i]);
 		printf("\n");
-		printf("Size of Packet: %d\nPacket Content: %s\n", packet_len+8, packet);
+		printf("Size of Packet: %d\nPacket Content: %s\n", 
+			packet_len, packet);
 	}
 
 	uint8_t *ret_buffer;
@@ -87,25 +88,18 @@ std::string SpiComm::send_data(std::string data)
 	tr.bits_per_word = bpw;
 
 	int ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
-	printf("Ret=%d\n", ret);
 	if(ret < 1)
 		exit_p("Couldn't Send The Message");
 	
-	printf("The Primitive Way:\n");
-	for(ret = 0; ret < packet_len; ret++){
-		if(!(ret % 6))
-			printf("\n");
-		printf("%.2X ", ret_buffer[ret]);
-	}
-	printf("\n");
-	
-	printf("\nMy Way:\n");
 	std::string ret_data;
 	for (int i = 0; i < packet_len; i++){
-		ret_data.append<int>(1, ret_buffer[i]);
-		printf("%.2X ", ret_buffer[i]);
+		ret_data.append<char>(1, ret_buffer[i]);
+		//printf("%.2X ", ret_buffer[i]);
 	}
-	printf("\nFinal Data Size = %d\n%s\n", ret_data.size(), ret_data.c_str());
+	
+	if(DEBUG)
+		printf("\nFinal Data Size = %d\n%s\n", ret_data.size(), 
+			ret_data.c_str());
 	return ret_data;
 }
 
