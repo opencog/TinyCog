@@ -16,14 +16,14 @@ SpiComm::SpiComm(std::string device, spi_mode sm, uint16_t freq)
 
 SpiComm::SpiComm(std::string device, spi_mode sm, uint16_t freq, uint8_t r_sig)
 {
-	if(wiringPiSetup() < 0)
+	if(wiringPiSetupGpio() < 0)
 		exit_p("Couldn't Initiate WiringPi");
-	if(wiringPiISR(r_sig, INT_EDGE_FALLING, &int_handler))
+	//if(wiringPiISR(r_sig, INT_EDGE_RISING, &SpiComm::int_handler))
 		exit_p("Couldn't Setup GPIO Interrupt");
 	setup(device, sm, freq);
 }
 
-SpiComm::setup(std::string device, spi_mode sm, uint16_t freq)
+void SpiComm::setup(std::string device, spi_mode sm, uint16_t freq)
 {
 	okay = false;
 	mode = 0;
@@ -125,6 +125,7 @@ std::string SpiComm::send_data(std::string data)
 void SpiComm::int_handler(void)
 {
 	//TODO this should trigger a read on the spi interface.
+	printf("Interrupt Received!!");
 }
 
 

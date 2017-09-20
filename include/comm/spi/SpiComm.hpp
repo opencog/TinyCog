@@ -38,8 +38,9 @@ class SpiComm
 	*/
     	enum spi_mode{MODE0, MODE1, MODE2, MODE3};
     	SpiComm(std::string device, spi_mode sm, uint16_t freq);
-	//r_sig should be rpi gpio pin number in 
-	SPIComm(std::string device, spi_mode sm, uint16_t freq, uint8_t r_sig);
+	//r_sig should be rpi gpio pin number in BCM numbering
+	//this mode requries root when running
+	SpiComm(std::string device, spi_mode sm, uint16_t freq, uint8_t r_sig);
 	~SpiComm();
 	bool okay;
 	std::string send_data(std::string data);
