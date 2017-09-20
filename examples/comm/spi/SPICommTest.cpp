@@ -7,6 +7,16 @@
 
 #include "SpiComm.hpp"
 
+/*
+   This program sends the "Hello, SPI" text through the SPI interface.
+   The data is transferred through the MOSI pin and it reads on the MISO 
+   line after doing so. 
+   So one can short the two lines so that a loop will allow the sent text
+   to be received. 
+
+   This hasn't been with another SPI slave device so it's not guranteed to work. 
+*/
+
 int main(int argc, char **argv)
 {
 	SpiComm spi_comm("/dev/spidev0.0", SpiComm::spi_mode::MODE0, 50000);

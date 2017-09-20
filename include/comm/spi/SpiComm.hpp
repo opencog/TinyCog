@@ -17,6 +17,7 @@
 #include <string>
 #include <string.h>
 #include <map>
+#include <wiringPi.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <linux/types.h>
@@ -37,15 +38,12 @@ class SpiComm
 	*/
     	enum spi_mode{MODE0, MODE1, MODE2, MODE3};
     	SpiComm(std::string device, spi_mode sm, uint16_t freq);
+	//r_sig should be rpi gpio pin number in 
+	SPIComm(std::string device, spi_mode sm, uint16_t freq, uint8_t r_sig);
 	~SpiComm();
 	bool okay;
 	std::string send_data(std::string data);
 
-	/* #TODO Inlcude some GPIO code here that will behave like an interrupt 
-	   for reading on the spi comm. The dr_roboto will issue a 
-	   SLAVE_DATA_READY signal on one of the gpio pins that should 
-	   trigger a read on the SPI. 
-	*/
     
     private:
 	int fd;       
@@ -56,7 +54,8 @@ class SpiComm
 
 	void exit_p(std::string msg);
 	void load_map();
-	void setup();
+	void setup(std::string device, spi_mode sm, uint16_t freq);
+	void int_handler(void);
 	void sigint_handler(int SIG);
 
 };
