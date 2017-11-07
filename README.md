@@ -1,8 +1,8 @@
 # OpenCogER
 
-##Setup
+## Setup
 
-###Install 
+### Install 
 festival
 opencv-3.x
 opencv_contrib-3.x

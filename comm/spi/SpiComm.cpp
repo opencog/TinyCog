@@ -11,6 +11,20 @@
 
 SpiComm::SpiComm(std::string device, spi_mode sm, uint16_t freq)
 {
+	setup(device, sm, freq);
+}
+
+SpiComm::SpiComm(std::string device, spi_mode sm, uint16_t freq, uint8_t r_sig)
+{
+	if(wiringPiSetupGpio() < 0)
+		exit_p("Couldn't Initiate WiringPi");
+	//if(wiringPiISR(r_sig, INT_EDGE_RISING, &SpiComm::int_handler))
+		exit_p("Couldn't Setup GPIO Interrupt");
+	setup(device, sm, freq);
+}
+
+void SpiComm::setup(std::string device, spi_mode sm, uint16_t freq)
+{
 	okay = false;
 	mode = 0;
 	dev = device;
@@ -42,8 +56,8 @@ SpiComm::SpiComm(std::string device, spi_mode sm, uint16_t freq)
 		exit_p("Couldn't Set SPI Clock Speed");
 	
 	okay = true;
-
 }
+
 
 SpiComm::~SpiComm()
 {
@@ -93,6 +107,8 @@ std::string SpiComm::send_data(std::string data)
 	if(ret < 1)
 		exit_p("Couldn't Send The Message");
 	
+	// XXX There is a bug here. Idk what it is but if no data is received
+	// then there is segfault
 	std::string ret_data;
 	for (int i = 0; i < packet_len; i++){
 		ret_data.append<char>(1, ret_buffer[i]);
@@ -104,6 +120,15 @@ std::string SpiComm::send_data(std::string data)
 			ret_data.c_str());
 	return ret_data;
 }
+
+
+void SpiComm::int_handler(void)
+{
+	//TODO this should trigger a read on the spi interface.
+	printf("Interrupt Received!!");
+}
+
+
 
 void SpiComm::sigint_handler(int SIG)
 {
