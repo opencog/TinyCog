@@ -82,10 +82,10 @@ install (TARGETS networkr DESTINATION lib/OpenCogER)
 install (FILES StringServerUDP.hpp DESTINATION "include/OpenCogER/network")
 
 #######COMM
-find_package(WiringPi REQUIRED)
-include_directories("include/comm/spi" ${WIRINGPI_INCLUDE_DIR})
-add_library(spicomm comm/spi/SpiComm.cpp)
-target_link_libraries(spicomm ${WIRINGPI_LIB})
+#find_package(WiringPi REQUIRED)
+#include_directories("include/comm/spi" ${WIRINGPI_INCLUDE_DIR})
+#add_library(spicomm comm/spi/SpiComm.cpp)
+#target_link_libraries(spicomm ${WIRINGPI_LIB})
 
-add_executable(SPICommTest examples/comm/spi/SPICommTest.cpp)
-target_link_libraries(SPICommTest spicomm)
+#add_executable(SPICommTest examples/comm/spi/SPICommTest.cpp)
+#target_link_libraries(SPICommTest spicomm)
