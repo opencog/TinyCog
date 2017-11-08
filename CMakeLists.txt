@@ -37,6 +37,9 @@ target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 add_executable(FaceLandMarkTest examples/sense/vision/FaceLandMarkTest.cpp)
 target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
+add_executable(WinkDetectionTest examples/sense/vision/WinkDetectionTest.cpp)
+target_link_libraries(WinkDetectionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+
 if(raspicam_FOUND)
 add_executable(RaspiVisionTest examples/sense/vision/RaspiVisionTest.cpp)
 target_link_libraries(RaspiVisionTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})
@@ -82,10 +85,12 @@ install (TARGETS networkr DESTINATION lib/OpenCogER)
 install (FILES StringServerUDP.hpp DESTINATION "include/OpenCogER/network")
 
 #######COMM
-find_package(WiringPi REQUIRED)
+find_package(WiringPi QUIET)
+if(${WIRINGPI_FOUND})
 include_directories("include/comm/spi" ${WIRINGPI_INCLUDE_DIR})
 add_library(spicomm comm/spi/SpiComm.cpp)
 target_link_libraries(spicomm ${WIRINGPI_LIB})
 
 add_executable(SPICommTest examples/comm/spi/SPICommTest.cpp)
 target_link_libraries(SPICommTest spicomm)
+endif(${WIRINGPI_FOUND})
