@@ -1,20 +1,10 @@
 /*
   Project: OpenCogER
-  File: FaceLandmark.cpp
+  File: FaceLandmarkTest.cpp
   Author: Dagim Sisay
   License: AGPL
-  Date: 2017
+  Date: November 2017
 */
-#include <opencv2/core/utility.hpp>
-#include <opencv2/videoio.hpp>
-#include <opencv2/highgui.hpp>
-
-#include <dlib/image_processing/frontal_face_detector.h>
-#include <dlib/image_processing/render_face_detections.h>
-#include <dlib/image_processing.h>
-#include <dlib/gui_widgets.h>
-#include <dlib/image_io.h>
-#include <dlib/opencv.h>
 
 #include <iostream>
 #include <cstring>
@@ -23,90 +13,60 @@
 #include "sense/vision/ITColor2Gray.hpp"
 #include "sense/vision/ITEqualizeHist.hpp"
 #include "sense/vision/ITDetectFace.hpp"
+#include "sense/vision/FacialLandMark.hpp"
 
 #define MODEL_FILE "shape_predictor_68_face_landmarks.dat"
 
-
-using namespace std;
-using namespace cv;
-using namespace dlib;
  
-/* On start image is captured and user selects roi to track with mouse and press space bar
-   then tracking starts 
-   press "q" to exit
-    * In median flow , when tracking is no longer possible the app exits
-
-*/
    
-int main( int argc, char** argv )
+int main(int argc, char** argv)
 {    
-    CamCapture cc("c1",320,240,0,30);
-    if (!cc.isOk()){cout<<endl<<cc.getState()<<endl;return -1;}
+    CamCapture cc("cam1",320,240,0,20);
+    if (!cc.isOk()){std::cout<<std::endl<<cc.getState()<<std::endl;return -1;}
     
-    Mat frame;
-    namedWindow( "Tracking API", 1 );
-    
-    Mat image;
+    cv::Mat frame, image;
     ITColor2Gray c2g("c2g1");
     ITEqualizeHist eh("eh1");
     ITDetectFace fcd("fc1");
-    std::vector<cv::Rect> faces; 
-    //imshow( "Tracking API", image );
-    
-    frontal_face_detector detector = get_frontal_face_detector();
-    shape_predictor sp; 
-    deserialize(MODEL_FILE) >> sp;
+    FacialLandMark flm;
 
-    image_window win, win_faces;
+    std::vector<cv::Rect> faces; 
+    
+    std::vector<facial_lms> f_lms; //landmarks of faces detected 
+
+    dlib::image_window win;
     
     while(true)
     {
     	frame = cc.getCurrentFrame();
 	frame.copyTo(image);
 
+	/*
+		It's best to first detect the faces using haar cascade rather than dlib's
+		face detector. 
+		After getting cv::Rect of faces pass that to the get_lm_points function
+		along with the frame so that the cv::Rect gets converted to dlib::rectangle
+		and lms can be obtained. 
+	*/
+	
 	faces = fcd.Transform(eh.Transform(c2g.Transform(frame)));
 	
-	std::vector<dlib::rectangle> dets;
-	for (int idx = 0; idx < faces.size(); idx++){
-		cv::Rect tr = faces[idx];
-		dets.push_back(dlib::rectangle((long)tr.tl().x, (long)tr.tl().y, 
-					(long)tr.br().x - 1, (long)tr.br().y - 1));
-	}
+	f_lms = flm.get_lm_points(image, faces); //get lms
 
-	array2d<bgr_pixel> img;
-	assign_image(img, dlib::cv_image<bgr_pixel>(image));
-	//pyramid_up(img);
-	
-	//std::vector<dlib::rectangle> dets = detector(img);
-
-	cout<<"Number of Faces Detected: "<<dets.size()<<endl;
-	std::vector<full_object_detection> shapes;
-	for (unsigned long j = 0; j < dets.size(); ++j)
+	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{
-		full_object_detection shape = sp(img, dets[j]);
-		cout << "number of parts: "<< shape.num_parts() << endl;
-		cout << "pixel position of first part:  " << shape.part(0) << endl;
-		cout << "pixel position of second part: " << shape.part(1) << endl;
-		// You get the idea, you can get all the face part locations if
-		// you want them.  Here we just store them in shapes so we can
-		// put them on the screen.
-		shapes.push_back(shape);
+		facial_lms shape = f_lms[idx];
+		std::cout<<"******************** Face #"<<idx<<std::endl;
+		std::cout<<"pixel position of first part:  " << shape.part(0) << std::endl;
+		std::cout<<"pixel position of second part: " << shape.part(1) << std::endl;
 	}
 
-	Mat final_image;
-	final_image = toMat(img);
-	imshow("Tracking API", final_image);
+	dlib::array2d<dlib::bgr_pixel> img;
+	dlib::assign_image(img, dlib::cv_image<dlib::bgr_pixel>(image));
 	win.clear_overlay();
 	win.set_image(img);
-	win.add_overlay(render_face_detections(shapes));
+	win.add_overlay(dlib::render_face_detections(f_lms));
 
-	//dlib::array<array2d<rgb_pixel> > face_chips; 
-	//extract_image_chips(img, get_face_chip_details(shapes), face_chips);
-	//win_faces.set_image(tile_images(face_chips));
-	
-	char c = (char) waitKey( 20 );
-        if( c == 'q' )
-            break;
     }
     return 0;
 }

@@ -16,13 +16,12 @@
 	dlib::deserialize(shapes_file) >> dsp;
 }
 
-//FacialLandMark::~FacialLandMark() {}
 
 
-std::vector<facial_lms> FacialLandMark::get_lm_points(cv::Mat img)
+std::vector<facial_lms> FacialLandMark::get_lm_points(cv::Mat img, std::vector<cv::Rect> cv_rect)
 {
-	
-	cv_rect = f_detector.Transform(e_hist.Transform(c_2_gray.Transform(img))); //faces
+	dl_rect.clear();
+	fs_landmark.clear();
 	std::cout<<"Number of Faces: "<<cv_rect.size()<<std::endl;
 	
 	for(uint8_t idx = 0; idx < cv_rect.size(); idx++)
