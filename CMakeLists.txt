@@ -37,8 +37,8 @@ target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 add_executable(FaceLandMarkTest examples/sense/vision/FaceLandMarkTest.cpp)
 target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
-add_executable(WinkDetectionTest examples/sense/vision/WinkDetectionTest.cpp)
-target_link_libraries(WinkDetectionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+add_executable(StateofEyesDetectionTest examples/sense/vision/StateofEyesDetection.cpp)
+target_link_libraries(StateofEyesDetectionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
 if(raspicam_FOUND)
 add_executable(RaspiVisionTest examples/sense/vision/RaspiVisionTest.cpp)

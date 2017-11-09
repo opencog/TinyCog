@@ -36,7 +36,6 @@ class FacialLandMark
 
 		//a function to return landmarks
 		std::vector<facial_lms> get_lm_points(cv::Mat, std::vector<cv::Rect>);
-		//a function to indicate when come gesture is active
 
 
 	private:
