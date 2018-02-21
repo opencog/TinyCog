@@ -64,17 +64,49 @@ SpiComm::~SpiComm()
 	close(fd);
 }
 
+/*
+	head control
+	params:
+		face_part: from enum face_part
+		value: value between 0-100 for motor position
+		time: time to take when moving from current pos to requesed pos
+			in seconds (1 - 10)
+*/
 
+uint8_t * SpiComm::head_control(face_part fp, uint8_t value, uint8_t time)
+{
+	size_t packet_len = 4;
+	uint8_t packet[packet_len];
+	packet[0] = 0x80;
+	packet[1] = fp;
+	if(0 <= value <= 100)
+		packet[2] = value;
+	else
+		packet[2] = 0;
+	if(0 <= time <= 10)
+		packet[3] = time;
+	else 
+		packet[3] = 5;
+	std::string ret = spi_send(packet, packet_len);
+	for(uint8_t i = 0; i < 4; i++)
+		packet[i] = (uint8_t)ret.at(i);
+	return packet;
+}
+
+/*
+	
+*/
 std::string SpiComm::send_data(std::string data)
 {
 	size_t len = data.size();
 	uint8_t *packet;
-	size_t packet_len = len + 8;
-	uint8_t header[8] = {0xAA, 0x55, 0x0, 0x0, 0x01, 0x0, 0x0, 0x0};
+	uint8_t header_len = 8;
+	uint8_t header[header_len] = {0xAA, 0x55, 0x0, 0x0, 0x01, 0x0, 0x0, 0x0};
+	size_t packet_len = len+header_len;
 	header[PACKET_SIZE_L_IDX] = len & 0xff;
 	header[PACKET_SIZE_H_IDX] = len >> 8;
 	packet = new uint8_t[packet_len];
-
+	
 	/* Attach Header */
 	for (int i = 0; i < 8; i++)
 		packet[i] = header[i];
@@ -90,7 +122,12 @@ std::string SpiComm::send_data(std::string data)
 		printf("Size of Packet: %d\nPacket Content: %s\n", 
 			packet_len, packet);
 	}
+	return spi_send(packet, packet_len);
+}
 
+
+std::string SpiComm::spi_send(uint8_t *packet, size_t packet_len)
+{
 	uint8_t *ret_buffer;
 	ret_buffer = new uint8_t[packet_len];
 	

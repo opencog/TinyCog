@@ -56,7 +56,7 @@ class SpiComm
 	void exit_p(std::string);
 	void load_map();
 	void setup(std::string, spi_mode, uint16_t);
-	std::string spi_send(uint8_t, size_t);
+	std::string spi_send(uint8_t*, size_t);
 	void int_handler(void);
 	void sigint_handler(int);
 
