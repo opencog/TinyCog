@@ -22,6 +22,12 @@
 
 std::ofstream ofile;
 
+
+void trial()
+{
+	printf("Just a trial... \n");
+}
+
 void sigint_handler(int SIG)
 {
 	std::cout<<"Caught SIGINT.................."<<std::endl;
