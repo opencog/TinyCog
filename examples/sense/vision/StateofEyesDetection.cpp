@@ -29,8 +29,7 @@ void sigint_handler(int SIG)
 	exit(1);
 }
 
-
-   
+  
 int main(int argc, char** argv)
 {    
     CamCapture cc("cam1",320,240,0,20);
@@ -41,6 +40,8 @@ int main(int argc, char** argv)
     ITEqualizeHist eh("eh1");
     ITDetectFace fcd("fc1");
     FacialLandMark flm;
+    
+    flm.eye_status(&trial);
 
     std::vector<cv::Rect> faces; 
     

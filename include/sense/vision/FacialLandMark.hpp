@@ -37,6 +37,8 @@ class FacialLandMark
 		//a function to return landmarks
 		std::vector<facial_lms> get_lm_points(cv::Mat, std::vector<cv::Rect>);
 
+		void eye_status( void(*)() );
+
 
 	private:
 		dlib::array2d<dlib::bgr_pixel> d_img;

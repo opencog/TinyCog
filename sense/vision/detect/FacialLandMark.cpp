@@ -41,3 +41,27 @@ std::vector<facial_lms> FacialLandMark::get_lm_points(cv::Mat img, std::vector<c
 	}
 	return fs_landmark;
 }
+
+void FacialLandMark::eye_status( void(*eye_status_cb)())
+{
+/*
+	Make the arc
+
+	auto f = std::async(std::launch::async, [] {
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+    printf("(5 seconds later) Hello");
+});
+
+std::thread printLater{[] {
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+    printf("(5 seconds later) Hello");
+}};
+
+
+*/
+	auto f = std::async(std::launch::async, [] {
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+		printf("Triallllllllllllllllllllllllllllllllllllllll");
+		});
+
+}
