@@ -22,7 +22,7 @@
 
 #define MODEL_FILE "shape_predictor_68_face_landmarks.dat"
 
-#define DEBUG 
+//#define DEBUG 
  
 #define FRAME_RATE 20
 #define WINDOW FRAME_RATE*3
@@ -122,7 +122,7 @@ int main(int argc, char** argv)
     std::list<int> ver(WINDOW, 0);
     std::list<int> hor(WINDOW, 0);
     
-    double vrc = 0, upping = 0, downing = 0;
+    double vrc = 0, upping = 0, downing = 0, siding = 0;
     std::vector<double> vvrc;
     std::vector<double> vver;
     double arr[] = {123,123,120,120,116,114,114,116,121,121,126,126,125,125,120,120,116,116,116,116,120,120,127,127,130,130,128,128,122,122,117,117,117,117,120,120,127,129,129,127,127,122,122,120,120,121,121,123,123,124,124,122};
@@ -146,10 +146,10 @@ int main(int argc, char** argv)
 		facial_lms shape = f_lms[idx];
 		
 		#ifdef DEBUG
-			if(upping > 0.4)
-			std::cout<< shape.part(0).y() << "," << shape.part(16).y() << "," << shape.part(48).y() << "," 
-				<< shape.part(54).y() << "," << shape.part(33).y() << "," << shape.part(36).y() << "," 
-				<< shape.part(45).y() << "," << upping << "," << downing << ","
+			//if(upping > 0.4)
+			std::cout<< shape.part(0).x() << "," << shape.part(16).x() << "," << shape.part(48).x() << "," 
+				<< shape.part(54).x() << "," << shape.part(33).x() << "," << shape.part(36).x() << "," 
+				<< shape.part(45).x() << "," << upping << "," << siding << ","
 				<<vrc<<std::endl;
 		#endif
 
@@ -161,16 +161,26 @@ int main(int argc, char** argv)
 
 	if(q % SPACE == 0)
 	{
-	    std::vector<double> tmp(std::begin(ver), std::end(ver));
-	    std::vector<double> data;
-	    cherry_pick(&tmp, &data);
-	    make_equal(&template1, data.size());
-	    make_equal(&template2, data.size());
-	    normalize(&data);
-	    upping = dlib::correlation(data, template1);
-	    downing = dlib::correlation(data, template2);
+	    std::vector<double> ver_temp(std::begin(ver), std::end(ver));
+	    std::vector<double> hor_temp(std::begin(hor), std::end(hor));
+	    std::vector<double> vdata;
+	    std::vector<double> hdata;
+	    cherry_pick(&ver_temp, &vdata);
+	    cherry_pick(&hor_temp, &hdata);
+	    make_equal(&template1, vdata.size());
+	    make_equal(&template2, vdata.size());
+	    normalize(&vdata); normalize(&hdata);
+	    upping = dlib::correlation(vdata, template1);
+	    downing = dlib::correlation(vdata, template2);
 	    upping = (upping+downing)/2.0;
-	    
+	    if(upping > 0.42)
+	    	printf("Vertical Nodding %.4f\n", upping);
+	    upping = dlib::correlation(hdata, template1);
+	    downing = dlib::correlation(hdata, template2);
+	    siding = (upping+downing)/2.0;
+	    if(siding > 0.4)
+	    	printf("Horizontal Nodding %.4f\n", siding);
+	    	
 	    q = 0;
 	}
 	
