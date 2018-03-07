@@ -20,6 +20,8 @@
 #include "sense/vision/ITDetectFace.hpp"
 #include "sense/vision/FacialLandMark.hpp"
 
+#include "util/util.hpp"
+
 #define MODEL_FILE "shape_predictor_68_face_landmarks.dat"
 
 //#define DEBUG 

@@ -26,6 +26,8 @@ add_library( sensor_vision  sense/vision/capture/CamCapture.cpp
         sense/vision/track/BoxTracker.cpp
         sense/vision/track/BoxTrackerThread.cpp)
 
+add_library(opencoger_util util/util.cpp)
+
 target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
 
 add_executable(VisionTest examples/sense/vision/VisionTest.cpp)
@@ -41,7 +43,7 @@ add_executable(StateofEyesDetectionTest examples/sense/vision/StateofEyesDetecti
 target_link_libraries(StateofEyesDetectionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
 add_executable(NoddingTest examples/sense/vision/FaceNoddingDetection.cpp)
-target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib opencoger_util)
 
 if(raspicam_FOUND)
 add_executable(RaspiVisionTest examples/sense/vision/RaspiVisionTest.cpp)
