@@ -22,7 +22,7 @@ double variance(std::list<int> d)
     return (v/d.size());
 }
 
-void normalize(std::vector<double> *s, int a = 0, int b = 1)
+void normalize(std::vector<double> *s, int a, int b)
 {
     int c = b - a;
     auto mm = std::minmax_element(s->begin(), s->end());
@@ -35,7 +35,7 @@ void normalize(std::vector<double> *s, int a = 0, int b = 1)
     	*i = a + (((*i - mi)*c) / mxi);
 }
 
-void cherry_pick(std::vector<double> *x, std::vector<double> *y, uint8_t space = 2)
+void cherry_pick(std::vector<double> *x, std::vector<double> *y, uint8_t space)
 {
     for(size_t i = 0; i < x->size(); i++)
         if(i % space == 0)

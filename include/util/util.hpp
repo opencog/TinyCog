@@ -12,6 +12,6 @@
 #include <algorithm>
 
 double variance(std::list<int>);
-void normalize(std::vector<double> *, int, int);
-void cherry_pick(std::vector<double> *, std::vector<double>*, uint8_t);
+void normalize(std::vector<double> *s, int a=0, int b=1);
+void cherry_pick(std::vector<double> *, std::vector<double> *, uint8_t space=2);
 void make_equal(std::vector<double> *, size_t);

@@ -32,76 +32,6 @@
 #define SAMPLE_VER FRAME_RATE*5
 
 
-double variance(std::list<int> d)
-{
-    int m = 0;
-    double v = 0;
-    std::list<int>::const_iterator i = d.begin();
-    for( ; i != d.end(); i++)
-        m += *i; 
-    m = m/d.size();
-    for(i = d.begin() ; i != d.end(); i++)
-        v += std::pow((double)(*i - m), 2.0);
-    return (v/d.size());
-}
-
-void normalize(std::vector<double> *s, int a = 0, int b = 1)
-{
-    int c = b - a;
-    auto mm = std::minmax_element(s->begin(), s->end());
-    double mi = s->at(mm.first - s->begin());
-    double mx = s->at(mm.second - s->begin());
-    double mxi = mx - mi;
-
-    std::vector<double>::iterator i = s->begin(); 
-    for( ; i != s->end(); i++)
-    	*i = a + (((*i - mi)*c) / mxi);
-}
-
-void cherry_pick(std::vector<double> *x, std::vector<double> *y, uint8_t space = 2)
-{
-    for(size_t i = 0; i < x->size(); i++)
-        if(i % space == 0)
-	    y->push_back(x->at(i));
-}
-
-void make_equal(std::vector<double> *x, size_t size)
-{
-    size_t xs = x->size();
-    std::vector<double> t(*x);
-    std::vector<double>::const_iterator itb = t.begin(); 
-    std::vector<double>::iterator itbx = x->begin(),
-				itex = x->end();
-    if(xs < size)
-        for(size_t i = xs; i < size; i++)
-        {
-            if(i % xs == 0)
-	        itb = t.begin();
-	    x->push_back(*itb);
-	    itb++;
-        }
-    else
-        x->erase(itbx+size, x->end());
-
-}
- 
-void conv(std::vector<double> *x, std::vector<double> *h, std::vector<double> *y)
-{
-    //std::vector<double>::const_iterator xi = x->begin(), hi = h->begin();
-    //std::vector<double>::iterator yi = y->begin();
-    size_t xs = x->size(), hs=h->size();
-    size_t xh = xs-hs;
-    double temp = 0;
-    for (int i = 0; i <= xh; i++)
-    {
-        temp=0;
-	for(int k = 0; k < hs; k++)
-	    temp += x->at(i+k) * h->at(hs-k-1);
-	y->push_back(temp);
-    }
-}
-
-
 int main(int argc, char** argv)
 {    
     CamCapture cc("cam1",320,240,0,FRAME_RATE);
@@ -117,7 +47,9 @@ int main(int argc, char** argv)
     
     std::vector<facial_lms> f_lms; //landmarks of faces detected 
 
-    dlib::image_window win;
+    #ifdef DEBUG 
+    	dlib::image_window win;
+    #endif
 
     int p = 0, q = 0;
 
