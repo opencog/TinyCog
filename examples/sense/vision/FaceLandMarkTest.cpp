@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <signal.h>
 
 #include "sense/vision/CamCapture.hpp"
 #include "sense/vision/ITColor2Gray.hpp"
@@ -17,10 +18,15 @@
 
 #define MODEL_FILE "shape_predictor_68_face_landmarks.dat"
 
- 
+void sigint_handler(int SIG)
+{
+    std::cout<<"Caught SIGINT"<<std::endl;
+    exit(0);
+}
    
 int main(int argc, char** argv)
 {    
+    signal(SIGINT, sigint_handler);
     CamCapture cc("cam1",320,240,0,20);
     if (!cc.isOk()){std::cout<<std::endl<<cc.getState()<<std::endl;return -1;}
     
@@ -51,7 +57,7 @@ int main(int argc, char** argv)
 	
 	faces = fcd.Transform(eh.Transform(c2g.Transform(frame)));
 	
-	f_lms = flm.get_lm_points(image, faces); //get lms
+	flm.get_lm_points(image, faces, &f_lms); //get lms
 
 	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{

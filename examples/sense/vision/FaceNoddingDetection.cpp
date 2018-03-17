@@ -73,7 +73,7 @@ int main(int argc, char** argv)
     	frame = cc.getCurrentFrame();
 	frame.copyTo(image);
 	faces = fcd.Transform(eh.Transform(c2g.Transform(frame)));
-	f_lms = flm.get_lm_points(image, faces); //get lms
+	flm.get_lm_points(image, faces, &f_lms); //get lms
 
 	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{

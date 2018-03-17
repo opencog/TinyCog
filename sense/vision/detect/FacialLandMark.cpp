@@ -17,12 +17,10 @@ FacialLandMark::FacialLandMark()
 }
 
 
-
-std::vector<facial_lms> FacialLandMark::get_lm_points(cv::Mat img, std::vector<cv::Rect> cv_rect)
+void FacialLandMark::get_lm_points(cv::Mat img, std::vector<cv::Rect> cv_rect, std::vector<facial_lms> *dest)
 {
 	dl_rect.clear();
 	fs_landmark.clear();
-	//std::cout<<"Number of Faces: "<<cv_rect.size()<<std::endl;
 	
 	for(uint8_t idx = 0; idx < cv_rect.size(); idx++)
 	{
@@ -33,35 +31,10 @@ std::vector<facial_lms> FacialLandMark::get_lm_points(cv::Mat img, std::vector<c
 	
 	dlib::assign_image(d_img, dlib::cv_image<dlib::bgr_pixel>(img));
 	
-	for(uint8_t idx = 0; idx < dl_rect.size(); idx++)
+	for(uint8_t idx = 0; idx < dl_rect.size(); idx++) //iterate on faces
 	{
 		f_landmark = dsp(d_img, dl_rect[idx]); //lm for one face
-		//std::cout<<"Number of Parts: "<<f_landmark.num_parts()<<std::endl;
 		fs_landmark.push_back(f_landmark);
 	}
-	return fs_landmark;
 }
 
-void FacialLandMark::eye_status( void(*eye_status_cb)())
-{
-/*
-	Make the arc
-
-	auto f = std::async(std::launch::async, [] {
-    std::this_thread::sleep_for(std::chrono::seconds(5));
-    printf("(5 seconds later) Hello");
-});
-
-std::thread printLater{[] {
-    std::this_thread::sleep_for(std::chrono::seconds(5));
-    printf("(5 seconds later) Hello");
-}};
-
-
-*/
-	auto f = std::async(std::launch::async, [] {
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		printf("Triallllllllllllllllllllllllllllllllllllllll");
-		});
-
-}

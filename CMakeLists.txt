@@ -23,7 +23,8 @@ add_library( sensor_vision  sense/vision/capture/CamCapture.cpp
         sense/vision/detect/ITDetectFace.cpp
         sense/vision/detect/ITDetectSmile.cpp
 	sense/vision/detect/FacialLandMark.cpp
-        sense/vision/track/BoxTracker.cpp
+        sense/vision/detect/FacialExpressions.cpp
+	sense/vision/track/BoxTracker.cpp
         sense/vision/track/BoxTrackerThread.cpp)
 
 add_library(opencoger_util util/util.cpp)
@@ -38,9 +39,6 @@ target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 
 add_executable(FaceLandMarkTest examples/sense/vision/FaceLandMarkTest.cpp)
 target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
-
-add_executable(StateofEyesDetectionTest examples/sense/vision/StateofEyesDetection.cpp)
-target_link_libraries(StateofEyesDetectionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
 add_executable(NoddingTest examples/sense/vision/FaceNoddingDetection.cpp)
 target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib opencoger_util)
