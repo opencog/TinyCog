@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <vector>
 
+#define EAR_THRESH 0.09
 
 class FacialExpressions
 {

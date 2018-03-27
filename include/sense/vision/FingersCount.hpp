@@ -1,0 +1,63 @@
+/*
+  Project: OpenCogER
+  File: FingersCount.hpp
+  Author: Kidist Abraham <kidistabraham@gmail.com>
+          Dagim Sisay<dagiopia@gmail.com>
+  License: AGPL
+  Date: March, 2018
+*/
+
+
+#ifndef FINGERSCOUNT_H_
+#define FINGERSCOUNT_H_
+
+#include <opencv2/opencv.hpp>
+
+#include "sense/vision/ITColor2Gray.hpp"
+#include "sense/vision/ITEqualizeHist.hpp"
+#include "sense/vision/ITDetectHand.hpp"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <vector>
+#include <stdint.h>
+
+#define MIN_DEPTH 50
+#define MAX_DEPTH 150
+
+typedef std::vector<cv::Point> VP;
+typedef std::vector<VP> VVP;
+typedef std::vector<cv::Vec4i> VV4i;
+typedef VP CONTOUR;
+typedef VVP CONTOURS;
+
+class FingersCount
+{
+    public:
+        
+	FingersCount();
+	~FingersCount(){}
+	
+	/* 
+	    a function to return number of fingers
+	    supply a mat that's ROId on the hand (a small one)
+	    since it would be brought here after doing hand detection
+	    which requires the a binarized image, this should do fine
+	*/
+	uint8_t num_fingers(cv::Mat);
+	
+	
+    private:
+        size_t largest_cntr_idx();
+	CONTOURS cntrs;
+	CONTOUR cntr;
+	VV4i hier;
+	std::vector<int> hull;
+	VV4i defects;
+	cv::Point st_pt, en_pt, far_pt;
+	int st_idx, en_idx, far_idx;
+	uint8_t count;
+	double depth;
+};
+
+#endif //FINGERSCOUNT_H_

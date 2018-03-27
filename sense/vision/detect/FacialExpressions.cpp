@@ -18,11 +18,13 @@ bool FacialExpressions::eyes_open()
     		std::abs(flms->part(REU2).y() - flms->part(REB2).y())) / 
 		(2 * std::abs(flms->part(RERS).x() - flms->part(RELS).x()));
     ear = (ear1+ear2) / 2;
-    return (ear < 0.09) ? false : true; 
+    return (ear < EAR_THRESH) ? false : true; 
 }
 
 uint8_t FacialExpressions::mouth_open()
 {
-    double mvd1, mvd2, mar; //mouth vertical distance and mouth aspect ratio
-   
+    double mvd, mar; //mouth vertical distance and mouth aspect ratio
+    mvd = std::abs(flms->part(MCU2).y() - flms->part(MCB2).y());
+    mar = mvd / std::abs(flms->part(MRS).y() - flms->part(MLS).y());
+    return mar;
 }
