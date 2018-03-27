@@ -31,7 +31,7 @@ int main(int argc, char **argv)
 
     cv::Mat frame, img;
     std::vector<cv::Rect> hands;
-    std::vector<std::string> snum({"one", "two", "three", "four", "five"});
+    std::vector<std::string> snum({"one", "two", "three", "four", "five", "si", "sev"});
 
     while (true)
     {
@@ -39,7 +39,7 @@ int main(int argc, char **argv)
         img = eh.Transform(c2g.Transform(frame));
 	cv::threshold(img, img, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
 	hands = dh.Transform(img);
-	for (size_t i ; i < hands.size(); i++)
+	for (size_t i = 0 ; i < hands.size(); i++)
 	{
             img = cv::Mat(img, cv::Rect(hands[i].x - hands[i].x*SCALE,
 	                                hands[i].y - hands[i].y*SCALE,
@@ -48,6 +48,8 @@ int main(int argc, char **argv)
 	    cv::putText(frame, snum[fc.num_fingers(img)], cv::Point(20, 20), 
 	              cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8, CV_RGB(50, 50, 50), 2,
 		      CV_AA);
+	    cv::imshow("hand", img);
+            
 	}
 	cv::imshow("Fingers Count", frame);
 	if((int)'q' == cv::waitKey(10))

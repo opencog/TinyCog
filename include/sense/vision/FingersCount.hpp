@@ -22,8 +22,16 @@
 #include <vector>
 #include <stdint.h>
 
-#define MIN_DEPTH 50
-#define MAX_DEPTH 150
+#define DEBUG
+
+/* 
+  TODO find a better way for depth range
+  something that's calculated from values
+  at current hand based on size or distance
+  from other points or whatever
+*/
+#define MIN_DEPTH 10.0
+#define MAX_DEPTH 50.0
 
 typedef std::vector<cv::Point> VP;
 typedef std::vector<VP> VVP;
@@ -34,7 +42,6 @@ typedef VVP CONTOURS;
 class FingersCount
 {
     public:
-        
 	FingersCount();
 	~FingersCount(){}
 	
