@@ -26,6 +26,7 @@ add_library( sensor_vision  sense/vision/capture/CamCapture.cpp
 	sense/vision/detect/FacialLandMark.cpp
         sense/vision/detect/FacialExpressions.cpp
 	sense/vision/detect/FingersCount.cpp
+	sense/vision/detect/DSaliency.cpp
 	sense/vision/track/BoxTracker.cpp
         sense/vision/track/BoxTrackerThread.cpp)
 
@@ -47,6 +48,12 @@ target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dli
 
 add_executable(FingersCountTest examples/sense/vision/FingersCountTest.cpp)
 target_link_libraries(FingersCountTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
+
+add_executable(SaliencyTest examples/sense/vision/SaliencyTest.cpp)
+target_link_libraries(SaliencyTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
+
+add_executable(SaliencyTest2 examples/sense/vision/SaliencyTest2.cpp)
+target_link_libraries(SaliencyTest2 sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
 
 if(raspicam_FOUND)
 add_executable(RaspiVisionTest examples/sense/vision/RaspiVisionTest.cpp)
