@@ -16,7 +16,6 @@
 #include "sense/vision/ITDetectFace.hpp"
 #include "sense/vision/FacialLandMark.hpp"
 
-#define MODEL_FILE "shape_predictor_68_face_landmarks.dat"
 
 void sigint_handler(int SIG)
 {
@@ -56,23 +55,18 @@ int main(int argc, char** argv)
 	*/
 	
 	faces = fcd.Transform(eh.Transform(c2g.Transform(frame)));
-	
+	f_lms.clear();
 	flm.get_lm_points(image, faces, &f_lms); //get lms
-
 	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{
 		facial_lms shape = f_lms[idx];
-		std::cout<<"******************** Face #"<<idx<<std::endl;
-		std::cout<<"pixel position of first part:  " << shape.part(0) << std::endl;
-		std::cout<<"pixel position of second part: " << shape.part(1) << std::endl;
+		for(uint8_t i = 0; i < 30; i++)
+		    cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 
+		               2, CV_RGB(0, 255, 0), 2);
 	}
-
-	dlib::array2d<dlib::bgr_pixel> img;
-	dlib::assign_image(img, dlib::cv_image<dlib::bgr_pixel>(image));
-	win.clear_overlay();
-	win.set_image(img);
-	win.add_overlay(dlib::render_face_detections(f_lms));
-
+        cv::imshow("face landmark", frame);
+	if(27 == cv::waitKey(10))
+	    break;
     }
     return 0;
 }

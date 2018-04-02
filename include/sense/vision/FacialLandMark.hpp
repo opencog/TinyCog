@@ -72,8 +72,6 @@ class FacialLandMark
         dlib::array2d<dlib::bgr_pixel> d_img;
 	std::vector<dlib::rectangle> dl_rect;
 	dlib::shape_predictor dsp;
-	dlib::full_object_detection f_landmark;
-	std::vector<dlib::full_object_detection> fs_landmark;
 };
 
 #endif //FACIALLANDMARK_H_
