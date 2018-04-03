@@ -17,7 +17,7 @@
 #include "sense/vision/ITDetectHand.hpp"
 #include "sense/vision/FingersCount.hpp"
 
-#define SCALE 0.05
+#define SCALE 0.1
    
 int main(int argc, char **argv)
 {    
@@ -27,9 +27,9 @@ int main(int argc, char **argv)
     ITColor2Gray c2g("c2g1");
     ITEqualizeHist eh("eh1");
     ITDetectHand dh("dh1");
-    FingersCount fc;
+    FingersCount fc(true);
 
-    cv::Mat frame, img;
+    cv::Mat frame, img, img2;
     std::vector<cv::Rect> hands;
     std::vector<std::string> snum({"one", "two", "three", "four", "five", "si", "sev"});
 
@@ -48,7 +48,10 @@ int main(int argc, char **argv)
 	    cv::putText(frame, snum[fc.num_fingers(img)], cv::Point(20, 20), 
 	              cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8, CV_RGB(50, 50, 50), 2,
 		      CV_AA);
-	    cv::imshow("hand", img);
+	    cv::cvtColor(img, img2, COLOR_GRAY2BGR);
+	    for(size_t j = 0 ; j < fc.f_tips.size(); j++)
+	        cv::circle(img2, fc.f_tips[j], 2, CV_RGB(255, 0, 0), 2);
+	    cv::imshow("hand", img2);
             
 	}
 	cv::imshow("Fingers Count", frame);

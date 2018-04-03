@@ -42,7 +42,7 @@ typedef VVP CONTOURS;
 class FingersCount
 {
     public:
-	FingersCount();
+	FingersCount(bool debug=false);
 	~FingersCount(){}
 	
 	/* 
@@ -52,6 +52,7 @@ class FingersCount
 	    which requires the a binarized image, this should do fine
 	*/
 	uint8_t num_fingers(cv::Mat);
+	std::vector<cv::Point> f_tips;
 	
 	
     private:
@@ -65,6 +66,8 @@ class FingersCount
 	int st_idx, en_idx, far_idx;
 	uint8_t count;
 	double depth;
+
+	bool debug;
 };
 
 #endif //FINGERSCOUNT_H_

@@ -11,9 +11,9 @@
 #include "sense/vision/FingersCount.hpp"
 
 
-FingersCount::FingersCount()
+FingersCount::FingersCount(bool debug)
 {
-	;
+	this->debug = debug;
 }
 
 size_t FingersCount::largest_cntr_idx()
@@ -27,6 +27,7 @@ size_t FingersCount::largest_cntr_idx()
 
 uint8_t FingersCount::num_fingers(cv::Mat hand)
 {
+    f_tips.clear();
     cv::GaussianBlur(hand, hand, cv::Size(5, 5), 1.5);
     cv::findContours(hand, cntrs, hier, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
     if(cntrs.size() > 0){
@@ -36,7 +37,7 @@ uint8_t FingersCount::num_fingers(cv::Mat hand)
 	    cv::convexityDefects(cntr, hull, defects);
 	count = 0;
 	VV4i::const_iterator d_it = defects.begin();
-	//printf("-----------------\n");
+	if(debug) printf("-----------------\n");
 	while(d_it != defects.end())
 	{
             st_idx = (*d_it)[0];
@@ -46,10 +47,17 @@ uint8_t FingersCount::num_fingers(cv::Mat hand)
             far_idx = (*d_it)[2];
 	    far_pt = cntr[far_idx];
 	    depth = (*d_it)[3] / 256.0;
+	    
 
-	    //printf("Depth = %f\n", depth);
-	    if (MIN_DEPTH < depth && MAX_DEPTH > depth)
+	    if(debug) printf("Depth = %f\n", depth);
+	    if (MIN_DEPTH < depth && MAX_DEPTH > depth){
 	        ++count; 
+		if(debug){
+	            f_tips.push_back(st_pt);
+		    f_tips.push_back(en_pt);
+		    f_tips.push_back(far_pt);
+		}
+	    }
 	    ++d_it;
 	} //while d_it ! end
     }// if cntrs > 0
