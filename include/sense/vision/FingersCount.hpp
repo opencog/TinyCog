@@ -30,7 +30,7 @@
   at current hand based on size or distance
   from other points or whatever
 */
-#define MIN_DEPTH 10.0
+#define MIN_DEPTH 5.0
 #define MAX_DEPTH 50.0
 
 typedef std::vector<cv::Point> VP;
@@ -42,7 +42,7 @@ typedef VVP CONTOURS;
 class FingersCount
 {
     public:
-	FingersCount(bool debug=false);
+	FingersCount(bool debug=false); //XXX remove param
 	~FingersCount(){}
 	
 	/* 
@@ -52,7 +52,7 @@ class FingersCount
 	    which requires the a binarized image, this should do fine
 	*/
 	uint8_t num_fingers(cv::Mat);
-	std::vector<cv::Point> f_tips;
+	std::vector<cv::Point> f_tips;  //XXX remove
 	
 	
     private:
@@ -62,10 +62,10 @@ class FingersCount
 	VV4i hier;
 	std::vector<int> hull;
 	VV4i defects;
-	cv::Point st_pt, en_pt, far_pt;
-	int st_idx, en_idx, far_idx;
+	cv::Point st_pt, en_pt, far_pt; //XXX remove
+	int st_idx, en_idx, far_idx;    //XXX remove
 	uint8_t count;
-	double depth;
+	double depth;  //XXX remove
 
 	bool debug;
 };

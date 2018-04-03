@@ -10,7 +10,7 @@
 
 #include "sense/vision/FingersCount.hpp"
 
-
+//XXX remove both param and statement
 FingersCount::FingersCount(bool debug)
 {
 	this->debug = debug;
@@ -27,8 +27,11 @@ size_t FingersCount::largest_cntr_idx()
 
 uint8_t FingersCount::num_fingers(cv::Mat hand)
 {
-    f_tips.clear();
+    f_tips.clear();  //XXX remove
     cv::GaussianBlur(hand, hand, cv::Size(5, 5), 1.5);
+    cv::morphologyEx(hand, hand, MORPH_HITMISS,
+    			cv::getStructuringElement(MORPH_RECT, cv::Size(3, 3)));
+    		     
     cv::findContours(hand, cntrs, hier, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
     if(cntrs.size() > 0){
         cntr = cntrs[largest_cntr_idx()];
@@ -37,10 +40,10 @@ uint8_t FingersCount::num_fingers(cv::Mat hand)
 	    cv::convexityDefects(cntr, hull, defects);
 	count = 0;
 	VV4i::const_iterator d_it = defects.begin();
-	if(debug) printf("-----------------\n");
+	if(debug) printf("-----------------\n"); //XXX remove
 	while(d_it != defects.end())
 	{
-            st_idx = (*d_it)[0];
+            st_idx = (*d_it)[0];    //XXX remove all except depth
 	    st_pt = cntr[st_idx];
             en_idx = (*d_it)[1];
 	    en_pt = cntr[en_idx];
@@ -49,15 +52,17 @@ uint8_t FingersCount::num_fingers(cv::Mat hand)
 	    depth = (*d_it)[3] / 256.0;
 	    
 
-	    if(debug) printf("Depth = %f\n", depth);
+	    if(debug) printf("Depth = %f ", depth); //XXX remove
 	    if (MIN_DEPTH < depth && MAX_DEPTH > depth){
 	        ++count; 
-		if(debug){
-	            f_tips.push_back(st_pt);
+		if(debug){                   //XXX remove 
+	            printf("+");
+		    f_tips.push_back(st_pt);
 		    f_tips.push_back(en_pt);
 		    f_tips.push_back(far_pt);
 		}
 	    }
+	    if(debug) printf("\n");   //XXX remove
 	    ++d_it;
 	} //while d_it ! end
     }// if cntrs > 0
