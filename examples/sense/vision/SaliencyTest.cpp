@@ -9,11 +9,22 @@
 #include "sense/vision/CamCapture.hpp"
 #include "sense/vision/DSaliency.hpp"
 
+#include <signal.h>
+
 using namespace std;
 using namespace cv;
 
+
+void sigint_handler(int sig)
+{
+	printf("Caught SIGINT... Exiting\n");
+	exit(0);
+}
+
+
 int main(int argc, char **argv)
 {
+	signal(SIGINT, sigint_handler);
 	CamCapture cc("c1", 320, 240, 0, 20);
 	if (!cc.isOk()) { 
 		fprintf(stderr, "%s\n", cc.getState().c_str()); 
@@ -48,6 +59,7 @@ int main(int argc, char **argv)
 			}
 			
 			minEnclosingCircle(cntrs[largest_cntr], cent, rad);
+			printf("Loc: %f, %f\n", cent.x, cent.y);
 			circle(frame, cent, rad, CV_RGB(0, 255, 0), 3);
 		}
 		imshow("saliencytest", frame);

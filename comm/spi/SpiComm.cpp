@@ -65,20 +65,20 @@ SpiComm::~SpiComm()
 }
 
 /*
-	head control
+	gesture control
 	params:
-		face_part: from enum face_part
+		body_part: from enum body_part
 		value: value between 0-100 for motor position
 		time: time to take when moving from current pos to requesed pos
 			in seconds (1 - 10)
 */
 
-uint8_t * SpiComm::head_control(face_part fp, uint8_t value, uint8_t time)
+std::string SpiComm::gesture_control(body_part bp, uint8_t value, uint8_t time)
 {
 	size_t packet_len = 4;
 	uint8_t packet[packet_len];
 	packet[0] = 0x80;
-	packet[1] = fp;
+	packet[1] = bp;
 	if(0 <= value <= 100)
 		packet[2] = value;
 	else
@@ -87,10 +87,7 @@ uint8_t * SpiComm::head_control(face_part fp, uint8_t value, uint8_t time)
 		packet[3] = time;
 	else 
 		packet[3] = 5;
-	std::string ret = spi_send(packet, packet_len);
-	for(uint8_t i = 0; i < 4; i++)
-		packet[i] = (uint8_t)ret.at(i);
-	return packet;
+	return spi_send(packet, packet_len);
 }
 
 /*
