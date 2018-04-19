@@ -52,8 +52,6 @@ int main(int argc, char** argv)
     
     std::vector<facial_lms> f_lms; //landmarks of faces detected 
 
-    dlib::image_window win;
-
     bool face_found = false;
     
     while(true)
@@ -77,13 +75,13 @@ int main(int argc, char** argv)
 	{
 		face_found = true;
 		facial_lms shape = f_lms[idx];
-		for(uint8_t i = 0; i < 26; i++)
-		    cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 
-		               2, CV_RGB(0, 255, 0), 2);
+//		for(uint8_t i = 0; i < 26; i++)
+//		    cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 
+//		               2, CV_RGB(0, 255, 0), 2);
 	}
-        cv::imshow("face landmark", frame);
-	if(27 == cv::waitKey(10))
-	    break;
+//        cv::imshow("face landmark", frame);
+//	if(27 == cv::waitKey(10))
+//	    break;
     	en_time = (float)((getTickCount() - st_time) / getTickFrequency());
 	printf("Face State: %d, No_Parts: %d, Frame #%d, Time: %f\n", (int)face_found, f_lms.size(),n_f, en_time);
 	if (face_found){

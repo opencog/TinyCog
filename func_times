@@ -48,11 +48,18 @@ Face Landmark (26 parts)
 
 
 Face Detection
+  Average Time per Frame (no Face): 0.044237
+  Average Time per Frame (on Face): 0.001551
+  Average Time per Frame: 0.002044
 
 
+Face Landmark (68 parts)
+  Average Time per Frame (no Face): 0.038586
+  Average Time per Frame (on Face): 0.066730
+  Average Time per Frame: 0.046188
 
-Face Landmark 
 
-
-
-
+Face Landmark (26 parts)
+  Average Time per Frame (no Face): 0.037780
+  Average Time per Frame (on Face): 0.049697
+  Average Time per Frame: 0.039970

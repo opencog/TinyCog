@@ -20,7 +20,7 @@
 
 #define SCALE 0.1
 
-//#define NO_GUI 
+#define NO_GUI 
 
 
 float avg_time_pf, en_time, acc, avg_oh, avg_nh;
