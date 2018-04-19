@@ -17,14 +17,23 @@
 #include "sense/vision/FacialLandMark.hpp"
 
 
+float avg_time_pf, en_time, acc;
+uint64_t st_time;
+int n_f;
+
+
 void sigint_handler(int SIG)
 {
     std::cout<<"Caught SIGINT"<<std::endl;
+    avg_time_pf = acc / n_f;
+    printf("Average Time per Frame: %f\n\n", avg_time_pf);
     exit(0);
 }
    
 int main(int argc, char** argv)
 {    
+    avg_time_pf = 0;
+    n_f = 0;
     signal(SIGINT, sigint_handler);
     CamCapture cc("cam1",320,240,0,20);
     if (!cc.isOk()){std::cout<<std::endl<<cc.getState()<<std::endl;return -1;}
@@ -43,6 +52,7 @@ int main(int argc, char** argv)
     
     while(true)
     {
+        st_time = getTickCount();
     	frame = cc.getCurrentFrame();
 	frame.copyTo(image);
 
@@ -60,13 +70,17 @@ int main(int argc, char** argv)
 	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{
 		facial_lms shape = f_lms[idx];
-		for(uint8_t i = 0; i < 30; i++)
-		    cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 
-		               2, CV_RGB(0, 255, 0), 2);
+	//	for(uint8_t i = 0; i < 30; i++)
+	//	    cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 
+	//	               2, CV_RGB(0, 255, 0), 2);
 	}
-        cv::imshow("face landmark", frame);
-	if(27 == cv::waitKey(10))
-	    break;
+        //cv::imshow("face landmark", frame);
+	//if(27 == cv::waitKey(10))
+	//    break;
+    	en_time = (float)((getTickCount() - st_time) / getTickFrequency());
+	printf("Frame #%d, Time: %f\n", n_f, en_time);
+	acc += en_time;
+	n_f++;
     }
     return 0;
 }
