@@ -7,18 +7,32 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 endif()
 ############Vision
 find_package( OpenCV REQUIRED )
-find_package(raspicam REQUIRED)
+find_package( dlib REQUIRED )
+find_package(raspicam QUIET)
 include_directories("include" "include/sensor/vision")
-add_library( sensor_vision  sense/vision/capture/CamCapture.cpp 
-    sense/vision/capture/RaspiCamCapture.cpp
-    sense/vision/capture/FileCapture.cpp 
-    sense/vision/capture/ITColor2Gray.cpp 
-    sense/vision/capture/ITEqualizeHist.cpp 
-    sense/vision/detect/ITDetectFace.cpp 
-    sense/vision/detect/ITDetectSmile.cpp 
-    sense/vision/track/BoxTracker.cpp 
-    sense/vision/track/BoxTrackerThread.cpp)
-target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
+
+if (raspicam_FOUND)
+    set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
+endif()
+
+add_library( sensor_vision  sense/vision/capture/CamCapture.cpp           
+        ${RASPI_SUP}
+        sense/vision/capture/FileCapture.cpp
+        sense/vision/capture/ITColor2Gray.cpp
+        sense/vision/capture/ITEqualizeHist.cpp
+        sense/vision/detect/ITDetectFace.cpp
+        sense/vision/detect/ITDetectSmile.cpp
+	sense/vision/detect/ITDetectHand.cpp
+	sense/vision/detect/FacialLandMark.cpp
+        sense/vision/detect/FacialExpressions.cpp
+	sense/vision/detect/FingersCount.cpp
+	sense/vision/detect/DSaliency.cpp
+	sense/vision/track/BoxTracker.cpp
+        sense/vision/track/BoxTrackerThread.cpp)
+
+add_library(opencoger_util util/util.cpp)
+
+target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
 
 add_executable(VisionTest examples/sense/vision/VisionTest.cpp)
 target_link_libraries(VisionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
@@ -26,14 +40,44 @@ target_link_libraries(VisionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 add_executable(VisionTestFace examples/sense/vision/VisionTestFace.cpp)
 target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 
+add_executable(FaceLandMarkTest examples/sense/vision/FaceLandMarkTest.cpp)
+target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+
+add_executable(NoddingTest examples/sense/vision/FaceNoddingDetection.cpp)
+target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib opencoger_util)
+
+add_executable(FingersCountTest examples/sense/vision/FingersCountTest.cpp)
+target_link_libraries(FingersCountTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
+
+add_executable(SaliencyTest examples/sense/vision/SaliencyTest.cpp)
+target_link_libraries(SaliencyTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
+
+add_executable(SaliencyTest2 examples/sense/vision/SaliencyTest2.cpp)
+target_link_libraries(SaliencyTest2 sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
+
+if(raspicam_FOUND)
 add_executable(RaspiVisionTest examples/sense/vision/RaspiVisionTest.cpp)
 target_link_libraries(RaspiVisionTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})
 
 add_executable(RaspiVisionTestFace examples/sense/vision/RaspiVisionTestFace.cpp)
 target_link_libraries(RaspiVisionTestFace sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})   
 
+add_executable(RaspiFaceLandMarkTest examples/sense/vision/RaspiFaceLandMarkTest.cpp)
+target_link_libraries(RaspiFaceLandMarkTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+
+add_executable(RaspiFingersCountTest examples/sense/vision/RaspiFingersCountTest.cpp)
+target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+
+add_executable(RaspiSaliencyTest examples/sense/vision/RaspiSaliencyTest.cpp)
+target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+
+endif(raspicam_FOUND)
+
 configure_file(data/Haar_Cascades/haarcascade_frontalface_alt.xml haarcascade_frontalface_alt.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_smile.xml haarcascade_smile.xml COPYONLY)
+configure_file(data/Haar_Cascades/haarcascade_hand.xml haarcascade_hand.xml COPYONLY)
+configure_file(data/Facial_Landmark_Model/shape_predictor_68_face_landmarks.dat 
+							shape_predictor_68_face_landmarks.dat COPYONLY)
 
 install (TARGETS sensor_vision DESTINATION lib/OpenCogER)
 install (FILES BoxTracker.hpp BoxTrackerThread.hpp
@@ -68,9 +112,12 @@ install (TARGETS networkr DESTINATION lib/OpenCogER)
 install (FILES StringServerUDP.hpp DESTINATION "include/OpenCogER/network")
 
 #######COMM
-include_directories("include/comm/spi")
+find_package(WiringPi QUIET)
+if(${WIRINGPI_FOUND})
+include_directories("include/comm/spi" ${WIRINGPI_INCLUDE_DIR})
 add_library(spicomm comm/spi/SpiComm.cpp)
-target_link_libraries(spicomm)
+target_link_libraries(spicomm ${WIRINGPI_LIB})
 
 add_executable(SPICommTest examples/comm/spi/SPICommTest.cpp)
 target_link_libraries(SPICommTest spicomm)
+endif(${WIRINGPI_FOUND})

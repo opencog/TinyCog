@@ -1,0 +1,65 @@
+Frame Rate: 20
+Dimension: 320x240
+Pi Camera
+
+
+Face Detection
+  Average Time per Frame (no Face): 0.043546
+  Average Time per Frame (on Face): 0.000656 
+  Average Time per Frame: 0.003568 Seconds
+
+
+Face Landmark
+  Average Time per Frame (no Face): 0.041055
+  Average Time per Frame (on Face): 0.152946 
+  Average Time per Frame: 0.075600 Seconds
+
+
+Hand Detection
+  Average Time per Frame: 0.046563 Seconds
+
+
+Saliency Detection
+  Average Time per Frame: 0.133760 Seconds
+
+
+
+
+-------------------------------------------------
+        [ Different  LM Models ] 
+
+
+
+Face Landmark (68 parts)
+  Average Time per Frame (no Face): 0.051118
+  Average Time per Frame (on Face): 0.156658
+  Average Time per Frame: 0.075934          
+
+
+Face Landmark (26 parts)
+  Average Time per Frame (no Face): 0.050443
+  Average Time per Frame (on Face): 0.094287
+  Average Time per Frame: 0.061404          
+
+
+
+------------------------------------------------
+              [ Release Build ]
+
+
+Face Detection
+  Average Time per Frame (no Face): 0.044237
+  Average Time per Frame (on Face): 0.001551
+  Average Time per Frame: 0.002044
+
+
+Face Landmark (68 parts)
+  Average Time per Frame (no Face): 0.038586
+  Average Time per Frame (on Face): 0.066730
+  Average Time per Frame: 0.046188
+
+
+Face Landmark (26 parts)
+  Average Time per Frame (no Face): 0.037780
+  Average Time per Frame (on Face): 0.049697
+  Average Time per Frame: 0.039970

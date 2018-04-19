@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <signal.h>
 
 #include "sense/vision/RaspiCamCapture.hpp"
 #include "sense/vision/ITColor2Gray.hpp"
@@ -25,13 +26,34 @@ using namespace cv;
     * In median flow , when tracking is no longer possible the app looks for face
 */
    
+
+float avg_time_pf, en_time, acc, avg_nf, avg_of;
+uint64_t st_time;
+int n_f, of, nf;
+
+
+void sigint_handler(int sig)
+{
+    avg_time_pf = acc / n_f;
+    avg_of /= of;
+    avg_nf /= nf;
+    printf("\nAverage Time per Frame (no Face): %f\n", avg_nf);
+    printf("Average Time per Frame (on Face): %f\n", avg_of);
+    printf("Average Time per Frame: %f\n\n", avg_time_pf);
+    exit(0);
+}
+
+
 int main( int argc, char** argv )
 {    
+    avg_of = avg_nf = avg_time_pf = 0;
+    of = nf = n_f = 0;
+    signal(SIGINT, sigint_handler);
     RaspiCamCapture cc("c1",320,240,30);
     if (!cc.isOk()){cout<<endl<<cc.getState()<<endl;return -1;}
     
     Mat frame;
-    namedWindow( "Tracking Face", 1 );
+   // namedWindow( "Tracking Face", 1 );
     
     Mat image;
     Rect2d box2d;
@@ -45,12 +67,15 @@ int main( int argc, char** argv )
     ITEqualizeHist eh("eh1");
     ITDetectFace fcd("fc1");
     ITDetectSmile sml("sm1");
+
+
     while(true)
     {
-        if (!face_found)
+        st_time = getTickCount();
+	if (!face_found)
         {
             frame = cc.getCurrentFrame();
-            imshow( "Tracking Face", frame );
+//            imshow( "Tracking Face", frame );
             boxes = fcd.Transform(eh.Transform(c2g.Transform(frame)));
             if (boxes.size()>0)
             {
@@ -83,15 +108,28 @@ int main( int argc, char** argv )
                 face_found = false;
                 delete bx;                    
                 }
-                imshow( "Tracking Face", image );
+//                imshow( "Tracking Face", image );
             } else {
                 face_found = false;
                 delete bx;
             }
         }
-        char c = (char) waitKey( 30 );
-        if( c == 'q' )
-            break;
+//        char c = (char) waitKey( 30 );
+//        if( c == 'q' )
+//            break;
+	en_time = (float)((getTickCount() - st_time) / getTickFrequency());
+	printf("Face State: %d, Frame #%d, Time: %f\n", (int)face_found, n_f, en_time);
+	if (face_found){
+		avg_of += en_time;
+		of++;
+	}
+	else{
+		avg_nf += en_time;
+		nf++;
+	}
+
+	acc += en_time;
+	n_f++;
     }
     return 0;
 }
