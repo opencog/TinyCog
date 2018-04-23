@@ -38,7 +38,7 @@ uint8_t FingersCount::num_fingers(cv::Mat hand)
 	cv::convexHull(cntr, hull, false);
 	if(hull.size() > 3)
 	    cv::convexityDefects(cntr, hull, defects);
-	count = 0;
+	count = 1;
 	VV4i::const_iterator d_it = defects.begin();
 	if(debug) printf("-----------------\n"); //XXX remove
 	while(d_it != defects.end())
