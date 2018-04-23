@@ -70,13 +70,13 @@ int main(int argc, char** argv)
 	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{
 		facial_lms shape = f_lms[idx];
-	//	for(uint8_t i = 0; i < 30; i++)
-	//	    cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 
-	//	               2, CV_RGB(0, 255, 0), 2);
+		for(uint8_t i = 0; i < 26; i++)
+		    cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 
+		               1.5, CV_RGB(0, 255, 0), 1.5);
 	}
-        //cv::imshow("face landmark", frame);
-	//if(27 == cv::waitKey(10))
-	//    break;
+        cv::imshow("face landmark", frame);
+	if(27 == cv::waitKey(10))
+	    break;
     	en_time = (float)((getTickCount() - st_time) / getTickFrequency());
 	printf("Frame #%d, Time: %f\n", n_f, en_time);
 	acc += en_time;

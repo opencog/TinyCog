@@ -63,3 +63,19 @@ Face Landmark (26 parts)
   Average Time per Frame (no Face): 0.037780
   Average Time per Frame (on Face): 0.049697
   Average Time per Frame: 0.039970
+
+
+
+---------------------------------------------
+              [ All in One ]
+Face Landmark (26 parts) and FingersCount
+  Average Time per Frame (no Face): 0.031070
+  Average Time per Frame (on Face): 0.035642
+  Average Time per Frame (no Hand): 0.036242
+  Average Time per Frame (on Hand): 0.032650
+  Average Time per Frame: 0.034204
+
+
+
+Face Landmark (26 parts) 2 faces and FingersCount
+  

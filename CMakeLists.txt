@@ -53,7 +53,10 @@ add_executable(SaliencyTest examples/sense/vision/SaliencyTest.cpp)
 target_link_libraries(SaliencyTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
 
 add_executable(SaliencyTest2 examples/sense/vision/SaliencyTest2.cpp)
-target_link_libraries(SaliencyTest2 sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
+target_link_libraries(SaliencyTest2 sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})  
+
+add_executable(AllTest examples/sense/vision/AllTest.cpp)
+target_link_libraries(AllTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})  
 
 if(raspicam_FOUND)
 add_executable(RaspiVisionTest examples/sense/vision/RaspiVisionTest.cpp)

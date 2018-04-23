@@ -30,8 +30,8 @@
   at current hand based on size or distance
   from other points or whatever
 */
-#define MIN_DEPTH 5.0
-#define MAX_DEPTH 50.0
+#define MIN_DEPTH 15.0
+#define MAX_DEPTH 70.0
 
 typedef std::vector<cv::Point> VP;
 typedef std::vector<VP> VVP;

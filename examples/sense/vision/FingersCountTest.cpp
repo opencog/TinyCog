@@ -31,7 +31,6 @@ int main(int argc, char **argv)
 
     cv::Mat frame, img, img2;
     std::vector<cv::Rect> hands;
-    std::vector<std::string> snum({"one", "two", "three", "four", "five", "si", "sev"});
 
     while (true)
     {
@@ -45,8 +44,8 @@ int main(int argc, char **argv)
 	                                hands[i].y - hands[i].y*SCALE,
 					hands[i].width + hands[i].width*SCALE,
 					hands[i].height + hands[i].height*SCALE));
-	    cv::putText(frame, snum[fc.num_fingers(img)], cv::Point(20, 20), 
-	              cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8, CV_RGB(50, 50, 50), 2,
+	    cv::putText(frame, std::to_string(fc.num_fingers(img)), cv::Point(20, 20), 
+	              cv::FONT_HERSHEY_COMPLEX_SMALL, 1.5, CV_RGB(50, 50, 50), 2,
 		      CV_AA);
 	    cv::cvtColor(img, img2, COLOR_GRAY2BGR);
 	    for(size_t j = 0 ; j < fc.f_tips.size(); j++)
