@@ -62,7 +62,7 @@ int main(int argc, char** argv)
 		facial_lms shape = f_lms[idx];
 		for(uint8_t i = 0; i < 30; i++)
 		    cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 
-		               2, CV_RGB(0, 255, 0), 2);
+		               1, CV_RGB(0, 255, 0), 1.5);
 	}
         cv::imshow("face landmark", frame);
 	if(27 == cv::waitKey(10))
