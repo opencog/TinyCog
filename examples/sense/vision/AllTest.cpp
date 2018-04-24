@@ -98,6 +98,8 @@ int main(int argc, char **argv)
 
 	BoxTrackerThread *bt;
 
+	int nfings = 0;
+
 	while (true)
 	{
 		#ifdef _NEED_TIME_INFO_ 
@@ -126,8 +128,9 @@ int main(int argc, char **argv)
 					    hands[i].y - hands[i].y*SCALE,
 					    hands[i].width + hands[i].width*SCALE,
 					    hands[i].height + hands[i].height*SCALE));
+			nfings = fc.num_fingers(img2);
 			#ifdef _NEED_GUI_
-			putText(frame, to_string(fc.num_fingers(img2)), Point(20, 20),
+			putText(frame, to_string(nfings), Point(20, 20),
 				FONT_HERSHEY_COMPLEX_SMALL, 1.5, CV_RGB(255, 0, 0), 2, CV_AA);
 			cvtColor(img2, img2, COLOR_GRAY2BGR);
 			for(size_t j = 0; j < fc.f_tips.size(); ++j) 
