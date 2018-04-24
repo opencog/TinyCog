@@ -1,6 +1,6 @@
 # OpenCogER
 
-This repo was started by @yantrabuddhi to be a collection of functionalities a toy robot needs on a small 
+This repo was started by [yantrabuddhi](https://github.com/yantrabuddhi) to be a collection of functionalities a toy robot needs on a small 
 system such as a Raspberry Pi computer. The goal is to have some detectors that are as efficient as possible 
 on a rpi3 computer feeding a behavior program that reacts based on data from these detectors.
 The sense functions are suppose to sense stuff such as faces, emotions, gesture and salient points. 
@@ -20,13 +20,13 @@ Everything here is meant to run on a rpi3 computer but one can also compile ever
 
 Need to have these whether on desktop or rpi
 * [Opencv-3.x](https://github.com/opencv/opencv/releases/latest)
-* [Opencv_contrib-3.x] (https://github.com/opencv/opencv_contrib/releases)
-* [Dlib] (https://github.com/davisking/dlib/releases/latest)
-* [Festival] (http://festvox.org/festival/)
+* [Opencv_contrib-3.x](https://github.com/opencv/opencv_contrib/releases)
+* [Dlib](https://github.com/davisking/dlib/releases/latest)
+* [Festival](http://festvox.org/festival/)
 * 
 On rpi3 only
-* [Raspicam] (https://sourceforge.net/projects/raspicam/files/?) > v1.5
-* [WiringPi] (http://wiringpi.com/download-and-install/)
+* [Raspicam](https://sourceforge.net/projects/raspicam/files/?) > v1.5
+* [WiringPi](http://wiringpi.com/download-and-install/)
 
 Use cmake for building. 
 ```
