@@ -1,0 +1,57 @@
+/*
+  File: img_base.proto
+  Date: May, 2018
+  Author: Dagim Sisay <dagiopia@gmail.com>
+  License: AGPL
+*/
+
+syntax = "proto3";
+
+package ImageBase;
+
+service ImageServices {
+  rpc ImagePoint (Image) returns (Point) {}
+  rpc ImageStreamPoint (stream Image) returns (Point) {}
+
+  rpc ImagePoints (Image) returns (Points) {}
+  rpc ImageStreamPoints (stream Image) returns (Points) {}
+  
+  rpc ImageRect (Image) returns (Rect) {}
+  rpc ImageStreamRect (stream Image) returns (Rect) {} 
+
+  rpc ImageRects (Image) returns (Rects) {}
+  rpc ImageStreamRects (stream Image) returns (Rects) {}
+
+  rpc ImageCirc (Image) returns (Circ) {}
+}
+
+
+message Image {
+  bytes data = 1;
+}
+
+message Point {
+  int32 x = 1;
+  int32 y = 2;
+}
+
+message Rect {
+  int32 x = 1;
+  int32 y = 2;
+  int32 w = 3;
+  int32 h = 4;
+}
+
+message Circ {
+  int32 x = 1;
+  int32 y = 2;
+  float r = 3;
+}
+
+message Rects {
+  repeated Rect rects = 1;
+}
+
+message Points {
+  repeated Point points = 1;
+}
