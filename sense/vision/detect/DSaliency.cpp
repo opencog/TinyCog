@@ -34,6 +34,30 @@ DSaliency::DSaliency(uint8_t sal_type, string algorithm_t, int cols, int rows)
 	}
 }
 
+Point DSaliency::sal_point(Mat in, Mat &out)
+{
+	cent.x = 0; cent.y = 0;
+	bool salb = sal_det->computeSaliency(in, out);
+	if(salb){
+		threshold(out, out, 100, 255, CV_THRESH_BINARY);
+		findContours(out, cntrs, hier, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
+		if(cntrs.size() > 0) {
+			largest_cntr_idx = 0;
+			max = 0;
+			for(size_t idx = 0; idx < cntrs.size(); idx++) {
+				area = contourArea(cntrs[idx]);
+				if(area > max) {
+					max = area;
+					largest_cntr_idx = idx;
+				}
+			}
+			minEnclosingCircle(cntrs[largest_cntr_idx], cent, rad);
+		}
+	}
+	return cent;
+}
+
+
 DSaliency::~DSaliency() {}
 
 bool DSaliency::update(Mat in, Mat &out)

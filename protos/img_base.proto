@@ -28,6 +28,7 @@ service ImageServices {
 
 message Image {
   bytes data = 1;
+  int32 operation;
 }
 
 message Point {

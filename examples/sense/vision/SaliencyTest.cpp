@@ -42,7 +42,8 @@ int main(int argc, char **argv)
 	while (true)
 	{
 		frame = cc.getCurrentFrame();
-		sal_d.update(frame, sal);
+		cent = sal_d.sal_point(frame, sal);
+		/*sal_d.update(frame, sal);
 		imshow("sal", sal);
 		threshold(sal, sal, 100, 255, CV_THRESH_BINARY);
 		imshow("t", sal);
@@ -62,6 +63,8 @@ int main(int argc, char **argv)
 			printf("Loc: %f, %f\n", cent.x, cent.y);
 			circle(frame, cent, rad, CV_RGB(0, 255, 0), 3);
 		}
+		*/
+		circle(frame, cent, 2.0, CV_RGB(0, 255, 0), 3);
 		imshow("saliencytest", frame);
 		if( waitKey(10) == 27)
 			break;
