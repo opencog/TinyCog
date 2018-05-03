@@ -46,6 +46,8 @@
 #define MLS 48  // mouth left side
 
 
+#define NO_FLM_PTS 26 //shape_predictor_26_face_landmarks.dat
+
 typedef dlib::full_object_detection facial_lms;
 
 

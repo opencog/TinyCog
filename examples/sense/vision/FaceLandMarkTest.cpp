@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{
 		facial_lms shape = f_lms[idx];
-		for(uint8_t i = 0; i < 26; i++)
+		for(uint8_t i = 0; i < NO_FLM_PTS; i++)
 		    cv::putText(frame, std::to_string(i), cv::Point(shape.part(i).x(), shape.part(i).y()),
 		    		FONT_HERSHEY_COMPLEX_SMALL, 0.4, CV_RGB(0, 255, 0), 0.8, CV_AA);
 		    //cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 

@@ -10,16 +10,16 @@ syntax = "proto3";
 package ImageBase;
 
 service ImageServices {
-  rpc ImagePoint (Image) returns (Point) {}
+  rpc SalientPoint (Image) returns (Point) {}
   rpc ImageStreamPoint (stream Image) returns (Point) {}
 
-  rpc ImagePoints (Image) returns (Points) {}
+  rpc FaceLandmarks (Image) returns (Landmarks) {}
   rpc ImageStreamPoints (stream Image) returns (Points) {}
   
   rpc ImageRect (Image) returns (Rect) {}
   rpc ImageStreamRect (stream Image) returns (Rect) {} 
 
-  rpc ImageRects (Image) returns (Rects) {}
+  rpc DetectFaces (Image) returns (Faces) {}
   rpc ImageStreamRects (stream Image) returns (Rects) {}
 
   rpc ImageCirc (Image) returns (Circ) {}
@@ -28,7 +28,7 @@ service ImageServices {
 
 message Image {
   bytes data = 1;
-  int32 operation;
+  int32 operation = 2;
 }
 
 message Point {
@@ -55,4 +55,28 @@ message Rects {
 
 message Points {
   repeated Point points = 1;
+}
+
+// face boxes
+message Faces {
+  repeated Rect faces = 1;
+}
+
+// landmarks of multiple faces
+message Landmarks {
+  repeated Points landmarks = 1;
+}
+
+// face features
+message FaceF {
+  bool known = 1;
+  string name = 2;
+  Rect location = 3;
+  Points landmarks = 4;
+  bool smiling = 5;
+}
+
+// faces features
+message FacesF {
+  repeated FaceF facesf = 1;
 }
