@@ -18,23 +18,35 @@
 
 #include "img_base.grpc.pb.h"
 
-
+#define SERVER_ADDRESS "@SERVER_ADDRESS@"
 #define IMG_ENCODING ".jpg"
 
 using grpc::Status;
 using grpc::Channel;
+using grpc::CreateChannel;
 using grpc::ClientContext;
 
 
 class RPC_Client
 {    
     public:
-      RPC_Client(std::string server_address="localhost:50051") : stub_(get_channel()) {}
+      RPC_Client() : stub_(get_channel()) {}
+      ~RPC_Client() {}
 
 
     private:
-      std::string server_address;
-      std::shared_ptr<Channel> get_channel();
+      std::unique_ptr<ImageBase::ImageServices::Stub> stub_;
+      std::shared_ptr<Channel> channel;
+      std::shared_ptr<Channel> get_channel() 
+      {
+          channel = CreateChannel(SERVER_ADDRESS, grpc::InsecureChannelCredentials());
+          return ImageBase::ImageServices::NewStub(channel);
+      };
+
+      std::vector<unsigned char> vbuff;
+      unsigned char *ucbuff;
+
+      void encode_img(cv::Mat);
 
 };
 
