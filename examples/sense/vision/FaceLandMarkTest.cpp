@@ -66,11 +66,11 @@ int main(int argc, char** argv)
 	
 	faces = fcd.Transform(eh.Transform(c2g.Transform(frame)));
 	f_lms.clear();
-	flm.get_lm_points(image, faces, &f_lms); //get lms
+	flm.get_lm_points(image, faces, f_lms); //get lms
 	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{
 		facial_lms shape = f_lms[idx];
-		for(uint8_t i = 0; i < NO_FLM_PTS; i++)
+		for(uint8_t i = 0; i < shape.num_parts(); i++)
 		    cv::putText(frame, std::to_string(i), cv::Point(shape.part(i).x(), shape.part(i).y()),
 		    		FONT_HERSHEY_COMPLEX_SMALL, 0.4, CV_RGB(0, 255, 0), 0.8, CV_AA);
 		    //cv::circle(frame, cv::Size(shape.part(i).x(), shape.part(i).y()), 

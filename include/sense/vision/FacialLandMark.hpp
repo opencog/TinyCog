@@ -59,7 +59,7 @@ class FacialLandMark
 	~FacialLandMark(){}
 	
 	//a function to return landmarks
-	void get_lm_points(cv::Mat, std::vector<cv::Rect>, std::vector<facial_lms> *);
+	void get_lm_points(cv::Mat &, std::vector<cv::Rect> &, std::vector<facial_lms> &);
 	
 	
     private:

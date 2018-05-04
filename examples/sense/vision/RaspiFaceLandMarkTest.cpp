@@ -70,7 +70,7 @@ int main(int argc, char** argv)
 	
 	faces = fcd.Transform(eh.Transform(c2g.Transform(frame)));
 	f_lms.clear();
-	flm.get_lm_points(image, faces, &f_lms); //get lms
+	flm.get_lm_points(image, faces, f_lms); //get lms
 	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{
 		face_found = true;

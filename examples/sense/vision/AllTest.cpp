@@ -109,7 +109,7 @@ int main(int argc, char **argv)
 		faces = fcd.Transform(img);
 		
 		f_lms.clear();
-		flm.get_lm_points(frame, faces, &f_lms); 
+		flm.get_lm_points(frame, faces, f_lms); 
 		for (int i = 0; i < f_lms.size(); ++i){
 			face_found = true;
 			shape = f_lms[i];
