@@ -38,7 +38,7 @@ add_library(opencoger_util util/util.cpp)
 if (NOT DEFINED SERVER_ADDRESS)
   SET(SERVER_ADDRESS "localhost:50051")
 endif()
-configure_file( ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client.hpp.in ${CMAKE_DOURCE_DIR}/include/comm/rpc/RPC_Client.hpp @ONLY)
+configure_file( ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client.hpp.in ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client.hpp @ONLY)
 
 
 set(PROTOF_PATH "${CMAKE_SOURCE_DIR}/protos")
