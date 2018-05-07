@@ -39,7 +39,14 @@ class DSaliency
 	DSaliency(uint8_t sal_type, string algorithm_t, int cols, int rows); 
 	~DSaliency();
 	bool update(Mat in, Mat &out);
+	Point sal_point(Mat in, Mat &out);
 	private:
 	Ptr<Saliency> sal_det;
+	vector<vector<Point> > cntrs;
+	vector<Vec4i> hier;
+	Point2f cent;
+	int largest_cntr_idx = 0;
+	double max = 0, area;
+	float rad;
 };
 #endif //DSaliency_H_

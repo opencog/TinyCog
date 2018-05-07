@@ -8,7 +8,8 @@ endif()
 ############Vision
 find_package( OpenCV REQUIRED )
 find_package( dlib REQUIRED )
-find_package(raspicam QUIET)
+find_package( Protobuf REQUIRED )
+find_package( raspicam QUIET )
 include_directories("include" "include/sensor/vision")
 
 if (raspicam_FOUND)
@@ -31,6 +32,58 @@ add_library( sensor_vision  sense/vision/capture/CamCapture.cpp
         sense/vision/track/BoxTrackerThread.cpp)
 
 add_library(opencoger_util util/util.cpp)
+
+
+############RPC
+if (NOT DEFINED SERVER_ADDRESS)
+  SET(SERVER_ADDRESS "localhost:50051")
+endif()
+configure_file( ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client.hpp.in ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client.hpp @ONLY)
+
+
+set(PROTOF_PATH "${CMAKE_SOURCE_DIR}/protos")
+set(PROTOF_NAME "img_base")
+set(IMG_BASE_PROTOF "${PROTOF_PATH}/${PROTOF_NAME}.proto")
+set(GENERATED_PB_PATH "${CMAKE_BINARY_DIR}/generated")
+file(MAKE_DIRECTORY ${GENERATED_PB_PATH})
+
+set(IMG_BASE_PB_H_FILE "${GENERATED_PB_PATH}/${PROTOF_NAME}.pb.h")
+set(IMG_BASE_PB_CPP_FILE "${GENERATED_PB_PATH}/${PROTOF_NAME}.pb.cc")
+set(IMG_BASE_GRPC_PB_H_FILE "${GENERATED_PB_PATH}/${PROTOF_NAME}.grpc.pb.h")
+set(IMG_BASE_GRPC_PB_CPP_FILE "${GENERATED_PB_PATH}/${PROTOF_NAME}.grpc.pb.cc")
+
+add_custom_command(
+	OUTPUT "${IMG_BASE_PB_H_FILE}"
+	       "${IMG_BASE_PB_CPP_FILE}"
+	       "${IMG_BASE_GRPC_PB_H_FILE}"
+	       "${IMG_BASE_GRPC_PB_CPP_FILE}"
+	COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
+	ARGS "--proto_path=${PROTOF_PATH}"
+	     "--cpp_out=${GENERATED_PB_PATH}"
+	     "${IMG_BASE_PROTOF}"
+	COMMAND ${PROTOBUF_PROTOC_EXECUTABLE}
+	ARGS "--proto_path=${PROTOF_PATH}"
+	     "--grpc_out=${GENERATED_PB_PATH}"
+	     "--plugin=protoc-gen-grpc=/usr/local/bin/grpc_cpp_plugin"
+	     "${IMG_BASE_PROTOF}"
+)
+
+set(GENERATED_PB_FILES ${IMG_BASE_PB_H_FILE} ${IMG_BASE_PB_CPP_FILE}
+                      ${IMG_BASE_GRPC_PB_H_FILE} ${IMG_BASE_GRPC_PB_CPP_FILE})
+include_directories(${GENERATED_PB_PATH})
+
+
+#BUILDING THE SERVER
+add_library(rpc_server include/comm/rpc/RPC_Server.hpp ${GENERATED_PB_FILES})
+add_executable(RPC_Server_Test examples/comm/rpc/RPC_Server_Test.cpp ${GENERATED_PB_FILES})
+target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr 
+                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} sensor_vision)
+
+#BUILDING THE CLIENT
+add_library(rpc_client comm/rpc/RPC_Client.cpp ${GENERATED_PB_FILES})
+add_executable(RPC_Client_Test examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
+target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
+                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} dlib::dlib)
 
 target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
 
@@ -79,8 +132,8 @@ endif(raspicam_FOUND)
 configure_file(data/Haar_Cascades/haarcascade_frontalface_alt.xml haarcascade_frontalface_alt.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_smile.xml haarcascade_smile.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_hand.xml haarcascade_hand.xml COPYONLY)
-configure_file(data/Facial_Landmark_Model/shape_predictor_68_face_landmarks.dat 
-							shape_predictor_68_face_landmarks.dat COPYONLY)
+configure_file(data/Facial_Landmark_Model/shape_predictor_26_face_landmarks.dat 
+							shape_predictor_26_face_landmarks.dat COPYONLY)
 
 install (TARGETS sensor_vision DESTINATION lib/OpenCogER)
 install (FILES BoxTracker.hpp BoxTrackerThread.hpp

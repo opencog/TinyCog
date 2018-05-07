@@ -26,7 +26,6 @@
 #define _NEED_GUI_
 #define _NEED_TIME_INFO_
 
-#define NO_FLMS 26
 #define SCALE 0.1
 
 using namespace std;
@@ -110,12 +109,12 @@ int main(int argc, char **argv)
 		faces = fcd.Transform(img);
 		
 		f_lms.clear();
-		flm.get_lm_points(frame, faces, &f_lms); 
+		flm.get_lm_points(frame, faces, f_lms); 
 		for (int i = 0; i < f_lms.size(); ++i){
 			face_found = true;
 			shape = f_lms[i];
 			#ifdef _NEED_GUI_
-			for (int j = 0; j < NO_FLMS; ++j)
+			for (int j = 0; j < NO_FLM_PTS; ++j)
 				circle(frame, Size(shape.part(j).x(), shape.part(j).y()), 1, 
 				       CV_RGB(0, 255, 0), 1.5);
 			#endif //_NEED_GUI_

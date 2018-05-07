@@ -17,7 +17,7 @@ FacialLandMark::FacialLandMark()
 }
 
 
-void FacialLandMark::get_lm_points(cv::Mat img, std::vector<cv::Rect> cv_rect, std::vector<facial_lms> *dest)
+void FacialLandMark::get_lm_points(cv::Mat &img, std::vector<cv::Rect> &cv_rect, std::vector<facial_lms> &dest)
 {
 	dl_rect.clear();
 	
@@ -31,6 +31,6 @@ void FacialLandMark::get_lm_points(cv::Mat img, std::vector<cv::Rect> cv_rect, s
 	dlib::assign_image(d_img, dlib::cv_image<dlib::bgr_pixel>(img));
 	
 	for(uint8_t idx = 0; idx < dl_rect.size(); idx++) //iterate on faces
-		dest->push_back(dsp(d_img, dl_rect[idx]));
+		dest.push_back(dsp(d_img, dl_rect[idx]));
 }
 

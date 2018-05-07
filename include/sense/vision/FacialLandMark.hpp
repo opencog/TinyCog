@@ -46,13 +46,7 @@
 #define MLS 48  // mouth left side
 
 
-/*
-XXX bad news! https://github.com/davisking/dlib-models
-	the landmarking shape file I used here can't be 
-	used for reasons in the link above... 
-	find another one.
-*/
-
+#define NO_FLM_PTS 26 //shape_predictor_26_face_landmarks.dat
 
 typedef dlib::full_object_detection facial_lms;
 
@@ -60,12 +54,12 @@ typedef dlib::full_object_detection facial_lms;
 class FacialLandMark 
 {
     public:
-        const std::string shapes_file="shape_predictor_68_face_landmarks.dat";
+        const std::string shapes_file="shape_predictor_26_face_landmarks.dat";
 	FacialLandMark();
 	~FacialLandMark(){}
 	
 	//a function to return landmarks
-	void get_lm_points(cv::Mat, std::vector<cv::Rect>, std::vector<facial_lms> *);
+	void get_lm_points(cv::Mat &, std::vector<cv::Rect> &, std::vector<facial_lms> &);
 	
 	
     private:
