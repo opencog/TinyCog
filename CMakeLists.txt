@@ -83,7 +83,7 @@ target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr
 add_library(rpc_client comm/rpc/RPC_Client.cpp ${GENERATED_PB_FILES})
 add_executable(RPC_Client_Test examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
 target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
-                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} dlib::dlib)
+                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} dlib::dlib sensor_vision)
 
 target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
 

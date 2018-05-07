@@ -13,11 +13,11 @@
 
 int main(int argc, char **argv)
 {
+    CamCapture cc("cam");
     RPC_Client rpcc;
-    cv::VideoCapture cap(0);
     cv::Mat frame;
     std::vector<cv::Rect> faces;
-    cap >> frame;
+    frame = cc.getCurrentFrame();
     rpcc.detect_faces(frame, faces);
     for(int i = 0; i < faces.size(); i++)
         rectangle(frame, faces[i], cv::Scalar(0, 255, 0), 2, 1);
