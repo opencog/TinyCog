@@ -6,7 +6,7 @@
 */
 
 
-#include "RPC_Client.hpp"
+#include "comm/rpc/RPC_Client.hpp"
 
 
 void RPC_Client::encode_img(cv::Mat in)
@@ -22,16 +22,17 @@ bool RPC_Client::detect_faces(cv::Mat &in, std::vector<cv::Rect> &out)
     ImageBase::Image img;
     ImageBase::Faces faces;
     encode_img(in);
-    img.set_data(ucbuff);
+    img.set_data(ucbuff, vbuff.size());
     img.set_operation(0); //unused for now
     status = stub_->DetectFaces(&ctxt, img, &faces);
-    if(grpc::Status::OK != status)
+    if(!status.ok())
         return false;
     for(size_t idx = 0; idx < faces.faces_size(); idx++) {
-        out.x = faces.faces(idx).x();
-        out.y = faces.faces(idx).y();
-        out.width = faces.faces(idx).w();
-        out.height = faces.faces(idx).h();
+        rct.x = faces.faces(idx).x();
+        rct.y = faces.faces(idx).y();
+        rct.width = faces.faces(idx).w();
+        rct.height = faces.faces(idx).h();
+	out.push_back(rct);
     }
     return true;
 }
@@ -41,9 +42,9 @@ bool RPC_Client::detect_faces(cv::Mat &in, std::vector<cv::Rect> &out)
 bool RPC_Client::detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point> > &out)
 {
     ImageBase::Image img;
-    ImageBase::LandMarks lms;
+    ImageBase::Landmarks lms;
     encode_img(in);
-    img.set_data(ucbuff);
+    img.set_data(ucbuff, vbuff.size());
     img.set_operation(0); //unused for now
     status = stub_->FaceLandmarks(&ctxt, img, &lms);
     if(!status.ok())
@@ -70,10 +71,10 @@ bool RPC_Client::salient_point(cv::Mat &in, cv::Point &out)
     ImageBase::Image img;
     ImageBase::Point pt;
     encode_img(in);
-    img.set_data(ucbuff);
+    img.set_data(ucbuff, vbuff.size());
     img.set_operation(0); //unused for now
     status = stub_->SalientPoint(&ctxt, img, &pt);
-    if(grpc::Status::OK != status)
+    if(!status.ok())
         return false;
     out.x = pt.x();
     out.y = pt.y();

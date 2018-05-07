@@ -13,7 +13,7 @@
 
 int main(int argc, char **argv)
 {
-    RPC_Client rpcc();
+    RPC_Client rpcc;
     cv::VideoCapture cap(0);
     cv::Mat frame;
     std::vector<cv::Rect> faces;

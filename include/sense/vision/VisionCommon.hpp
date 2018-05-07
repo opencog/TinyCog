@@ -15,3 +15,4 @@
 #include "ITDetectHand.hpp"
 #include "ITDetectSmile.hpp"
 #include "ITEqualizeHist.hpp"
+#include "DSaliency.hpp"

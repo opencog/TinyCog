@@ -31,27 +31,23 @@ using grpc::ClientContext;
 class RPC_Client
 {    
     public:
-      RPC_Client() : stub_(get_channel()) {}
+      RPC_Client() : stub_(ImageBase::ImageServices::NewStub(grpc::CreateChannel(
+      				SERVER_ADDRESS, grpc::InsecureChannelCredentials()))) {}
       ~RPC_Client() {}
 
       bool detect_faces(cv::Mat &in, std::vector<cv::Rect> &out);
-      bool detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point>> &out);
+      bool detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point> > &out);
       bool salient_point(cv::Mat &in, cv::Point &out);
 
 
     private:
       std::unique_ptr<ImageBase::ImageServices::Stub> stub_;
-      std::shared_ptr<Channel> channel;
-      std::shared_ptr<Channel> get_channel() 
-      {
-          channel = CreateChannel(SERVER_ADDRESS, grpc::InsecureChannelCredentials());
-          return ImageBase::ImageServices::NewStub(channel);
-      };
 
       Status status;
       ClientContext ctxt;
       std::vector<unsigned char> vbuff;
       unsigned char *ucbuff;
+      cv::Rect rct;
 
       void encode_img(cv::Mat);
 

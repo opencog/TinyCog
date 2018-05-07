@@ -6,11 +6,11 @@
 */
 
 
-#include "RPC_Server.hpp"
+#include "comm/rpc/RPC_Server.hpp"
 
 RPC_Server::RPC_Server(std::string server_address)
 {
-    /*
+    
     c2g = new ITColor2Gray("c2g");
     eh = new ITEqualizeHist("eh");
     fcd = new ITDetectFace("fcd");
@@ -18,7 +18,7 @@ RPC_Server::RPC_Server(std::string server_address)
     flm = new FacialLandMark();
     dh = new ITDetectHand("dh");
     fc = new FingersCount(true);
-    */
+    sal_d = new DSaliency(SAL_STATIC, SAL_FINE_GRAINED);
     
     ServerBuilder srvrb;
     srvrb.AddListeningPort(server_address, grpc::InsecureServerCredentials());
@@ -29,19 +29,19 @@ RPC_Server::RPC_Server(std::string server_address)
 }
 
 
-Status RPC_Server::SalientPoint (ServerContext *ctxt, const ImageBase::Image *img, ImageBase::Point *p)
+Status SalientPoint (ServerContext *ctxt, const ImageBase::Image *img, ImageBase::Point *p)
 override
 {
     std::vector<unsigned char> dim(img->data().begin(), img->data().end());
     cv_img = cv::imdecode(dim, cv::IMREAD_COLOR);
-    pt = sal_d.sal_point(frame, frame);
+    pt = sal_d.sal_point(cv_img, cv_img);
     p->set_x(pt.x);
     p->set_y(pt.y);
     return Status::OK;
 }
 
 
-Status RPC_Server::DetectFaces (ServerContext *ctxt, const ImageBase::Image *img, ImageBase::Faces *fs)
+Status DetectFaces (ServerContext *ctxt, const ImageBase::Image *img, ImageBase::Faces *fs)
 override
 {
     std::vector<unsigned char> dim(img->data().begin(), img->data().end());
@@ -55,7 +55,7 @@ override
     return Status::OK;
 }
 
-Status RPC_Server::FaceLandMarks (ServerContext *ctxt, const ImageBase::Image *img, ImageBase::Landmarks *ls)
+Status FaceLandMarks (ServerContext *ctxt, const ImageBase::Image *img, ImageBase::Landmarks *ls)
 override
 {
     std::vector<unsigned char> dim(img->data().begin(), img->data().end());
