@@ -8,8 +8,8 @@
 
 (setlocale LC_CTYPE "C")
 
-(define PATH "../build")
-(setenv "LTDL_LIBRARY_PATH" (string-append (getenv "LTDL_LIBRARY_PATH") ":" PATH))
+(define PATH "../build/")
+;; (setenv "LTDL_LIBRARY_PATH" (string-append (getenv "LTDL_LIBRARY_PATH") ":"))
 
 (load-extension "libdr_roboto" "init_dr_roboto")
 
