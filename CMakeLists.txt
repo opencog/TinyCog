@@ -10,7 +10,8 @@ find_package( OpenCV REQUIRED )
 find_package( dlib REQUIRED )
 find_package( Protobuf REQUIRED )
 find_package( raspicam QUIET )
-include_directories("include" "include/sensor/vision")
+find_package( Guile REQUIRED )
+include_directories("include" "include/sensor/vision" ${GUILE_INCLUDE_DIRS})
 
 if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
@@ -33,6 +34,8 @@ add_library( sensor_vision  sense/vision/capture/CamCapture.cpp
 
 add_library(opencoger_util util/util.cpp)
 
+add_library(dr_roboto SHARED dr-roboto/dr-roboto.cc util/SCMWrapper.cpp)
+target_link_libraries(dr_roboto sensor_vision)
 
 ############RPC
 if (NOT DEFINED SERVER_ADDRESS)
