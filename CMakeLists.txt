@@ -17,7 +17,7 @@ if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
 endif()
 
-add_library( sensor_vision  sense/vision/capture/CamCapture.cpp           
+add_library( sensor_vision sense/vision/capture/CamCapture.cpp           
         ${RASPI_SUP}
         sense/vision/capture/FileCapture.cpp
         sense/vision/capture/ITColor2Gray.cpp
@@ -32,10 +32,11 @@ add_library( sensor_vision  sense/vision/capture/CamCapture.cpp
 	sense/vision/track/BoxTracker.cpp
         sense/vision/track/BoxTrackerThread.cpp)
 
+set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_library(opencoger_util util/util.cpp)
 
-add_library(dr_roboto SHARED dr-roboto/dr-roboto.cc util/SCMWrapper.cpp)
-target_link_libraries(dr_roboto sensor_vision)
+add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
+target_link_libraries(dr_roboto sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} libdlib.so)
 
 ############RPC
 if (NOT DEFINED SERVER_ADDRESS)

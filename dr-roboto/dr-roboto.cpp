@@ -21,7 +21,7 @@
 #include "sense/vision/DSaliency.hpp"
 #include "sense/vision/BoxTrackerThread.hpp"
 
-#include "util/SCMWrapper.hpp"
+//#include "util/SCMWrapper.hpp"
 
 
 #define _NEED_GUI_
@@ -29,6 +29,10 @@
 
 #define SCALE 0.1
 
+
+extern "C" {
+  void init_dr_roboto();
+};
 
 float avg_time_pf, en_time, acc, avg_oh, avg_nh, avg_nf, avg_of;
 uint64_t st_time;
@@ -43,8 +47,6 @@ FacialLandMark flm;
 ITDetectHand *dh;
 FingersCount *fc;
 DSaliency *sal_d;
-
-SCMWrapper *scmw;
 
 void print_report()
 {       
@@ -77,10 +79,10 @@ const char *face_detect()
     return ret.c_str();
 }
 
-//static SCM scm_face_detect() 
-//{ 
-//  return scm_from_locale_string("Face Detect"); 
-//}
+SCM scm_face_detect() 
+{ 
+  return scm_from_locale_string(face_detect()); 
+}
 
 void init_dr_roboto()
 {
@@ -98,8 +100,6 @@ void init_dr_roboto()
     fc = new FingersCount(true);
     sal_d = new DSaliency(SAL_STATIC, SAL_FINE_GRAINED);
 
-    scmw = new SCMWrapper("face_detect", face_detect);
-
-//    scm_c_define_gsubr("face_detect", 0, 0, 0, scm_face_detect);
-
+    scm_c_define_gsubr("face_detect", 0, 0, 0, (scm_t_subr)scm_face_detect);
+ 
 }
