@@ -10,13 +10,14 @@ find_package( OpenCV REQUIRED )
 find_package( dlib REQUIRED )
 find_package( Protobuf REQUIRED )
 find_package( raspicam QUIET )
-include_directories("include" "include/sensor/vision")
+find_package( Guile REQUIRED )
+include_directories("include" "include/sensor/vision" ${GUILE_INCLUDE_DIRS})
 
 if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
 endif()
 
-add_library( sensor_vision  sense/vision/capture/CamCapture.cpp           
+add_library( sensor_vision sense/vision/capture/CamCapture.cpp           
         ${RASPI_SUP}
         sense/vision/capture/FileCapture.cpp
         sense/vision/capture/ITColor2Gray.cpp
@@ -31,8 +32,11 @@ add_library( sensor_vision  sense/vision/capture/CamCapture.cpp
 	sense/vision/track/BoxTracker.cpp
         sense/vision/track/BoxTrackerThread.cpp)
 
+set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_library(opencoger_util util/util.cpp)
 
+add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
+target_link_libraries(dr_roboto sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} libdlib.so)
 
 ############RPC
 if (NOT DEFINED SERVER_ADDRESS)
@@ -83,7 +87,7 @@ target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr
 add_library(rpc_client comm/rpc/RPC_Client.cpp ${GENERATED_PB_FILES})
 add_executable(RPC_Client_Test examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
 target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
-                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} dlib::dlib)
+                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} dlib::dlib sensor_vision)
 
 target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
 

@@ -1,0 +1,10 @@
+{  
+	"extensionName": "Dr. Roboto",
+	"extensionPort": 7777,
+ 	"blockSpecs": 
+[
+	["r", "Speech Output", "speechOutput"],
+	[" ", "Speech Input %s", "speechInput", " "],
+	[" ", "Ghost Rule %s", "ghostRule"]
+]
+}
