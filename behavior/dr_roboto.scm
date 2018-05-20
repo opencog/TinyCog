@@ -21,3 +21,12 @@
 (use-modules (opencog exec))
 (load-from-path "opencog.scm")
 
+(include "behavior.scm")
+
+
+; TODO this should be changed to a practical i/o implementation.
+; this is just for testing
+(include "socket/socket.scm")
+
+; load scratch interface
+(include "scratch/scratch.scm")
