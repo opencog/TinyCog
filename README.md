@@ -1,20 +1,26 @@
 # OpenCogER
 
-This repo was started by [yantrabuddhi](https://github.com/yantrabuddhi) to be a collection of functionalities a toy robot needs on a small 
-system such as a Raspberry Pi computer. The goal is to have some detectors that are as efficient as possible 
-on a rpi3 computer feeding a behavior program that reacts based on data from these detectors.
-The sense functions are suppose to sense stuff such as faces, emotions, gesture and salient points. 
+A collection of speech, vision, and movement functionalities 
+aimed at small or toy robots on embedded systems, such as the 
+Raspberry Pi computer. High level reasoning, language understanding, 
+language gneration and movement planning is provided by OpenCog.
 
-Hardware-wise, a RPI3 computer, a Pi Camera V2 and a USB Microphone are required and are also the constraints
-of the project.
+The current hardware platform requires an RPI3 computer, a Pi 
+Camera V2 and a USB Microphone; other sensor/detector components 
+are planned.
 
-The current code has a few detectors and there's a lot more to add. Most importantly, it needs to have an 
-interface for [Ghost](https://github.com/opencog/opencog/tree/master/opencog/ghost) which would handle the behavior
-of the robot. 
+The current software functions include face detection, emotion 
+recognition, gesture analysis, speech-to-text and text-to-speech 
+subsystems. All high-level founction is provided by OpenCog, and 
+specifically by the 
+[Ghost](https://github.com/opencog/opencog/tree/master/opencog/ghost) 
+scripting system -- ghost is able to process sensory input, 
+and provide coordinated chatbot and movement abilities. 
 
 ## Setup
 
-Everything here is meant to run on a rpi3 computer but one can also compile everything on a desktop computer. 
+Everything here is meant to run on a rpi3 computer; one can also 
+compile everything on a standard Linux desktop computer. 
 
 ### Install 
 
@@ -62,9 +68,14 @@ Use cmake for building.
 
 ### Sensors
 
-Sensors are a camera and microphones. The camera for face detection -> face landmark -> facial expression and emotion and also for hand detection -> convexity defects -> fingers count and gestures.
-The microphone for STT and sound source localization. 
-Some of the sensor programs such as the face, hand and voice activity detection can run on the PI without much stress on the hardware but other functionalities like emotion and and speech recogntion should be implemented as services from a server possibly from singnet. 
+Sensors are a camera and microphones. The camera for face detection 
+-> face landmark -> facial expression  and emotion and also for hand 
+detection -> convexity defects -> fingers count and gestures. The 
+microphone for STT and sound source localization. Some of the sensor 
+programs such as the face, hand and voice activity detection can run 
+on the PI without much stress on the hardware but other functionalities 
+like emotion and and speech recogntion should be implemented as services 
+from a server possibly from singnet. 
 
 ### Behavior
 
