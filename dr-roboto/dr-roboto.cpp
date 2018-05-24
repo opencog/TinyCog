@@ -9,17 +9,8 @@
 #include <stdio.h>
 #include <vector>
 
-
-#include "sense/vision/CamCapture.hpp"
-#include "sense/vision/ITColor2Gray.hpp"
-#include "sense/vision/ITEqualizeHist.hpp"
-#include "sense/vision/ITDetectFace.hpp"
-#include "sense/vision/ITDetectSmile.hpp"
-#include "sense/vision/FacialLandMark.hpp"
-#include "sense/vision/ITDetectHand.hpp"
-#include "sense/vision/FingersCount.hpp"
-#include "sense/vision/DSaliency.hpp"
-#include "sense/vision/BoxTrackerThread.hpp"
+#include "sense/vision/RaspiVision.hpp"
+#include "act/audio/FestivalTTS.hpp"
 
 //#include "util/SCMWrapper.hpp"
 
@@ -37,8 +28,9 @@ extern "C" {
 float avg_time_pf, en_time, acc, avg_oh, avg_nh, avg_nf, avg_of;
 uint64_t st_time;
 int n_f, nh, oh, nf, of;
+std::string ret;
 
-CamCapture *cap;
+RaspiCamCapture *rcap;
 ITColor2Gray *c2g;
 ITEqualizeHist *eh;
 ITDetectFace *fcd;
@@ -47,6 +39,7 @@ FacialLandMark flm;
 ITDetectHand *dh;
 FingersCount *fc;
 DSaliency *sal_d;
+FestivalTTS tts;
 
 void print_report()
 {       
@@ -63,12 +56,12 @@ void print_report()
 }
 
 
-
+// return FACE_LOC[X,Y,W,H];;
 const char *face_detect()
 {
-    std::string ret;
+    ret = "";
     std::vector<cv::Rect> faces;
-    cv::Mat frame = cap->getCurrentFrame();
+    cv::Mat frame = rcap->getCurrentFrame();
     faces = fcd->Transform(eh->Transform(c2g->Transform(frame)));
     for(size_t i = 0; i < faces.size(); i++)
         ret = std::to_string(faces[i].x) + "," + 
@@ -76,6 +69,7 @@ const char *face_detect()
 	      std::to_string(faces[i].width) + "." +
 	      std::to_string(faces[i].height) + ";";
     ret += ";";
+    cv::imshow("image", frame);
     return ret.c_str();
 }
 
@@ -84,6 +78,59 @@ SCM scm_face_detect()
   return scm_from_locale_string(face_detect()); 
 }
 
+// return FACE_LOC[X,Y,W,H];SMILE(TRUE/FALSE);;
+const char *face_smile_detect()
+{
+    ret = "";
+    std::vector<cv::Rect> faces, smile;
+    cv::Mat frame = rcap->getCurrentFrame();
+    faces = fcd->Transform(eh->Transform(c2g->Transform(frame)));
+    for(size_t i = 0; i < faces.size(); i++) {
+        ret = std::to_string(faces[i].x) + "," + 
+	      std::to_string(faces[i].y) + "," +
+	      std::to_string(faces[i].width) + "." +
+	      std::to_string(faces[i].height) + ";";
+	smile = smd->Transform(c2g->Transform(frame(faces[i])));
+	ret += (smile.empty())? "false;" : "true;";
+    }
+    ret += ";";
+    cv::imshow("image", frame);
+    std::cout<<ret<<std::endl;
+    cv::imwrite("face_smile.jpg", frame);
+    return ret.c_str();
+}
+
+SCM scm_face_smile_detect() 
+{ 
+  return scm_from_locale_string(face_smile_detect()); 
+}
+
+// return SALIENT_POINT[X,Y];
+const char *salient_point()
+{
+    cv::Mat frame = rcap->getCurrentFrame();
+    cv::Point2d cent = sal_d->sal_point(frame, frame);
+    ret = std::to_string(cent.x) + "," + std::to_string(cent.y);
+    return ret.c_str();
+}
+
+SCM scm_salient_point() 
+{ 
+  return scm_from_locale_string(salient_point()); 
+}
+
+
+void say(char *data)
+{
+    tts.setSpeaker(FestivalTTS::speaker::DON);
+    tts.speak(data);
+}
+SCM scm_say(SCM txt)
+{
+    say(scm_to_locale_string(txt));
+}
+
+
 void init_dr_roboto()
 {
     #ifdef _NEED_TIME_INFO_
@@ -91,7 +138,7 @@ void init_dr_roboto()
     oh = nh = of = nf = n_f = 0;
     #endif //_NEED_TIME_INFO_
 
-    cap = new CamCapture("cap", 320, 240, 0, 20);
+    rcap = new RaspiCamCapture("cap", 320, 240, 20);
     c2g = new ITColor2Gray("c2g");
     eh = new ITEqualizeHist("eh");
     fcd = new ITDetectFace("fcd");
@@ -101,5 +148,8 @@ void init_dr_roboto()
     sal_d = new DSaliency(SAL_STATIC, SAL_FINE_GRAINED);
 
     scm_c_define_gsubr("face_detect", 0, 0, 0, (scm_t_subr)scm_face_detect);
+    scm_c_define_gsubr("face_smile_detect", 0, 0, 0, (scm_t_subr)scm_face_smile_detect);
+    scm_c_define_gsubr("salient_point", 0, 0, 0, (scm_t_subr)scm_salient_point);
+    scm_c_define_gsubr("say", 0, 0, 0, (scm_t_subr)scm_say);
  
 }

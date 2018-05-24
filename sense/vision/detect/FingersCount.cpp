@@ -29,7 +29,7 @@ uint8_t FingersCount::num_fingers(cv::Mat hand)
 {
     f_tips.clear();  //XXX remove
     cv::GaussianBlur(hand, hand, cv::Size(5, 5), 1.5);
-    cv::morphologyEx(hand, hand, MORPH_HITMISS,
+    cv::morphologyEx(hand, hand, cv::MORPH_HITMISS,
     			cv::getStructuringElement(MORPH_RECT, cv::Size(3, 3)));
     		     
     cv::findContours(hand, cntrs, hier, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);

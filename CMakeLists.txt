@@ -11,7 +11,7 @@ find_package( dlib REQUIRED )
 find_package( Protobuf REQUIRED )
 find_package( raspicam QUIET )
 find_package( Guile REQUIRED )
-include_directories("include" "include/sensor/vision" ${GUILE_INCLUDE_DIRS})
+include_directories("include" ${GUILE_INCLUDE_DIRS})
 
 if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
@@ -36,7 +36,7 @@ set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
 add_library(opencoger_util util/util.cpp)
 
 add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
-target_link_libraries(dr_roboto sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} libdlib.so)
+target_link_libraries(dr_roboto sensor_vision ${raspicam_CV_LIBS} ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
 
 ############RPC
 if (NOT DEFINED SERVER_ADDRESS)
@@ -87,9 +87,9 @@ target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr
 add_library(rpc_client comm/rpc/RPC_Client.cpp ${GENERATED_PB_FILES})
 add_executable(RPC_Client_Test examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
 target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
-                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} dlib::dlib sensor_vision)
+                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} ${dlib_LIBRARIES} sensor_vision)
 
-target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
+target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} )
 
 add_executable(VisionTest examples/sense/vision/VisionTest.cpp)
 target_link_libraries(VisionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
@@ -98,10 +98,10 @@ add_executable(VisionTestFace examples/sense/vision/VisionTestFace.cpp)
 target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 
 add_executable(FaceLandMarkTest examples/sense/vision/FaceLandMarkTest.cpp)
-target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
 
 add_executable(NoddingTest examples/sense/vision/FaceNoddingDetection.cpp)
-target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib opencoger_util)
+target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} opencoger_util)
 
 add_executable(FingersCountTest examples/sense/vision/FingersCountTest.cpp)
 target_link_libraries(FingersCountTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
@@ -123,13 +123,13 @@ add_executable(RaspiVisionTestFace examples/sense/vision/RaspiVisionTestFace.cpp
 target_link_libraries(RaspiVisionTestFace sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})   
 
 add_executable(RaspiFaceLandMarkTest examples/sense/vision/RaspiFaceLandMarkTest.cpp)
-target_link_libraries(RaspiFaceLandMarkTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+target_link_libraries(RaspiFaceLandMarkTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
 
 add_executable(RaspiFingersCountTest examples/sense/vision/RaspiFingersCountTest.cpp)
-target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
 
 add_executable(RaspiSaliencyTest examples/sense/vision/RaspiSaliencyTest.cpp)
-target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
 
 endif(raspicam_FOUND)
 
