@@ -20,31 +20,25 @@
 #include <vector>
 #include <stdint.h>
 
-//eye points
-#define LEU1 37 //left eye upper 1
-#define LEU2 38
-#define LEB1 41 //left eye bottom 1
-#define LEB2 40
-#define LELS 36 //left eye left side
-#define LERS 39 //left eye right side
-               
-#define REU1 43
-#define REU2 44
-#define REB1 47
-#define REB2 46
-#define RELS 42
-#define RERS 45
+#define LEU1 18 
+#define LEU2 19
+#define LEB1 22
+#define LEB2 21
+#define LELS 17
+#define LERS 20
 
-//mouth
-#define MCU1 50 // mouth center upper 1
-#define MCU2 51
-#define MCU3 52
-#define MCB1 58 // mouth center bottom 1
-#define MCB2 57
-#define MCB3 56
-#define MRS 54  // mouth right side
-#define MLS 48  // mouth left side
+#define REU1 4
+#define REU2 5
+#define REB1 8
+#define REB2 7
+#define RELS 3
+#define RERS 6
 
+
+#define MCU 14
+#define MCB 13
+#define MRS 15
+#define MLS 12
 
 #define NO_FLM_PTS 26 //shape_predictor_26_face_landmarks.dat
 
