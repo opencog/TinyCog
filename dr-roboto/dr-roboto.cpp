@@ -150,6 +150,6 @@ void init_dr_roboto()
     scm_c_define_gsubr("face_detect", 0, 0, 0, (scm_t_subr)scm_face_detect);
     scm_c_define_gsubr("face_smile_detect", 0, 0, 0, (scm_t_subr)scm_face_smile_detect);
     scm_c_define_gsubr("salient_point", 0, 0, 0, (scm_t_subr)scm_salient_point);
-    scm_c_define_gsubr("say", 0, 0, 0, (scm_t_subr)scm_say);
+    scm_c_define_gsubr("say", 1, 0, 0, (scm_t_subr)scm_say);
  
 }

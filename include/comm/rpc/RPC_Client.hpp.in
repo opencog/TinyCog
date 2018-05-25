@@ -39,12 +39,10 @@ class RPC_Client
       bool detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point> > &out);
       bool salient_point(cv::Mat &in, cv::Point &out);
 
-
     private:
       std::unique_ptr<ImageBase::ImageServices::Stub> stub_;
 
       Status status;
-      ClientContext ctxt;
       std::vector<unsigned char> vbuff;
       unsigned char *ucbuff;
       cv::Rect rct;

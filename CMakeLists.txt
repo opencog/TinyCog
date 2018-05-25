@@ -33,10 +33,10 @@ add_library( sensor_vision sense/vision/capture/CamCapture.cpp
         sense/vision/track/BoxTrackerThread.cpp)
 
 set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
-add_library(opencoger_util util/util.cpp)
+target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} )
 
-add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
-target_link_libraries(dr_roboto sensor_vision ${raspicam_CV_LIBS} ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
+add_library(tinycog_util util/util.cpp)
+
 
 ############RPC
 if (NOT DEFINED SERVER_ADDRESS)
@@ -79,17 +79,13 @@ include_directories(${GENERATED_PB_PATH})
 
 #BUILDING THE SERVER
 add_library(rpc_server include/comm/rpc/RPC_Server.hpp ${GENERATED_PB_FILES})
-add_executable(RPC_Server_Test examples/comm/rpc/RPC_Server_Test.cpp ${GENERATED_PB_FILES})
-target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr 
-                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} sensor_vision)
 
 #BUILDING THE CLIENT
 add_library(rpc_client comm/rpc/RPC_Client.cpp ${GENERATED_PB_FILES})
-add_executable(RPC_Client_Test examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
-target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
-                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} ${dlib_LIBRARIES} sensor_vision)
 
-target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} )
+add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
+target_link_libraries(dr_roboto sensor_vision ${raspicam_CV_LIBS} ${OpenCV_LIBS} 
+                                      ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
 
 add_executable(VisionTest examples/sense/vision/VisionTest.cpp)
 target_link_libraries(VisionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
@@ -101,7 +97,7 @@ add_executable(FaceLandMarkTest examples/sense/vision/FaceLandMarkTest.cpp)
 target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
 
 add_executable(NoddingTest examples/sense/vision/FaceNoddingDetection.cpp)
-target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} opencoger_util)
+target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} tinycog_util)
 
 add_executable(FingersCountTest examples/sense/vision/FingersCountTest.cpp)
 target_link_libraries(FingersCountTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
@@ -130,6 +126,14 @@ target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${
 
 add_executable(RaspiSaliencyTest examples/sense/vision/RaspiSaliencyTest.cpp)
 target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
+
+add_executable(RPC_Server_Test examples/comm/rpc/RPC_Server_Test.cpp ${GENERATED_PB_FILES})
+target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr 
+                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} sensor_vision)
+
+add_executable(RPC_Client_Test examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
+target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
+                     ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} ${dlib_LIBRARIES} sensor_vision)
 
 endif(raspicam_FOUND)
 
