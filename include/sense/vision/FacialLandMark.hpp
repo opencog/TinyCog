@@ -20,6 +20,26 @@
 #include <vector>
 #include <stdint.h>
 
+#define LEU1 18 
+#define LEU2 19
+#define LEB1 22
+#define LEB2 21
+#define LELS 17
+#define LERS 20
+
+#define REU1 4
+#define REU2 5
+#define REB1 8
+#define REB2 7
+#define RELS 3
+#define RERS 6
+
+
+#define MCU 14
+#define MCB 13
+#define MRS 15
+#define MLS 12
+
 #define NO_FLM_PTS 26 //shape_predictor_26_face_landmarks.dat
 
 typedef dlib::full_object_detection facial_lms;
