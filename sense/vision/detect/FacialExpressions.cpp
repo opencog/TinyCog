@@ -24,7 +24,7 @@ bool FacialExpressions::eyes_open()
 uint8_t FacialExpressions::mouth_open()
 {
     double mvd, mar; //mouth vertical distance and mouth aspect ratio
-    mvd = std::abs(flms->part(MCU2).y() - flms->part(MCB2).y());
+    mvd = std::abs(flms->part(MCU).y() - flms->part(MCB).y());
     mar = mvd / std::abs(flms->part(MRS).y() - flms->part(MLS).y());
     return mar;
 }

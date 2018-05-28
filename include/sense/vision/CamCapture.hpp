@@ -43,7 +43,6 @@ class CamCapture: public ImageSource
 	Mat *c_img;
         VideoCapture capture;
         static void thread_loop(CamCapture* cc);
-        static void thread_loop_ncpy(CamCapture* cc);
         thread* run;
         mutex rd;
         int wait_time;

@@ -11,28 +11,20 @@
 #include <stdio.h>
 #include <string>
 #include <unistd.h>
+#include <thread>
+#include <mutex>
 
 #include <sphinxbase/err.h>
-#include <sphinxbase/err.h>
+#include <sphinxbase/ad.h>
 #include <pocketsphinx.h>
 
 #define SAMPLE_RATE 16000
 
-class SSTT {
-    public:
-      SSTT();
-      ~SSTT () {}
-      bool is_on();
-      void spx_stt(void (*)());
+//Functions
+void tcstt_init (void (*f)(const char *s));
+void tcstt_close ();
+bool tcstt_is_on();
+static void tcstt_run();
 
-    private: 
-      ps_decoder_t *ps;
-      cmd_ln_t *cfg;
-      ad_rec_t *ad;
-      int16 adbuf[2048];
-      uint8 utt_started, in_speech;
-      int32 k;
-      char const *hyp;
-};
 
 #endif //_SSTT_HPP_

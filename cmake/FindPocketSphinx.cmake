@@ -5,17 +5,52 @@
 # Date: May, 2018
 
 # This config file sets the following variables
-#    POCKETSPHINX_LIBRARIES              PocketShinx libs to link to
+#    POCKETSPHINX_LIBRARY                PocketShinx and Sphinxbase libs
+#    SPHINX_BASE_LIBRARY
+#    SPHINXAD
 #    POCKETSPHINX_INCLUDE_DIRS           Include dirs for pocketsphinx and sphinx base
-#    POCKETSPHINX_MODELDIR               Sphinx dict, lang and acoustic models folder
+#    POCKETSPHINX_MODEL_DIR              Sphinx dict, lang and acoustic models folder
 
-FIND_LIBRARY(POCKETSPHINX_LIBRARIES NAMES pocketsphinx sphinxbase 
+FIND_PACKAGE(PkgConfig REQUIRED)
+
+FIND_LIBRARY(POCKETSPHINX_LIBRARY NAMES pocketsphinx
                                     PATH /usr/lib /usr/local/lib )
-FIND_PATH(POCKETSPHINX_INCLUDE_DIRS pocketsphinx.h sphinx_config.h 
-                            PATHS /usr/include /usr/local/include)
+FIND_LIBRARY(SPHINXBASE_LIBRARY NAMES sphinxbase 
+                                    PATH /usr/lib /usr/local/lib )
+FIND_LIBRARY(SPHINXAD_LIBRARY NAMES sphinxad
+                                    PATH /usr/lib /usr/local/lib )
+
+IF( POCKETSPHINX_LIBRARY AND SPHINXBASE_LIBRARY AND SPHINXAD_LIBRARY)
+    SET(POCKETSPHINX_LIBRARIES 
+              ${POCKETSPHINX_LIBRARY}
+	      ${SPHINXBASE_LIBRARY}
+	      ${SPHINXAD_LIBRARY} )
+ENDIF (POCKETSPHINX_LIBRARY AND SPHINXBASE_LIBRARY AND SPHINXAD_LIBRARY)
+
+FIND_PATH(POCKETSPHINX_INCLUDE_DIR pocketsphinx.h
+                              PATHS /usr/include 
+			            /usr/local/include 
+                              PATH_SUFFIXES pocketsphinx)
+
+
+FIND_PATH(SPHINXBASE_INCLUDE_DIR sphinx_config.h
+                              PATHS /usr/include 
+			            /usr/local/include 
+                              PATH_SUFFIXES sphinxbase)
+
+IF(POCKETSPHINX_INCLUDE_DIR AND SPHINXBASE_INCLUDE_DIR)
+    SET(POCKETSPHINX_INCLUDE_DIRS 
+               ${POCKETSPHINX_INCLUDE_DIR} 
+	       ${SPHINXBASE_INCLUDE_DIR} )
+ENDIF(POCKETSPHINX_INCLUDE_DIR AND SPHINXBASE_INCLUDE_DIR)
+
 IF(POCKETSPHINX_LIBRARIES AND POCKETSPHINX_INCLUDE_DIRS)
 	SET(POCKETSPHINX_FOUND TRUE)
 ENDIF(POCKETSPHINX_LIBRARIES AND POCKETSPHINX_INCLUDE_DIRS)
+
+EXECUTE_PROCESS( COMMAND ${PKG_CONFIG_EXECUTABLE} pocketsphinx --variable=modeldir
+                OUTPUT_VARIABLE POCKETSPHINX_MODEL_DIR
+		OUTPUT_STRIP_TRAILING_WHITESPACE )
 
 IF(POCKETSPHINX_FOUND)
 	MESSAGE(STATUS "Found PocketSphinx: ${POCKETSPHINX_LIBRARIES}")

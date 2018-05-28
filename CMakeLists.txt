@@ -148,7 +148,28 @@ install (FILES BoxTracker.hpp BoxTrackerThread.hpp
     CamCapture.hpp FileCapture.hpp ImageSource.hpp
     ImageTransform.hpp ITColor2Gray.hpp ITEqualizeHist.hpp
     ITDetectFace.hpp ITDetectSmile.hpp
-    DESTINATION "include/OpenCogER/sense/vision")
+    DESTINATION "include/TinyCog/sense/vision")
+
+
+########STT
+# XXX audio input should be general not attached to stt
+#     it should also serve for sound source localization. 
+#     thus maybe have a general class to supply audio data
+#     both for this and others who may need it. 
+find_package( PocketSphinx REQUIRED )
+if (POCKETSPHINX_FOUND)
+    configure_file( ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp.in 
+                   ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp @ONLY )
+    include_directories("include" ${POCKETSPHINX_INCLUDE_DIRS})
+    add_library( sensor_audio sense/audio/SSTT.cpp )
+    target_link_libraries( sensor_audio ${POCKETSPHINX_LIBRARIES} ${EXTRA_LIBS} )
+
+    add_executable( STT_Test examples/sense/audio/STT_Test.cpp )
+    target_link_libraries (STT_Test sensor_audio)
+else (POCKETSPHINX_FOUND)
+    message("STT Will Not Be Built.")
+endif (POCKETSPHINX_FOUND)
+
 
 ########TTS
 find_package(Festival REQUIRED)
