@@ -140,7 +140,8 @@ void say(char *data)
     tts.setSpeaker(FestivalTTS::speaker::DON);
     tts.speak(data);
 }
-SCM scm_say(SCM txt)
+
+void scm_say(SCM txt)
 {
     say(scm_to_locale_string(txt));
 }

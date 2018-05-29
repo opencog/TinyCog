@@ -25,7 +25,7 @@
 ;; Parse ghost topic files. 
 ;; Ghost rules handle speech interactions.
 
-(ghost-parse-file "test.top")
+(ghost-parse-file (string-append TOPDIR "behavior/" "test.top"))
 
 
 ;; ----------------------------------------------
