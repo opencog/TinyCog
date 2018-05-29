@@ -83,9 +83,6 @@ add_library(rpc_server include/comm/rpc/RPC_Server.hpp ${GENERATED_PB_FILES})
 #BUILDING THE CLIENT
 add_library(rpc_client comm/rpc/RPC_Client.cpp ${GENERATED_PB_FILES})
 
-add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
-target_link_libraries(dr_roboto sensor_vision ${raspicam_CV_LIBS} ${OpenCV_LIBS} 
-                                      ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
 
 add_executable(VisionTest examples/sense/vision/VisionTest.cpp)
 target_link_libraries(VisionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
@@ -112,6 +109,7 @@ add_executable(AllTest examples/sense/vision/AllTest.cpp)
 target_link_libraries(AllTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})  
 
 if(raspicam_FOUND)
+
 add_executable(RaspiVisionTest examples/sense/vision/RaspiVisionTest.cpp)
 target_link_libraries(RaspiVisionTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})
 
@@ -206,3 +204,18 @@ target_link_libraries(spicomm ${WIRINGPI_LIB})
 add_executable(SPICommTest examples/comm/spi/SPICommTest.cpp)
 target_link_libraries(SPICommTest spicomm)
 endif(${WIRINGPI_FOUND})
+
+
+######SCM Binding
+configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 
+               ${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp @ONLY)
+if(raspicam_FOUND)
+    set(DR_ROBOTO_LIBS sensor_vision ${raspicam_CV_LIBS} 
+                       ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
+else(raspicam_FOUND)
+    set(DR_ROBOTO_LIBS sensor_vision ${OpenCV_LIBS} 
+                       ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
+endif(raspicam_FOUND)
+
+add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
+target_link_libraries(dr_roboto ${DR_ROBOTO_LIBS})

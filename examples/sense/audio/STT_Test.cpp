@@ -14,6 +14,7 @@ void sigint_handler(int sig)
 {
     printf("Caught SIGINT! Exiting...\n");
     tcstt_close();
+    exit(0);
 }
 
 void stt_callback(const char *text)
@@ -26,6 +27,5 @@ int main(int argc, char **argv)
     signal(SIGINT, sigint_handler);
     tcstt_init(stt_callback);
     tcstt_close();
-    while(tcstt_is_on()) ;
 return 0;
 }

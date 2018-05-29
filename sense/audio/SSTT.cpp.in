@@ -7,18 +7,14 @@
 
 #include "sense/audio/SSTT.hpp"
 
-// Data                      
-void (*f_pt)(const char *s) ;
-std::thread *run;            
-std::mutex rd;               
-bool is_running;             
-ps_decoder_t *ps;            
-cmd_ln_t *cfg;               
-ad_rec_t *ad;                
-int16 adbuf[2048];           
+// Data
+void (*f_pt)(const char *s);
+//std::thread *run;
+bool is_running;
+ps_decoder_t *ps;
+cmd_ln_t *cfg;
+ad_rec_t *ad;
 uint8 utt_started, in_speech;
-int32 k;                     
-char const *hyp;             
 
 
 void tcstt_init(void (*f)(const char *s))
@@ -28,31 +24,32 @@ void tcstt_init(void (*f)(const char *s))
                     "-hmm", "@POCKETSPHINX_MODEL_DIR@/en-us/en-us",
                     "-lm", "@POCKETSPHINX_MODEL_DIR@/en-us/en-us.lm.bin",
                     "-dict", "@POCKETSPHINX_MODEL_DIR@/en-us/cmudict-en-us.dict",
-                    //"-reduce-noise", "yes",
+                    "-remove_noise", "yes",
+		    "-logfn", "/dev/null",
                     NULL);
     if( cfg == NULL) { fprintf(stderr, "Error Creating Config Object\n"); exit(1); }
 
     ps = ps_init(cfg);
     if (ps == NULL) { fprintf(stderr, "Error Initializing Recognizer\n"); exit(1); }
-    ad = ad_open_dev(NULL, SAMPLE_RATE);
+    ad = ad_open_dev("plughw:1,0", SAMPLE_RATE);
     if (ad == NULL) { fprintf(stderr, "Error Opening Device\n"); exit(1); }
     if (ad_start_rec(ad) < 0) { fprintf(stderr, "Error Starting Recording\n"); exit(1); }
     if (ps_start_utt(ps) < 0) { fprintf(stderr, "Error Starting Utterance\n"); exit(1); }
     
     utt_started = FALSE;
-    printf("Ready...\n");
+    printf("Ready....\n");
 
     f_pt = f; //set the callback function
-    run = new std::thread (tcstt_run);
+    std::thread run(tcstt_run);
     is_running = true;
+    run.join();
 }
 
 
 void tcstt_close()
 {
     is_running = false;
-    run->join();
-    delete run;
+//    delete run;
 }
 
 
@@ -62,8 +59,11 @@ bool tcstt_is_on()
 }
 
 
-static void tcstt_run()
+void tcstt_run()
 {
+    int32 k;
+    char const *hyp;
+    int16 adbuf[2048];
     while (1) {
         if ((k = ad_read(ad, adbuf, 2048)) < 0)
             fprintf(stderr, "Errpr Reading Audio Data\n");

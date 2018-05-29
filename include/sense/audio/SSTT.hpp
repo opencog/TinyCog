@@ -24,7 +24,7 @@
 void tcstt_init (void (*f)(const char *s));
 void tcstt_close ();
 bool tcstt_is_on();
-static void tcstt_run();
+void tcstt_run();
 
 
 #endif //_SSTT_HPP_

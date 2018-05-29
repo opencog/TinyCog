@@ -4,12 +4,22 @@
   License: AGPL
   Date: May, 2018
 */
+
+#define YES true
+#define NO false
+
+#define _DR_ROBOTO_RPI_ @raspicam_FOUND@
+
+
 #include <libguile.h>
 
 #include <stdio.h>
 #include <vector>
-
-#include "sense/vision/RaspiVision.hpp"
+#if _DR_ROBOTO_RPI_
+    #include "sense/vision/RaspiVision.hpp"
+#else //_DR_ROBOTO_RPI
+    #include "sense/vision/Vision.hpp"
+#endif
 #include "act/audio/FestivalTTS.hpp"
 
 //#include "util/SCMWrapper.hpp"
@@ -30,7 +40,12 @@ uint64_t st_time;
 int n_f, nh, oh, nf, of;
 std::string ret;
 
-RaspiCamCapture *rcap;
+#if _DR_ROBOTO_RPI_
+    RaspiCamCapture *cap;
+#else //_DR_ROBOTO_RPI_
+    CamCapture *cap;
+#endif //_DR_ROBOTO_RPI_
+
 ITColor2Gray *c2g;
 ITEqualizeHist *eh;
 ITDetectFace *fcd;
@@ -61,7 +76,7 @@ const char *face_detect()
 {
     ret = "";
     std::vector<cv::Rect> faces;
-    cv::Mat frame = rcap->getCurrentFrame();
+    cv::Mat frame = cap->getCurrentFrame();
     faces = fcd->Transform(eh->Transform(c2g->Transform(frame)));
     for(size_t i = 0; i < faces.size(); i++)
         ret = std::to_string(faces[i].x) + "," + 
@@ -83,7 +98,7 @@ const char *face_smile_detect()
 {
     ret = "";
     std::vector<cv::Rect> faces, smile;
-    cv::Mat frame = rcap->getCurrentFrame();
+    cv::Mat frame = cap->getCurrentFrame();
     faces = fcd->Transform(eh->Transform(c2g->Transform(frame)));
     for(size_t i = 0; i < faces.size(); i++) {
         ret = std::to_string(faces[i].x) + "," + 
@@ -138,7 +153,12 @@ void init_dr_roboto()
     oh = nh = of = nf = n_f = 0;
     #endif //_NEED_TIME_INFO_
 
-    rcap = new RaspiCamCapture("cap", 320, 240, 20);
+    #if _DR_ROBOTO_RPI_
+        cap = new RaspiCamCapture("cap", 320, 240, 20);
+    #else //_DR_ROBOTO_RPI_
+        cap = new CamCapture("cap", 320, 240, 20, 0);
+    #endif //_DR_ROBOTO_RPI_
+    
     c2g = new ITColor2Gray("c2g");
     eh = new ITEqualizeHist("eh");
     fcd = new ITDetectFace("fcd");
@@ -147,9 +167,9 @@ void init_dr_roboto()
     fc = new FingersCount(true);
     sal_d = new DSaliency(SAL_STATIC, SAL_FINE_GRAINED);
 
-    scm_c_define_gsubr("face_detect", 0, 0, 0, (scm_t_subr)scm_face_detect);
-    scm_c_define_gsubr("face_smile_detect", 0, 0, 0, (scm_t_subr)scm_face_smile_detect);
-    scm_c_define_gsubr("salient_point", 0, 0, 0, (scm_t_subr)scm_salient_point);
-    scm_c_define_gsubr("say", 1, 0, 0, (scm_t_subr)scm_say);
+    scm_c_define_gsubr("det-face", 0, 0, 0, (scm_t_subr)scm_face_detect);
+    scm_c_define_gsubr("det-face-smile", 0, 0, 0, (scm_t_subr)scm_face_smile_detect);
+    scm_c_define_gsubr("det-salient-point", 0, 0, 0, (scm_t_subr)scm_salient_point);
+    scm_c_define_gsubr("act-say", 1, 0, 0, (scm_t_subr)scm_say);
  
 }
