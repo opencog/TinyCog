@@ -17,8 +17,6 @@
 )
 
 
-(add-to-load-path ".")
-(add-to-load-path "./behavior/")
 (add-to-load-path "/usr/local/share/opencog/scm")
 
 ; Load C++ detector functions

@@ -1,3 +1,4 @@
 #!/bin/bash
-export LTDL_LIBRARY_PATH=$(pwd)/build
-guile -l dr-roboto.scm
+cd build
+export LTDL_LIBRARY_PATH=$(pwd)
+guile -l ../dr-roboto.scm
