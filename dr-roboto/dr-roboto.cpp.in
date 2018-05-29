@@ -5,10 +5,10 @@
   Date: May, 2018
 */
 
-#define YES true
-#define NO false
+#define YES_RPI 1
+#define NO_RPI 0
 
-#define _DR_ROBOTO_RPI_ @raspicam_FOUND@
+#define _DR_ROBOTO_RPI_ @raspicam_FOUND@_RPI
 
 
 #include <libguile.h>
@@ -123,7 +123,7 @@ SCM scm_face_smile_detect()
 // return SALIENT_POINT[X,Y];
 const char *salient_point()
 {
-    cv::Mat frame = rcap->getCurrentFrame();
+    cv::Mat frame = cap->getCurrentFrame();
     cv::Point2d cent = sal_d->sal_point(frame, frame);
     ret = std::to_string(cent.x) + "," + std::to_string(cent.y);
     return ret.c_str();
