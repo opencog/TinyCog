@@ -11,7 +11,7 @@ find_package( dlib REQUIRED )
 find_package( Protobuf REQUIRED )
 find_package( raspicam QUIET )
 find_package( Guile REQUIRED )
-include_directories("include" "include/sensor/vision" ${GUILE_INCLUDE_DIRS})
+include_directories("include" ${GUILE_INCLUDE_DIRS})
 
 if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
@@ -33,10 +33,10 @@ add_library( sensor_vision sense/vision/capture/CamCapture.cpp
         sense/vision/track/BoxTrackerThread.cpp)
 
 set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
-add_library(opencoger_util util/util.cpp)
+target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} )
 
-add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
-target_link_libraries(dr_roboto sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} libdlib.so)
+add_library(tinycog_util util/util.cpp)
+
 
 ############RPC
 if (NOT DEFINED SERVER_ADDRESS)
@@ -79,17 +79,10 @@ include_directories(${GENERATED_PB_PATH})
 
 #BUILDING THE SERVER
 add_library(rpc_server include/comm/rpc/RPC_Server.hpp ${GENERATED_PB_FILES})
-add_executable(RPC_Server_Test examples/comm/rpc/RPC_Server_Test.cpp ${GENERATED_PB_FILES})
-target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr 
-                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} sensor_vision)
 
 #BUILDING THE CLIENT
 add_library(rpc_client comm/rpc/RPC_Client.cpp ${GENERATED_PB_FILES})
-add_executable(RPC_Client_Test examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
-target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
-                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} dlib::dlib sensor_vision)
 
-target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
 
 add_executable(VisionTest examples/sense/vision/VisionTest.cpp)
 target_link_libraries(VisionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
@@ -98,10 +91,10 @@ add_executable(VisionTestFace examples/sense/vision/VisionTestFace.cpp)
 target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 
 add_executable(FaceLandMarkTest examples/sense/vision/FaceLandMarkTest.cpp)
-target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
 
 add_executable(NoddingTest examples/sense/vision/FaceNoddingDetection.cpp)
-target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib opencoger_util)
+target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} tinycog_util)
 
 add_executable(FingersCountTest examples/sense/vision/FingersCountTest.cpp)
 target_link_libraries(FingersCountTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
@@ -116,6 +109,7 @@ add_executable(AllTest examples/sense/vision/AllTest.cpp)
 target_link_libraries(AllTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})  
 
 if(raspicam_FOUND)
+
 add_executable(RaspiVisionTest examples/sense/vision/RaspiVisionTest.cpp)
 target_link_libraries(RaspiVisionTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})
 
@@ -123,13 +117,21 @@ add_executable(RaspiVisionTestFace examples/sense/vision/RaspiVisionTestFace.cpp
 target_link_libraries(RaspiVisionTestFace sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})   
 
 add_executable(RaspiFaceLandMarkTest examples/sense/vision/RaspiFaceLandMarkTest.cpp)
-target_link_libraries(RaspiFaceLandMarkTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+target_link_libraries(RaspiFaceLandMarkTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
 
 add_executable(RaspiFingersCountTest examples/sense/vision/RaspiFingersCountTest.cpp)
-target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
 
 add_executable(RaspiSaliencyTest examples/sense/vision/RaspiSaliencyTest.cpp)
-target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
+target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
+
+add_executable(RPC_Server_Test examples/comm/rpc/RPC_Server_Test.cpp ${GENERATED_PB_FILES})
+target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr 
+                                       ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} sensor_vision)
+
+add_executable(RPC_Client_Test examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
+target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
+                     ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} ${dlib_LIBRARIES} sensor_vision)
 
 endif(raspicam_FOUND)
 
@@ -144,7 +146,28 @@ install (FILES BoxTracker.hpp BoxTrackerThread.hpp
     CamCapture.hpp FileCapture.hpp ImageSource.hpp
     ImageTransform.hpp ITColor2Gray.hpp ITEqualizeHist.hpp
     ITDetectFace.hpp ITDetectSmile.hpp
-    DESTINATION "include/OpenCogER/sense/vision")
+    DESTINATION "include/TinyCog/sense/vision")
+
+
+########STT
+# XXX audio input should be general not attached to stt
+#     it should also serve for sound source localization. 
+#     thus maybe have a general class to supply audio data
+#     both for this and others who may need it. 
+find_package( PocketSphinx REQUIRED )
+if (POCKETSPHINX_FOUND)
+    configure_file( ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp.in 
+                   ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp @ONLY )
+    include_directories("include" ${POCKETSPHINX_INCLUDE_DIRS})
+    add_library( sensor_audio sense/audio/SSTT.cpp )
+    target_link_libraries( sensor_audio ${POCKETSPHINX_LIBRARIES} ${EXTRA_LIBS} )
+
+    add_executable( STT_Test examples/sense/audio/STT_Test.cpp )
+    target_link_libraries (STT_Test sensor_audio)
+else (POCKETSPHINX_FOUND)
+    message("STT Will Not Be Built.")
+endif (POCKETSPHINX_FOUND)
+
 
 ########TTS
 find_package(Festival REQUIRED)
@@ -181,3 +204,18 @@ target_link_libraries(spicomm ${WIRINGPI_LIB})
 add_executable(SPICommTest examples/comm/spi/SPICommTest.cpp)
 target_link_libraries(SPICommTest spicomm)
 endif(${WIRINGPI_FOUND})
+
+
+######SCM Binding
+configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 
+               ${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp @ONLY)
+if(raspicam_FOUND)
+    set(DR_ROBOTO_LIBS sensor_vision ${raspicam_CV_LIBS} 
+                       ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
+else(raspicam_FOUND)
+    set(DR_ROBOTO_LIBS sensor_vision ${OpenCV_LIBS} 
+                       ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
+endif(raspicam_FOUND)
+
+add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
+target_link_libraries(dr_roboto ${DR_ROBOTO_LIBS})

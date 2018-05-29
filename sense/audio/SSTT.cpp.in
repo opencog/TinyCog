@@ -1,0 +1,88 @@
+/* 
+ * File: SSTT.cpp
+ * Author: Dagim Sisay <dagiopia@gmail.com>
+ * License: AGPL
+ * Date: May, 2018
+*/
+
+#include "sense/audio/SSTT.hpp"
+
+// Data
+void (*f_pt)(const char *s);
+//std::thread *run;
+bool is_running;
+ps_decoder_t *ps;
+cmd_ln_t *cfg;
+ad_rec_t *ad;
+uint8 utt_started, in_speech;
+
+
+void tcstt_init(void (*f)(const char *s))
+{
+    is_running = false;
+    cfg = cmd_ln_init(NULL, ps_args(), TRUE,
+                    "-hmm", "@POCKETSPHINX_MODEL_DIR@/en-us/en-us",
+                    "-lm", "@POCKETSPHINX_MODEL_DIR@/en-us/en-us.lm.bin",
+                    "-dict", "@POCKETSPHINX_MODEL_DIR@/en-us/cmudict-en-us.dict",
+                    "-remove_noise", "yes",
+		    "-logfn", "/dev/null",
+                    NULL);
+    if( cfg == NULL) { fprintf(stderr, "Error Creating Config Object\n"); exit(1); }
+
+    ps = ps_init(cfg);
+    if (ps == NULL) { fprintf(stderr, "Error Initializing Recognizer\n"); exit(1); }
+    ad = ad_open_dev("plughw:1,0", SAMPLE_RATE);
+    if (ad == NULL) { fprintf(stderr, "Error Opening Device\n"); exit(1); }
+    if (ad_start_rec(ad) < 0) { fprintf(stderr, "Error Starting Recording\n"); exit(1); }
+    if (ps_start_utt(ps) < 0) { fprintf(stderr, "Error Starting Utterance\n"); exit(1); }
+    
+    utt_started = FALSE;
+    printf("Ready....\n");
+
+    f_pt = f; //set the callback function
+    std::thread run(tcstt_run);
+    is_running = true;
+    run.join();
+}
+
+
+void tcstt_close()
+{
+    is_running = false;
+//    delete run;
+}
+
+
+bool tcstt_is_on()
+{
+    return is_running;
+}
+
+
+void tcstt_run()
+{
+    int32 k;
+    char const *hyp;
+    int16 adbuf[2048];
+    while (1) {
+        if ((k = ad_read(ad, adbuf, 2048)) < 0)
+            fprintf(stderr, "Errpr Reading Audio Data\n");
+        ps_process_raw(ps, adbuf, k, FALSE, FALSE);
+        in_speech = ps_get_in_speech(ps);
+        if (in_speech && !utt_started) { 
+            utt_started = TRUE;
+            printf("Listening...\n");
+        }
+        if (!in_speech && utt_started) {
+            ps_end_utt(ps);
+            hyp = ps_get_hyp(ps, NULL);
+            if (hyp != NULL)
+                f_pt(hyp); //printf("Text: %s\n", hyp);
+
+            if (ps_start_utt(ps) < 0)
+                fprintf(stderr, "Error Starting Utterance\n");
+            utt_started = FALSE;
+            printf("Ready...\n");
+       }
+   }
+}

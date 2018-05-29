@@ -8,7 +8,7 @@ SCMWrapper::SCMWrapper(const char *call_name, const char * (*f) ())
 }
 
 
-SCM SCMWrapper::func_wrapper()
+SCM SCMWrapper::func_wrapper(const char * (*f) ())
 {
-  return scm_from_locale_string(func_ptr());
+  return scm_from_locale_string(f());
 }

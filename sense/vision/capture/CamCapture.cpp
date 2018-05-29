@@ -42,6 +42,9 @@ CamCapture::CamCapture(string src_name,int width,int height,int cam,
 
 }
 
+
+
+
 CamCapture::~CamCapture()
 {
     //dtor
@@ -104,3 +107,5 @@ void CamCapture::thread_loop(CamCapture* cc)
     }
     cc->state = "stopped";
 }
+
+
