@@ -174,6 +174,7 @@ find_package(Festival REQUIRED)
 find_package(EST REQUIRED)
 include_directories("include" "include/act/audio" ${FESTIVAL_INCLUDE_DIR} ${EST_INCLUDE_DIR})
 add_library( act_audio act/audio/FestivalTTS.cpp )
+set_property(TARGET act_audio PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries( act_audio ${FESTIVAL_LIBRARIES} ${EST_LIBRARIES})
 
 add_executable( exampleTTS examples/act/audio/exampleTTS.cpp)
@@ -210,9 +211,11 @@ endif(${WIRINGPI_FOUND})
 configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 
                ${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp @ONLY)
 if(raspicam_FOUND)
+    set(ON_RPI_3 "YES")
     set(DR_ROBOTO_LIBS sensor_vision ${raspicam_CV_LIBS} 
                        ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
 else(raspicam_FOUND)
+    set(ON_RPI_3 "NO")
     set(DR_ROBOTO_LIBS sensor_vision ${OpenCV_LIBS} 
                        ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
 endif(raspicam_FOUND)

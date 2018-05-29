@@ -8,7 +8,7 @@
 #define YES_RPI 1
 #define NO_RPI 0
 
-#define _DR_ROBOTO_RPI_ @raspicam_FOUND@_RPI
+#define _DR_ROBOTO_RPI_ @ON_RPI_3@_RPI
 
 
 #include <libguile.h>
