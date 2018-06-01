@@ -1,4 +1,5 @@
 /*
+
   Project: OpenCogER
   File: FacialExpressions.hpp
   Author: Dagim Sisay <dagiopia@gmail.com>
@@ -15,17 +16,17 @@
 #include <vector>
 
 #define EAR_THRESH 0.09
+#define phi 1.6182 // The golden ratio
 
 class FacialExpressions
 {
-    public:
-        bool eyes_open();
-	uint8_t mouth_open();
-	uint8_t mouth_width();
+  public:
+	bool eyes_open();
+        uint8_t natural_face();
 	
-
     private:
         facial_lms *flms;
 };
+
 
 #endif // FACIALEXPRESSIONS_H_

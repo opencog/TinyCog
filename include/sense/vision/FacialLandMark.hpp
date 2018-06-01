@@ -20,12 +20,15 @@
 #include <vector>
 #include <stdint.h>
 
+
 #define LEU1 18 
 #define LEU2 19
 #define LEB1 22
 #define LEB2 21
 #define LELS 17
 #define LERS 20
+#define LETA 24 //left eyebrow top arc  
+#define RETA 10
 
 #define REU1 4
 #define REU2 5
@@ -34,11 +37,15 @@
 #define RELS 3
 #define RERS 6
 
-
-#define MCU 14
+#define NBT 16 // Nose bottom tip
+#define MCU 14 //mouth center upper
 #define MCB 13
-#define MRS 15
+#define MRS 15 //mouth right side 
 #define MLS 12
+#define MCL 61
+#define MCR 63
+
+#define BC 2 //bottom of chin   
 
 #define NO_FLM_PTS 26 //shape_predictor_26_face_landmarks.dat
 

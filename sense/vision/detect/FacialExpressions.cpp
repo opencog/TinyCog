@@ -7,7 +7,7 @@
 */
 
 #include "sense/vision/FacialExpressions.hpp"
-
+/*
 bool FacialExpressions::eyes_open()
 {
     double ear1, ear2, ear;
@@ -20,11 +20,25 @@ bool FacialExpressions::eyes_open()
     ear = (ear1+ear2) / 2;
     return (ear < EAR_THRESH) ? false : true; 
 }
-
-uint8_t FacialExpressions::mouth_open()
+*/
+bool FacialExpressions::eyes_open()
 {
-    double mvd, mar; //mouth vertical distance and mouth aspect ratio
-    mvd = std::abs(flms->part(MCU2).y() - flms->part(MCB2).y());
-    mar = mvd / std::abs(flms->part(MRS).y() - flms->part(MLS).y());
-    return mar;
+   
+    double Leye,Reye;//left eye, right eye
+    Leye = (std::abs(flms->part(LETA).y() - flms->part(LEU1).y())) / (std::abs(flms->part(LEU1).y() - flms->part(LEB1).y()));
+    Reye = (std::abs(flms->part(RETA).y() - flms->part(REU1).y())) / (std::abs(flms->part(REU1).y() - flms->part(REB1).y()));     
+    
+    bool eyes_open;
+	 if (1.6 <= Leye && Leye <= 1.62 || 1.6 <= Reye && Reye >= 1.62) 
+        	return  true;
+}
+
+ uint8_t FacialExpressions::natural_face() 
+ {
+
+  double mouth_width;
+  bool natural_face;
+   mouth_width = (std::abs(flms->part(MLS).x() - flms->part(MRS).x())) / (std::abs(flms->part(MLS).x() - flms->part(MCR).x()));
+   if (1.6 <= mouth_width && mouth_width <= 1.62 )
+	return true;      
 }
