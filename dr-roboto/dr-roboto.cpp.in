@@ -39,6 +39,7 @@ float avg_time_pf, en_time, acc, avg_oh, avg_nh, avg_nf, avg_of;
 uint64_t st_time;
 int n_f, nh, oh, nf, of;
 std::string ret;
+std::string text = "";
 
 #if _DR_ROBOTO_RPI_
     RaspiCamCapture *cap;
@@ -84,7 +85,7 @@ const char *face_detect()
 	      std::to_string(faces[i].width) + "." +
 	      std::to_string(faces[i].height) + ";";
     ret += ";";
-    cv::imshow("image", frame);
+    //cv::imshow("image", frame);
     return ret.c_str();
 }
 
@@ -109,7 +110,7 @@ const char *face_smile_detect()
 	ret += (smile.empty())? "false;" : "true;";
     }
     ret += ";";
-    cv::imshow("image", frame);
+    //cv::imshow("image", frame);
     std::cout<<ret<<std::endl;
     cv::imwrite("face_smile.jpg", frame);
     return ret.c_str();
@@ -138,7 +139,9 @@ SCM scm_salient_point()
 void say(char *data)
 {
     tts.setSpeaker(FestivalTTS::speaker::DON);
-    tts.speak(data);
+    text = data;
+    //printf("Speech output: %s\n", data);
+    tts.speak(text.c_str());
 }
 
 void scm_say(SCM txt)

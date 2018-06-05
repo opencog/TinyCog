@@ -208,8 +208,6 @@ endif(${WIRINGPI_FOUND})
 
 
 ######SCM Binding
-configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 
-               ${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp @ONLY)
 if(raspicam_FOUND)
     set(ON_RPI_3 "YES")
     set(DR_ROBOTO_LIBS sensor_vision ${raspicam_CV_LIBS} 
@@ -219,6 +217,9 @@ else(raspicam_FOUND)
     set(DR_ROBOTO_LIBS sensor_vision ${OpenCV_LIBS} 
                        ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
 endif(raspicam_FOUND)
+
+configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 
+               ${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp @ONLY)
 
 add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
 target_link_libraries(dr_roboto ${DR_ROBOTO_LIBS})
