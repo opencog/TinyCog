@@ -84,7 +84,7 @@ const char *face_detect()
 	      std::to_string(faces[i].y) + "," +
 	      std::to_string(faces[i].width) + "." +
 	      std::to_string(faces[i].height) + ";";
-    ret += ";";
+    //ret += ";";
     //cv::imshow("image", frame);
     return ret.c_str();
 }
@@ -105,11 +105,11 @@ const char *face_smile_detect()
         ret = std::to_string(faces[i].x) + "," + 
 	      std::to_string(faces[i].y) + "," +
 	      std::to_string(faces[i].width) + "." +
-	      std::to_string(faces[i].height) + ";";
+	      std::to_string(faces[i].height) + ",";
 	smile = smd->Transform(c2g->Transform(frame(faces[i])));
 	ret += (smile.empty())? "false;" : "true;";
     }
-    ret += ";";
+    //ret += ";";
     //cv::imshow("image", frame);
     std::cout<<ret<<std::endl;
     cv::imwrite("face_smile.jpg", frame);
