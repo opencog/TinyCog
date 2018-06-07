@@ -1,4 +1,4 @@
-# OpenCogER
+# TinyCog
 
 A collection of speech, vision, and movement functionalities 
 aimed at small or toy robots on embedded systems, such as the 
@@ -30,14 +30,14 @@ Need to have these whether on desktop or rpi
 * [Dlib](https://github.com/davisking/dlib/releases/latest)
 * [Festival](http://festvox.org/festival/)
 * [Guile 2.2](https://www.gnu.org/software/guile/download/)
-* 
+* [PocketSphinx](https://cmusphinx.github.io/wiki/tutorialpocketsphinx/#installation-on-unix-system)
 On rpi3 only
 * [Raspicam](https://sourceforge.net/projects/raspicam/files/?) > v1.5
 * [WiringPi](http://wiringpi.com/download-and-install/)
 
 Use cmake for building. 
     ```
-        cd to OpenCogEr dir
+        cd to TinyCog dir
         mkdir build
         cd build
         cmake .. 
@@ -75,7 +75,16 @@ microphone for STT and sound source localization. Some of the sensor
 programs such as the face, hand and voice activity detection can run 
 on the PI without much stress on the hardware but other functionalities 
 like emotion and and speech recogntion should be implemented as services 
-from a server possibly from singnet. 
+from a server possibly from singnet. Currently, STT is implemented using
+pocketsphinx. It's not ideal but can be used for a very limited range of
+commands and simple conversation. 
+
+### Act
+
+The robot should also act as well as sense. It must speak and move around. 
+The speech synthesis utilizes festival. The code is in [act/audio](act/audio).
+Movement was intended to be with SPI communication with the hardware but 
+that has changed. However the spi interface is in [comm/spi](comm/spi)
 
 ### Behavior
 
@@ -96,7 +105,7 @@ from a server possibly from singnet.
 
 ## ToDo
 * Emotion recognition
-* Offline Speech (command) Recognition (shouldn't be heavy on the hardware)
+* Improve STT
 * Ghost rules
 * Stories for a specific identity we need the robot to have
 * Access to Singnet applications

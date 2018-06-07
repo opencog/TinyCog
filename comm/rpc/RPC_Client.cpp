@@ -19,6 +19,7 @@ void RPC_Client::encode_img(cv::Mat in)
 
 bool RPC_Client::detect_faces(cv::Mat &in, std::vector<cv::Rect> &out)
 {
+    ClientContext ctxt;
     ImageBase::Image img;
     ImageBase::Faces faces;
     encode_img(in);
@@ -41,6 +42,7 @@ bool RPC_Client::detect_faces(cv::Mat &in, std::vector<cv::Rect> &out)
 //the output param is only a vvp because I don't know how to insert into full_object_detection obj
 bool RPC_Client::detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point> > &out)
 {
+    ClientContext ctxt;
     ImageBase::Image img;
     ImageBase::Landmarks lms;
     encode_img(in);
@@ -55,8 +57,8 @@ bool RPC_Client::detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point>
         facial_lms shape; 
 	std::vector<cv::Point> flm;
 	for (size_t jdx = 0; jdx < lms.landmarks(idx).points_size(); jdx++) {
-	    pt.x = lms.landmarks(idx).points(idx).x();
-	    pt.y = lms.landmarks(idx).points(idx).y();
+	    pt.x = lms.landmarks(idx).points(jdx).x();
+	    pt.y = lms.landmarks(idx).points(jdx).y();
 	    flm.push_back(pt);
 	}
 	out.push_back(flm);
@@ -68,6 +70,7 @@ bool RPC_Client::detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point>
 
 bool RPC_Client::salient_point(cv::Mat &in, cv::Point &out)
 {
+    ClientContext ctxt;
     ImageBase::Image img;
     ImageBase::Point pt;
     encode_img(in);

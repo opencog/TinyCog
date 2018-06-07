@@ -33,6 +33,39 @@
 )
 
 
+; Used by smile detection rule
+(define (antecedent-smile)
+	(if (= (psi-get-number-value event-smile) 1)
+		(stv 1 1)
+		(stv 0 1)
+	)
+)
+
+(define (consequent-smile)
+	; test-ghost is used for the time being
+	(test-ghost "inner msg smile is detected")
+
+	; Return Meaningless atom	
+	(Concept "")
+)
+
+
+; Used by saliency detection
+(define (antecedent-saliency)
+	(if (= (psi-get-number-value event-saliency) 1)
+		(stv 1 1)
+		(stv 0 1)
+	)
+)
+
+(define (consequent-saliency)
+	; test-ghost is used for the time being
+	(test-ghost "inner msg saliency is detected")
+
+	; Return Meaningless atom	
+	(Concept "")
+)
+
 
 ;; ----------------------------------------------------
 ;; Interaction rules
@@ -46,6 +79,34 @@
 	)
 	; Consequent
 	(GroundedSchemaNode "scm: consequent-face")
+	; Params
+	(List)
+)
+
+
+; Interaction rule for smile detection
+(psi-create-general-rule
+	; Antecedent
+	(EvaluationLink
+		(GroundedPredicateNode "scm: antecedent-smile")
+		(List)
+	)
+	; Consequent
+	(GroundedSchemaNode "scm: consequent-smile")
+	; Params
+	(List)
+)
+
+
+; Interaction rule for saliency detection
+(psi-create-general-rule
+	; Antecedent
+	(EvaluationLink
+		(GroundedPredicateNode "scm: antecedent-saliency")
+		(List)
+	)
+	; Consequent
+	(GroundedSchemaNode "scm: consequent-saliency")
 	; Params
 	(List)
 )

@@ -26,7 +26,7 @@ class SCMWrapper {
       ~SCMWrapper() {}
 
     private:
-      const char * (*func_ptr)();
+      static const char * (*func_ptr)();
       static SCM func_wrapper();
 };
 

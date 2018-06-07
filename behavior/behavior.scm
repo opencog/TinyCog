@@ -25,7 +25,8 @@
 ;; Parse ghost topic files. 
 ;; Ghost rules handle speech interactions.
 
-(ghost-parse-file "test.top")
+;(ghost-parse-file (string-append TOPDIR "behavior/" "test.top"))
+(ghost-parse-file (string-append TOPDIR "behavior/" "demo.top"))
 
 
 ;; ----------------------------------------------
@@ -48,8 +49,8 @@
 ;; Add testing functions
 ;; The functions are used to simulate the occurence of events for testing.
 
-(include "test.scm")
-
+;(include "test.scm")
+(include "updater.scm")
 
 
 ;; Run ghost loop

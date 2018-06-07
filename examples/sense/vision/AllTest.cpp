@@ -11,16 +11,7 @@
 #include <string>
 #include <signal.h>
 
-#include "sense/vision/CamCapture.hpp"
-#include "sense/vision/ITColor2Gray.hpp"
-#include "sense/vision/ITEqualizeHist.hpp"
-#include "sense/vision/ITDetectFace.hpp"
-#include "sense/vision/ITDetectSmile.hpp"
-#include "sense/vision/FacialLandMark.hpp"
-#include "sense/vision/ITDetectHand.hpp"
-#include "sense/vision/FingersCount.hpp"
-#include "sense/vision/DSaliency.hpp"
-#include "sense/vision/BoxTrackerThread.hpp"
+#include "sense/vision/Vision.hpp"
 
 
 #define _NEED_GUI_

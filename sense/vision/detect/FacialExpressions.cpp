@@ -23,6 +23,7 @@ bool FacialExpressions::eyes_open()
 */
 bool FacialExpressions::eyes_open()
 {
+
    
     double Leye,Reye;//left eye, right eye
     Leye = (std::abs(flms->part(LETA).y() - flms->part(LEU1).y())) / (std::abs(flms->part(LEU1).y() - flms->part(LEB1).y()));
@@ -41,4 +42,10 @@ bool FacialExpressions::eyes_open()
    mouth_width = (std::abs(flms->part(MLS).x() - flms->part(MRS).x())) / (std::abs(flms->part(MLS).x() - flms->part(MCR).x()));
    if (1.6 <= mouth_width && mouth_width <= 1.62 )
 	return true;      
+
+ /*   double mvd, mar; //mouth vertical distance and mouth aspect ratio
+    mvd = std::abs(flms->part(MCU).y() - flms->part(MCB).y());
+    mar = mvd / std::abs(flms->part(MRS).y() - flms->part(MLS).y());
+    return mar;
+*/
 }

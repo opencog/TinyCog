@@ -6,7 +6,7 @@
 */
 
 
-#include "BoxTracker.hpp"
+#include "BoxTrackerThread.hpp"
 #include "FacialExpressions.hpp"
 #include "FacialLandMark.hpp"
 #include "FingersCount.hpp"

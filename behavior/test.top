@@ -56,8 +56,8 @@ u: (~HI) [hi] [hello] [hey] [how are you] there
 
 
 ### Gambits
-#goal: (curiosity=0.7)
-t: what is your name?
+##goal: (curiosity=0.7)
+# t: what is your name?
 
 ### Match variable (start with _)
 ### User variables (start with $)
@@ -138,10 +138,10 @@ u: (looping detector function) Random looping number is ^func-looping-result
 
 ### Ordered Goal
 # Goal of next rules decrease in a geometric sequence with a factor 0.5 
-ordered-goal: (curiosity=0.8)
+## ordered-goal: (curiosity=0.8)
 
-u: (what be _*) please define '_0
+# u: (what be _*) please define '_0
 
-u: (why be _*) why not
+# u: (why be _*) why not
 
 # and so on.. as there are more rules the geometric sum converges to 0.8 

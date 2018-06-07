@@ -8,21 +8,23 @@
 
 (setlocale LC_CTYPE "C")
 
-(define PATH "../build/")
-;; (setenv "LTDL_LIBRARY_PATH" (string-append (getenv "LTDL_LIBRARY_PATH") ":"))
+(define-public TOPDIR (current-filename))
+(set! TOPDIR (string-drop-right TOPDIR
+	(-
+		(- (string-length TOPDIR) 1)
+		(string-rindex TOPDIR #\/)
+	))
+)
 
-(load-extension "libdr_roboto" "init_dr_roboto")
 
 (add-to-load-path "/usr/local/share/opencog/scm")
-(add-to-load-path ".")
-;(use-modules (ice-9 readline)) (activate-readline)
-(use-modules (opencog))
-(use-modules (opencog query))
-(use-modules (opencog exec))
-(load-from-path "opencog.scm")
 
-(include "behavior.scm")
+; Load C++ detector functions
+(load-extension "libdr_roboto" "init_dr_roboto")
 
+
+; Load behavior scripts
+(include "behavior/behavior.scm")
 
 ; TODO this should be changed to a practical i/o implementation.
 ; this is just for testing
