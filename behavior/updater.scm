@@ -73,11 +73,15 @@
 		(if (equal? txt-str txt-str-prev)
 			(continue)
 			(begin
+				(display (string-append "updater: " txt-str))
 				(act-say txt-str)
 				(set! txt-str-prev txt-str)
 			)
 
 		)
+	
+		)
+	)
 
 )
 

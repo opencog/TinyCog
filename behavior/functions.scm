@@ -31,11 +31,10 @@
 
 ; This function returns the negation of is-happy since ghost doesn't support negation on functions yet
 (define-public (neg-is-happy argWord)
-	(define thresh (string->number (cog-name argWord)))
-	(if (>= (/ (modulo (psi-loop-count (ghost-get-component)) 10) 10.0) thresh)
-		(stv 0 1)
-		(stv 1 1)
-	)
+	
+	(define stv-val (is-happy argWord))
+	(stv (- 1.0 (cog-tv-mean stv-val)) (cog-tv-confidence stv-val))
+
 )
 
 ; Functions for action part
@@ -65,3 +64,31 @@
 	)
 )
 
+
+(define-public (func-face-seen)
+	
+	(if (and (defined? 'global-face) (< (- (current-time) (hash-ref global-face 'update-time)) 3))
+		(stv 1 1)
+		(stv 0 1)
+	)
+	
+)
+
+(define-public (neg-func-face-seen)
+	(define stv-val (func-face-seen))
+	(stv (- 1.0 (cog-tv-mean stv-val)) (cog-tv-confidence stv-val))
+)
+
+(define-public (func-smile)
+	
+	(if (and (defined? 'global-smile) (< (- (current-time) (hash-ref global-smile 'update-time)) 3))
+		(stv 1 1)
+		(stv 0 1)
+	)
+	
+)
+
+(define-public (neg-func-smile)
+	(define stv-val (func-smile))
+	(stv (- 1.0 (cog-tv-mean stv-val)) (cog-tv-confidence stv-val))
+)

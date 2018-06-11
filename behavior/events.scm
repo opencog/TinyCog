@@ -31,9 +31,10 @@
 (define face-last (current-time))
 
 (define-public (monitor-face-detection)
-	(if (and (defined? 'global-face) (< (- (current-time) (hash-ref global-face 'update-time)) 1))
-		;(> (- (current-time) face-last) 10))
+	(if (and (defined? 'global-face) (< (- (current-time) (hash-ref global-face 'update-time)) 3)
+		(> (- (current-time) face-last) 5))
 			(begin
+				;(display "face detected in monitor")
 				(psi-set-event-occurrence! event-face)
 				(set! face-last (current-time))
 			)
@@ -42,24 +43,25 @@
 
 
 ; Monitor smile
-(define-public (monitor-smile-detection)
-	(if (and (defined? 'global-smile) (< (- (current-time) (hash-ref global-smile 'update-time)) 2))
-		(psi-set-event-occurrence! event-smile)
-
-
+;(define-public (monitor-smile-detection)
+;	(if (and (defined? 'global-smile) (< (- (current-time) (hash-ref global-smile 'update-time)) 3))
+;		(psi-set-event-occurrence! event-smile)
+;
+;	)
+;)
 
 ; Monitor saliency
-(define salient-last (current-time))
+;(define salient-last (current-time))
 
-(define-public (monitor-saliency)
-	(if (and (defined? 'global-salient) (< (- (current-time) (hash-ref global-salient 'update-time)) 5)
-		(> (- (current-time) salient-last) 10))
-			(begin
-				(psi-set-event-occurrence! event-saliency)
-				(set! salient-last (current-time))
-			)
-	)
-)
+;(define-public (monitor-saliency)
+;	(if (and (defined? 'global-salient) (< (- (current-time) (hash-ref global-salient 'update-time)) 5)
+;		(> (- (current-time) salient-last) 10))
+;			(begin
+;				(psi-set-event-occurrence! event-saliency)
+;				(set! salient-last (current-time))
+;			)
+;	)
+;)
 
 
 
@@ -69,5 +71,5 @@
 ;; Register the monitoring functions here
 
 (psi-set-event-callback! monitor-face-detection)
-(psi-set-event-callback! monitor-smile-detection)
-(psi-set-event-callback! monitor-saliency)
+;(psi-set-event-callback! monitor-smile-detection)
+;(psi-set-event-callback! monitor-saliency)
