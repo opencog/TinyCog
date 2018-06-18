@@ -120,6 +120,7 @@
 				(close client))
 				)
 			)
+			(usleep 100000)
 		)
 	)
 )

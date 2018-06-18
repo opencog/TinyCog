@@ -61,9 +61,10 @@
 			)
 		)
 		
+		#|
 		; Finally send text output to stt when there is one
 		; Note: This code is only for demo (stt input should be read from port)
-       
+      
 		(set! ghost-result (ghost-get-result))
 		(for-each (lambda (a)
 		    (set! txt-str (string-trim (string-append txt-str " " (cog-name a))))
@@ -79,8 +80,10 @@
 			)
 
 		)
+		|#
 	
 		)
+		(usleep 10000)
 	)
 
 )

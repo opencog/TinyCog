@@ -14,7 +14,7 @@ u: (me name be _*) $name='_0 Hi '_0
 
 u: (what be me name $name) Your name is $name
 
-u: (you hate human) no. you are very interesting. Do you hate robotos?
+u: (you hate humans) no. you are very interesting. Do you hate robots?
 	a: (yes) I am sure you are going to like me though
 	a: (no) We will get along fine
 

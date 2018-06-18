@@ -86,6 +86,7 @@ const char *face_detect()
 	      std::to_string(faces[i].height) + ";";
     //ret += ";";
     //cv::imshow("image", frame);
+    cv::imwrite("face.jpg", frame);
     return ret.c_str();
 }
 
@@ -111,8 +112,8 @@ const char *face_smile_detect()
     }
     //ret += ";";
     //cv::imshow("image", frame);
-    std::cout<<ret<<std::endl;
-    cv::imwrite("face_smile.jpg", frame);
+    //std::cout<<ret<<std::endl;
+    //cv::imwrite("face_smile.jpg", frame);
     return ret.c_str();
 }
 
