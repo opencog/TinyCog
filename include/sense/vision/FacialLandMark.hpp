@@ -21,31 +21,34 @@
 #include <stdint.h>
 
 
-#define LEU1 18 
-#define LEU2 19
-#define LEB1 22
-#define LEB2 21
-#define LELS 17
-#define LERS 20
-#define LETA 24 //left eyebrow top arc  
-#define RETA 10
+#define LEU1 37 
+#define LEU2 38
+#define LEB1 41
+#define LEB2 40
+#define LELS 36
+#define LERS 39
+#define LETA 19 //left eyebrow top arc
+  
+#define RETA 24
+#define REU1 43
+#define REU2 44
+#define REB1 47
+#define REB2 46
+#define RELS 42
+#define RERS 45
 
-#define REU1 4
-#define REU2 5
-#define REB1 8
-#define REB2 7
-#define RELS 3
-#define RERS 6
+#define NBT 33 // Nose bottom tip
+#define MCU1 50 //mouth center upper
+#define MCU2 51
+#define MCU3 52
+#define MRS  54 //mouth right side 
+#define MLS 48
+#define MCB1 67
+#define MCB2 66
+#define MCB3 65
 
-#define NBT 16 // Nose bottom tip
-#define MCU 14 //mouth center upper
-#define MCB 13
-#define MRS 15 //mouth right side 
-#define MLS 12
-#define MCL 61
-#define MCR 63
 
-#define BC 2 //bottom of chin   
+#define BC 8 //bottom of chin   
 
 #define NO_FLM_PTS 26 //shape_predictor_26_face_landmarks.dat
 
