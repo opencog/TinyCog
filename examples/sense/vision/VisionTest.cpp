@@ -44,7 +44,7 @@ int main( int argc, char** argv )
     BoxTrackerThread bx(&cc,frame,boundingBox,BoxTracker::tracker_type::MEDIAN_FLOW);
     while(true)
     {
-        if (bx.update(frame,boundingBox))
+	if (bx.update(frame,boundingBox))
         {
             frame.copyTo(image);
             rectangle( image, boundingBox, Scalar( 255, 0, 0 ), 2, 1 );

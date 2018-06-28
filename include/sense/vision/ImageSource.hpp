@@ -32,11 +32,11 @@ class ImageSource
 	virtual string getName(){return name;}
 	
 	virtual Mat getCurrentFrame()=0;
+	bool running;//isOn
 	
 	protected:
 	string name;
 	string state;
-	bool running;//isOn
 	int ok; //maybe 0= okay, -1=error
 };
 

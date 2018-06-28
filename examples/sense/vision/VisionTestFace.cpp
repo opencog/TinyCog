@@ -12,6 +12,7 @@
 #include <iostream>
 #include <cstring>
 #include <vector>
+#include <signal.h>
 
 #include "sense/vision/CamCapture.hpp"
 #include "sense/vision/ITColor2Gray.hpp"
