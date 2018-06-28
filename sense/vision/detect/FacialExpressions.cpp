@@ -1,4 +1,5 @@
 /*
+
   Project: OpenCogER
   File: FacialExpressions.cpp
   Author: Dagim Sisay <dagiopia@gmail.com>
@@ -24,28 +25,22 @@ bool FacialExpressions::eyes_open()
 bool FacialExpressions::eyes_open()
 {
 
-   
     double Leye,Reye;//left eye, right eye
     Leye = (std::abs(flms->part(LETA).y() - flms->part(LEU1).y())) / (std::abs(flms->part(LEU1).y() - flms->part(LEB1).y()));
-    Reye = (std::abs(flms->part(RETA).y() - flms->part(REU1).y())) / (std::abs(flms->part(REU1).y() - flms->part(REB1).y()));     
-    
+    Reye = (std::abs(flms->part(RETA).y() - flms->part(REU1).y())) / (std::abs(flms->part(REU1).y() - flms->part(REB1).y()));
+
     bool eyes_open;
-	 if (1.6 <= Leye && Leye <= 1.62 || 1.6 <= Reye && Reye >= 1.62) 
-        	return  true;
+         if ( Leye == phi || Reye == phi)
+                return  true;
 }
 
- uint8_t FacialExpressions::natural_face() 
+ uint8_t FacialExpressions::natural_face()
  {
 
   double mouth_width;
-  bool natural_face;
-   mouth_width = (std::abs(flms->part(MLS).x() - flms->part(MRS).x())) / (std::abs(flms->part(MLS).x() - flms->part(MCR).x()));
-   if (1.6 <= mouth_width && mouth_width <= 1.62 )
-	return true;      
-
- /*   double mvd, mar; //mouth vertical distance and mouth aspect ratio
-    mvd = std::abs(flms->part(MCU).y() - flms->part(MCB).y());
-    mar = mvd / std::abs(flms->part(MRS).y() - flms->part(MLS).y());
-    return mar;
-*/
+  bool natural_face = true;
+  bool smaily_face = false;
+   mouth_width = (std::abs(flms->part(MLS).x() - flms->part(MRS).x())) / (std::abs(flms->part(MLS).x() - flms->part(MCU3).x()));
+   return (mouth_width == phi ) ? false : true;
 }
+
