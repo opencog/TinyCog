@@ -14,11 +14,15 @@ u: (me name be _*) $name='_0 Hi '_0
 
 u: (what be me name $name) Your name is $name
 
-u: (you hate human) no. you are very interesting. Do you hate robotos?
+u: (you hate humans) no. you are very interesting. Do you hate robots?
 	a: (yes) I am sure you are going to like me though
 	a: (no) We will get along fine
 
+u: (can you see me ^func-face-seen ) Yes I can see you.
+u: (can you see me ^neg-func-face-seen ) No I can not see you
 
+u: (do I look happy ^func-smile ) I guess you are smiling
+u: (do I look happy ^neg-func-smile ) I do not know
 
 u: (inner msg face is detected) I see your face
 u: (inner msg smile is detected) You have a nice smile

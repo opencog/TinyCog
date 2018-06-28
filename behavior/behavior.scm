@@ -58,4 +58,4 @@
 
 
 ;; Run dynamic psi
-(psi-updater-run)
+;(psi-updater-run)
