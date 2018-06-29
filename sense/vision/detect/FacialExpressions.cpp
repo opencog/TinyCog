@@ -1,4 +1,5 @@
 /*
+
   Project: OpenCogER
   File: FacialExpressions.cpp
   Author: Dagim Sisay <dagiopia@gmail.com>
@@ -16,7 +17,7 @@ bool FacialExpressions::eyes_open()
     bool eyes_open;
     Leye = (std::abs(flms->part(LETA).y() - flms->part(LEU1).y())) / (std::abs(flms->part(LEU1).y() - flms->part(LEB1).y()));
     Reye = (std::abs(flms->part(RETA).y() - flms->part(REU1).y())) / (std::abs(flms->part(REU1).y() - flms->part(REB1).y()));     
-   return ( Leye == phi || Reye == phi )? true;
+   return ( Leye == phi || Reye == phi )? false: true;
 }
 
  uint8_t FacialExpressions::natural_face() 
