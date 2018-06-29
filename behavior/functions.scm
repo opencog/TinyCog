@@ -33,7 +33,7 @@
 (define-public (neg-is-happy argWord)
 	
 	(define stv-val (is-happy argWord))
-	(stv (- 1.0 (cog-mean stv-val)) (cog-confidence stv-val))
+	(stv (- 1.0 (cog-tv-mean stv-val)) (cog-tv-confidence stv-val))
 
 )
 
@@ -76,7 +76,7 @@
 
 (define-public (neg-func-face-seen)
 	(define stv-val (func-face-seen))
-	(stv (- 1.0 (cog-mean stv-val)) (cog-confidence stv-val))
+	(stv (- 1.0 (cog-tv-mean stv-val)) (cog-tv-confidence stv-val))
 )
 
 (define-public (func-smile)
@@ -90,5 +90,5 @@
 
 (define-public (neg-func-smile)
 	(define stv-val (func-smile))
-	(stv (- 1.0 (cog-mean stv-val)) (cog-confidence stv-val))
+	(stv (- 1.0 (cog-tv-mean stv-val)) (cog-tv-confidence stv-val))
 )
