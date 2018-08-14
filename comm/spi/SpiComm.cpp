@@ -145,7 +145,8 @@ std::string SpiComm::spi_send(uint8_t *packet, size_t packet_len)
 	// then there is segfault
 	std::string ret_data;
 	for (int i = 0; i < packet_len; i++){
-		ret_data.append<char>(1, ret_buffer[i]);
+		//ret_data.append<char>(1, ret_buffer[i]);
+                ret_data += ret_buffer[i];
 		//printf("%.2X ", ret_buffer[i]);
 	}
 	
