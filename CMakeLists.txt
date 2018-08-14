@@ -33,7 +33,7 @@ add_library( sensor_vision sense/vision/capture/CamCapture.cpp
         sense/vision/track/BoxTrackerThread.cpp)
 
 set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} )
+target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
 
 add_library(tinycog_util util/util.cpp)
 
@@ -91,10 +91,10 @@ add_executable(VisionTestFace examples/sense/vision/VisionTestFace.cpp)
 target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 
 add_executable(FaceLandMarkTest examples/sense/vision/FaceLandMarkTest.cpp)
-target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
+target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
 add_executable(NoddingTest examples/sense/vision/FaceNoddingDetection.cpp)
-target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES} tinycog_util)
+target_link_libraries(NoddingTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib tinycog_util)
 
 add_executable(FingersCountTest examples/sense/vision/FingersCountTest.cpp)
 target_link_libraries(FingersCountTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})   
@@ -117,13 +117,13 @@ add_executable(RaspiVisionTestFace examples/sense/vision/RaspiVisionTestFace.cpp
 target_link_libraries(RaspiVisionTestFace sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS})   
 
 add_executable(RaspiFaceLandMarkTest examples/sense/vision/RaspiFaceLandMarkTest.cpp)
-target_link_libraries(RaspiFaceLandMarkTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
+target_link_libraries(RaspiFaceLandMarkTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
 add_executable(RaspiFingersCountTest examples/sense/vision/RaspiFingersCountTest.cpp)
-target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
+target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
 add_executable(RaspiSaliencyTest examples/sense/vision/RaspiSaliencyTest.cpp)
-target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} ${dlib_LIBRARIES})
+target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
 add_executable(RPC_Server_Test examples/comm/rpc/RPC_Server_Test.cpp ${GENERATED_PB_FILES})
 target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr 
@@ -131,7 +131,7 @@ target_link_libraries( RPC_Server_Test rpc_server grpc++_unsecure grpc gpr
 
 add_executable(RPC_Client_Test examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
 target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
-                     ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} ${dlib_LIBRARIES} sensor_vision)
+                     ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision)
 
 endif(raspicam_FOUND)
 
@@ -142,10 +142,10 @@ configure_file(data/Facial_Landmark_Model/shape_predictor_26_face_landmarks.dat
 							shape_predictor_26_face_landmarks.dat COPYONLY)
 
 install (TARGETS sensor_vision DESTINATION lib/OpenCogER)
-install (FILES BoxTracker.hpp BoxTrackerThread.hpp
-    CamCapture.hpp FileCapture.hpp ImageSource.hpp
-    ImageTransform.hpp ITColor2Gray.hpp ITEqualizeHist.hpp
-    ITDetectFace.hpp ITDetectSmile.hpp
+install (FILES include/sense/vision/BoxTracker.hpp include/sense/vision/BoxTrackerThread.hpp
+    include/sense/vision/CamCapture.hpp include/sense/vision/FileCapture.hpp include/sense/vision/ImageSource.hpp
+    include/sense/vision/ImageTransform.hpp include/sense/vision/ITColor2Gray.hpp include/sense/vision/ITEqualizeHist.hpp
+    include/sense/vision/ITDetectFace.hpp include/sense/vision/ITDetectSmile.hpp
     DESTINATION "include/TinyCog/sense/vision")
 
 
@@ -181,7 +181,7 @@ add_executable( exampleTTS examples/act/audio/exampleTTS.cpp)
 target_link_libraries( exampleTTS act_audio )
 
 install (TARGETS act_audio DESTINATION lib/OpenCogER)
-install (FILES TTS.hpp FestivalTTS.hpp 
+install (FILES include/act/audio/TTS.hpp include/act/audio/FestivalTTS.hpp 
         DESTINATION "include/OpenCogER/act/audio" )
         
 #########network
@@ -193,7 +193,7 @@ add_executable( exUDPserver examples/network/exUDPserver.cpp)
 target_link_libraries(exUDPserver networkr)
 
 install (TARGETS networkr DESTINATION lib/OpenCogER)
-install (FILES StringServerUDP.hpp DESTINATION "include/OpenCogER/network")
+install (FILES include/network/StringServerUDP.hpp DESTINATION "include/OpenCogER/network")
 
 #######COMM
 find_package(WiringPi QUIET)
@@ -211,11 +211,11 @@ endif(${WIRINGPI_FOUND})
 if(raspicam_FOUND)
     set(ON_RPI_3 "YES")
     set(DR_ROBOTO_LIBS sensor_vision ${raspicam_CV_LIBS} 
-                       ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
+                       ${EXTRA_LIBS} dlib::dlib act_audio)
 else(raspicam_FOUND)
     set(ON_RPI_3 "NO")
     set(DR_ROBOTO_LIBS sensor_vision ${OpenCV_LIBS} 
-                       ${EXTRA_LIBS} ${dlib_LIBRARIES} act_audio)
+                       ${EXTRA_LIBS} dlib::dlib act_audio)
 endif(raspicam_FOUND)
 
 configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 
