@@ -22,11 +22,37 @@ and provide coordinated chatbot and movement abilities.
 Everything here is meant to run on a rpi3 computer; one can also 
 compile everything on a standard Linux desktop computer. 
 
+A fully prepped raspbian image is available 
+[here](http://144.76.153.5/rpi3)
+Use xzcat to clone the image as shown here replacing sdx with your device.
+    ```
+        xzcat oc-raspbian-1.img.xz | sudo dd of=/dev/sdx
+    ```
+
+When you first boot with this image, it automatically logs in to the
+default user 'oc' and expands the filesystem to occupy the entire root
+partition and then it reboots by itself.
+
+The default credentials:
+    ```
+        Username: oc
+        Password: opencog
+     ```
+
+The image contains the opencog version at the time of it's building
+and other libraries such as opencv and dlib (3.2 and 19.7).
+To see the opencog commit version, pkg-config can be used.
+    ```    
+        pkg-config --variable=cogutil opencog    #shows cogutil commit version
+        pkg-config --variable=atomspace opencog    #shows opencog commit version
+        pkg-config --variable=opencog opencog    #shows opencog commit version
+    ```
+
 ### Install 
 
 Need to have these whether on desktop or rpi
-* [Opencv-3.x](https://github.com/opencv/opencv/releases/latest)
-* [Opencv_contrib-3.x](https://github.com/opencv/opencv_contrib/releases)
+* [Opencv-3.2](https://github.com/opencv/opencv/releases/latest)
+* [Opencv_contrib-3.2](https://github.com/opencv/opencv_contrib/releases)
 * [Dlib](https://github.com/davisking/dlib/releases/latest)
 * [Festival](http://festvox.org/festival/)
 * [Guile 2.2](https://www.gnu.org/software/guile/download/)

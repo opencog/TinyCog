@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-project( OpenCogER )
+project( TinyCog )
+set (CMAKE_INSTALL_PREFIX "/usr/local")
 set (CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/" "/usr/local/lib/cmake/")
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -141,11 +142,26 @@ configure_file(data/Haar_Cascades/haarcascade_hand.xml haarcascade_hand.xml COPY
 configure_file(data/Facial_Landmark_Model/shape_predictor_26_face_landmarks.dat 
 							shape_predictor_26_face_landmarks.dat COPYONLY)
 
-install (TARGETS sensor_vision DESTINATION lib/OpenCogER)
-install (FILES include/sense/vision/BoxTracker.hpp include/sense/vision/BoxTrackerThread.hpp
-    include/sense/vision/CamCapture.hpp include/sense/vision/FileCapture.hpp include/sense/vision/ImageSource.hpp
-    include/sense/vision/ImageTransform.hpp include/sense/vision/ITColor2Gray.hpp include/sense/vision/ITEqualizeHist.hpp
-    include/sense/vision/ITDetectFace.hpp include/sense/vision/ITDetectSmile.hpp
+install (TARGETS sensor_vision DESTINATION lib/TinyCog)
+install (FILES include/sense/vision/BoxTracker.hpp 
+               include/sense/vision/BoxTrackerThread.hpp
+	       include/sense/vision/CamCapture.hpp 
+	       include/sense/vision/FileCapture.hpp 
+	       include/sense/vision/ImageSource.hpp
+	       include/sense/vision/ImageTransform.hpp 
+	       include/sense/vision/ITColor2Gray.hpp 
+	       include/sense/vision/ITEqualizeHist.hpp
+	       include/sense/vision/ITDetectFace.hpp 
+	       include/sense/vision/ITDetectSmile.hpp
+	       include/sense/vision/DSaliency.hpp
+	       include/sense/vision/FacialExpressions.hpp
+	       include/sense/vision/FacialLandMark.hpp
+	       include/sense/vision/FingersCount.hpp
+	       include/sense/vision/ITDetectHand.hpp
+	       include/sense/vision/RaspiCamCapture.hpp
+	       include/sense/vision/RaspiVision.hpp
+	       include/sense/vision/VisionCommon.hpp
+	       include/sense/vision/Vision.hpp
     DESTINATION "include/TinyCog/sense/vision")
 
 
@@ -164,6 +180,9 @@ if (POCKETSPHINX_FOUND)
 
     add_executable( STT_Test examples/sense/audio/STT_Test.cpp )
     target_link_libraries (STT_Test sensor_audio)
+
+    install( TARGETS sensor_audio DESTINATION lib/TinyCog)
+    install( FILES include/sense/audio/SSTT.hpp DESTINATION "include/TinyCog/sense/audio")
 else (POCKETSPHINX_FOUND)
     message("STT Will Not Be Built.")
 endif (POCKETSPHINX_FOUND)
@@ -180,9 +199,9 @@ target_link_libraries( act_audio ${FESTIVAL_LIBRARIES} ${EST_LIBRARIES})
 add_executable( exampleTTS examples/act/audio/exampleTTS.cpp)
 target_link_libraries( exampleTTS act_audio )
 
-install (TARGETS act_audio DESTINATION lib/OpenCogER)
+install (TARGETS act_audio DESTINATION lib/TinyCog)
 install (FILES include/act/audio/TTS.hpp include/act/audio/FestivalTTS.hpp 
-        DESTINATION "include/OpenCogER/act/audio" )
+        DESTINATION "include/TinyCog/act/audio" )
         
 #########network
 include_directories("include" "include/network")
@@ -192,8 +211,8 @@ target_link_libraries( networkr ${EXTRA_LIBS} )
 add_executable( exUDPserver examples/network/exUDPserver.cpp)
 target_link_libraries(exUDPserver networkr)
 
-install (TARGETS networkr DESTINATION lib/OpenCogER)
-install (FILES include/network/StringServerUDP.hpp DESTINATION "include/OpenCogER/network")
+install (TARGETS networkr DESTINATION lib/TinyCog)
+install (FILES include/network/StringServerUDP.hpp DESTINATION "include/TinyCog/network")
 
 #######COMM
 find_package(WiringPi QUIET)
@@ -204,6 +223,10 @@ target_link_libraries(spicomm ${WIRINGPI_LIB})
 
 add_executable(SPICommTest examples/comm/spi/SPICommTest.cpp)
 target_link_libraries(SPICommTest spicomm)
+
+install( TARGETS spicomm DESTINATION lib/TinyCog )
+install( FILES include/comm/spi/SpiComm.hpp DESTINATION "include/TinyCog/comm/spi")
+
 endif(${WIRINGPI_FOUND})
 
 
@@ -223,3 +246,4 @@ configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in
 
 add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
 target_link_libraries(dr_roboto ${DR_ROBOTO_LIBS})
+install( TARGETS dr_roboto DESTINATION lib/TinyCog )
