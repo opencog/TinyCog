@@ -119,8 +119,8 @@ that has changed. However the spi interface is in [comm/spi](comm/spi)
     * Ghost rules that list all syntax found in [behavior/test.top](behavior/test.top)
     * For non-speech triggered actions, OpenPsi's dynamic module is used to indirectly trigger ghost rules. 
 ```
-            event ==> phony speech                          (Dynamic OpenPsi rule)
-	    phony speech ==> speech or some action          (Ghost rule)
+        event ==> phony speech                          (Dynamic OpenPsi rule)
+        phony speech ==> speech or some action          (Ghost rule)
 ```
     * Events and event monitoring functions are in [beavior/events.scm](behavior/events.scm)
     * Dynamic OpenPsi rules are found in [behavior/interaction-rules.scm](behavior/interaction-rules.scm)

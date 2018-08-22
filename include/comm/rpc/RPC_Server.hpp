@@ -61,7 +61,7 @@ class RPC_Server final : public ImageBase::ImageServices::Service
 	  flm.get_lm_points(cv_img, rcts, flms);
 	  for(int f_idx = 0 ; f_idx < flms.size(); f_idx++) { // on faces
               ImageBase::Points *pts = ls->add_landmarks();
-	      for(int p_idx = 0 ; p_idx < NO_FLM_PTS; p_idx++){ // on lm points (parts)
+	      for(int p_idx = 0 ; p_idx < flms[f_idx].num_parts(); p_idx++){ // on lm points (parts)
                   ImageBase::Point *pt = pts->add_points();
                   pt->set_x(flms[f_idx].part(p_idx).x());
                   pt->set_y(flms[f_idx].part(p_idx).y());
