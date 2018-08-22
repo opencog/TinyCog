@@ -50,15 +50,13 @@
 
 #define BC 8 //bottom of chin   
 
-#define NO_FLM_PTS 26 //shape_predictor_26_face_landmarks.dat
-
 typedef dlib::full_object_detection facial_lms;
 
 
 class FacialLandMark 
 {
     public:
-        const std::string shapes_file="shape_predictor_26_face_landmarks.dat";
+        const std::string shapes_file="shape_predictor_68_face_landmarks.dat";
 	FacialLandMark();
 	~FacialLandMark(){}
 	

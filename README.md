@@ -62,33 +62,33 @@ On rpi3 only
 * [WiringPi](http://wiringpi.com/download-and-install/)
 
 Use cmake for building. 
-    ```
-        cd to TinyCog dir
-        mkdir build
-        cd build
-        cmake .. 
-        make
-    ```
+```
+    cd to TinyCog dir
+    mkdir build
+    cd build
+    cmake .. 
+    make
+```
 
 ### Running
 
 * Start relex [server](https://github.com/opencog/relex#opencog-serversh)
 * run [run.sh](run.sh)
-    ```
-        $ ./run.sh
-    ```
+```
+    $ ./run.sh
+```
 * A guile shell starts up where you can test behavorial functions with simulated functions.
-    ```
-        guile> (test-set-face-event)
-    ```
+```
+    guile> (test-set-face-event)
+```
 * In another terminal, connect to port 5555 via telnet to input speech
-    ```
-        $ telnet localhost 5555
-    ```
+```
+    $ telnet localhost 5555
+```
 * You can see response output either from the guile instance above or by telneting to port 6666
-    ```
-        $ telnet localhost 6666
-    ```
+```
+    $ telnet localhost 6666
+```
 
 ## Implementation
 
@@ -118,10 +118,10 @@ that has changed. However the spi interface is in [comm/spi](comm/spi)
 * Behavior rules are in [behavior/](behavior/)
     * Ghost rules that list all syntax found in [behavior/test.top](behavior/test.top)
     * For non-speech triggered actions, OpenPsi's dynamic module is used to indirectly trigger ghost rules. 
-        ```
+```
             event ==> phony speech                          (Dynamic OpenPsi rule)
 	    phony speech ==> speech or some action          (Ghost rule)
-        ```
+```
     * Events and event monitoring functions are in [beavior/events.scm](behavior/events.scm)
     * Dynamic OpenPsi rules are found in [behavior/interaction-rules.scm](behavior/interaction-rules.scm)
     * Functions/actions used by Ghost rules are found at [behavior/functions.scm](behavior/functions.scm)

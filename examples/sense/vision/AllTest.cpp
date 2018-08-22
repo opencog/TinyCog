@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 			face_found = true;
 			shape = f_lms[i];
 			#ifdef _NEED_GUI_
-			for (int j = 0; j < NO_FLM_PTS; ++j)
+			for (int j = 0; j < shape.num_parts(); ++j)
 				circle(frame, Size(shape.part(j).x(), shape.part(j).y()), 1, 
 				       CV_RGB(0, 255, 0), 1.5);
 			#endif //_NEED_GUI_
