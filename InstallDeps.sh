@@ -18,6 +18,9 @@ export opencv_contrib_version="3.2.0"
 
 # Opencv
 
+if [ $(uname -m) == "armv7l" ] 
+then
+
 echo "Installing OpenCV"
 sudo apt-get install -y $opencv_deps
 wget https://github.com/opencv/opencv/archive/$opencv_version.zip -O opencv_$opencv_version.zip
@@ -116,6 +119,12 @@ cd WiringPi-master
 ./build
 cd ..
 sudo rm -r WiringPi-master
+
+
+else
+echo "Not an arm machine!!"
+exit 1
+fi
 
 
 
