@@ -15,11 +15,11 @@ export guile_version="2.2"
 export raspicam_version="0.1.6"
 export opencv_version="3.2.0"
 export opencv_contrib_version="3.2.0"
+GUILE_DEB="guile-2.2.3-1_armhf.deb" # http://144.76.153.5/opencog/guile-2.2.3-1_armhf.deb
 
 # Opencv
 
-if [ $(uname -m) == "armv7l" ] 
-then
+
 
 echo "Installing OpenCV"
 sudo apt-get install -y $opencv_deps
@@ -62,7 +62,10 @@ echo "Installing dlib version $dlib_version"
 
 #guile
 echo "Installing guile version $guile_version"
-sudo apt-get install guile-$guile_version
+wget http://144.76.153.5/opencog/$GUILE_DEB
+sudo dpkg -i $GUILE_DEB
+sudo apt-get -f install 
+rm $GUILE_DEB
 
 #festival
 echo "Installing festival"
@@ -95,6 +98,10 @@ make
 sudo make install
 cd ../..
 sudo rm -r sphinx
+
+
+if [ $(uname -m) == "armv7l" ] 
+then
 
 #raspicam
 echo "Installing raspicam version $raspicam_version"
