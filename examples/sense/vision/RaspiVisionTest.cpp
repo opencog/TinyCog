@@ -16,16 +16,14 @@ using namespace cv;
    
 int main( int argc, char** argv )
 {    
-    RaspiCamCapture cc("RaspiCam", 320, 240, 30);
-    if (!cc.isOk()){cout<<endl<<cc.getState()<<endl;return -1;}
+    RaspiCamCapture *rc = RaspiCamCapture::init("RaspiCam", 320, 240, 30);
+    if (!rc->isOk()){cout<<endl<<rc->getState()<<endl;return -1;}
     
     Mat frame;
-    Mat image;
     while(true)
     {
-        frame = cc.getCurrentFrame();
-	frame.copyTo(image);
-        imshow( "Tracking API", image );
+        frame = rc->getCurrentFrame();
+        imshow( "Tracking API", frame );
         
 	char c = (char) waitKey( 1 );
         if( c == 'q' )

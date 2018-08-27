@@ -26,8 +26,8 @@ using namespace cv;
    
 int main( int argc, char** argv )
 {    
-    CamCapture cc("c1",320,240,0,30);
-    if (!cc.isOk()){cout<<endl<<cc.getState()<<endl;return -1;}
+    CamCapture *cc = CamCapture::init("c1",320,240,0,30);
+    if (!cc->isOk()){cout<<endl<<cc->getState()<<endl;return -1;}
     
     Mat frame;
     namedWindow( "Tracking API", 1 );
@@ -35,13 +35,13 @@ int main( int argc, char** argv )
     Mat image;
     Rect2d boundingBox;
     bool paused = false;
-    frame = cc.getCurrentFrame();
+    frame = cc->getCurrentFrame();
     frame.copyTo(image);
     boundingBox = selectROI("Tracking API", image);
     cout<<endl<<"Press q to exit"<<endl;
     cout<<endl<<boundingBox.x<<","<<boundingBox.y<<","<<boundingBox.width<<","<<boundingBox.height<<endl;
     imshow( "Tracking API", image );
-    BoxTrackerThread bx(&cc,frame,boundingBox,BoxTracker::tracker_type::MEDIAN_FLOW);
+    BoxTrackerThread bx(cc,frame,boundingBox,BoxTracker::tracker_type::MEDIAN_FLOW);
     while(true)
     {
 	if (bx.update(frame,boundingBox))

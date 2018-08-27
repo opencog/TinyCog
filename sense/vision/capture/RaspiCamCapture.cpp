@@ -13,6 +13,17 @@
 #define MIN_WAIT (10*1000)
 //wait in micro seconds
 
+RaspiCamCapture* RaspiCamCapture::_raspi_cam_cap = NULL;
+
+
+RaspiCamCapture *RaspiCamCapture::init(string src_name, int width, int height, double max_fps)
+{
+    if(_raspi_cam_cap == NULL)
+        _raspi_cam_cap = new RaspiCamCapture(src_name, width, height, max_fps);
+    return _raspi_cam_cap;
+}
+
+
 RaspiCamCapture::RaspiCamCapture(string src_name,int width,int height,
 	double max_fps): ImageSource(src_name),w(width),h(height)
 {

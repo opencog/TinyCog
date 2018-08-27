@@ -52,9 +52,9 @@ int main(int argc, char **argv)
     avg_nh = avg_oh = avg_time_pf = 0; 
     oh = nh = n_f = 0;
     signal(SIGINT, singint_handler);
-    RaspiCamCapture cc("c", 320, 240, 20);
-    if( !cc.isOk()) { fprintf(stderr, "ERROR: Camera Opening : %s\n", 
-                             cc.getState().c_str()); return -1; }
+    RaspiCamCapture *rc = RaspiCamCapture::init("c", 320, 240, 20);
+    if( !rc->isOk()) { fprintf(stderr, "ERROR: Camera Opening : %s\n", 
+                             rc->getState().c_str()); return -1; }
     ITColor2Gray c2g("c2g1");
     ITEqualizeHist eh("eh1");
     ITDetectHand dh("dh1");
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     while (true)
     {
         st_time = getTickCount();
-        frame = cc.getCurrentFrame();
+        frame = rc->getCurrentFrame();
         img = eh.Transform(c2g.Transform(frame));
 	cv::threshold(img, img, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
 	hands = dh.Transform(img);

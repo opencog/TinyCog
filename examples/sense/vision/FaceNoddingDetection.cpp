@@ -34,8 +34,8 @@
 
 int main(int argc, char** argv)
 {    
-    CamCapture cc("cam1",320,240,0,FRAME_RATE);
-    if (!cc.isOk()){std::cout<<std::endl<<cc.getState()<<std::endl;return -1;}
+    CamCapture *cc = CamCapture::init("cam1",320,240,0,FRAME_RATE);
+    if (!cc->isOk()){std::cout<<std::endl<<cc->getState()<<std::endl;return -1;}
     
     cv::Mat frame, image;
     ITColor2Gray c2g("c2g1");
@@ -59,8 +59,18 @@ int main(int argc, char** argv)
     double vrc = 0, upping = 0, downing = 0, siding = 0;
     std::vector<double> vvrc;
     std::vector<double> vver;
-    double arr[] = {123,123,120,120,116,114,114,116,121,121,126,126,125,125,120,120,116,116,116,116,120,120,127,127,130,130,128,128,122,122,117,117,117,117,120,120,127,129,129,127,127,122,122,120,120,121,121,123,123,124,124,122};
-    double arr2[] = {125, 125, 122, 116, 116, 110, 110, 107, 109, 109, 115, 115, 122, 127, 127, 120, 113, 110, 110, 111, 111, 117, 117, 129, 129, 138, 138, 138, 138, 129, 129, 121, 121, 117, 117, 118, 118, 128, 128137, 137, 143, 140, 140, 132, 124, 120, 120, 121, 121, 126, 132, 135, 132, 132, 127, 127, 120, 118, 118, 119, 119, 123, 130, 130, 131, 131, 127, 124, 124, 122, 122, 123, 123, 124, 124, 125, 125, 125, 125, 124, 124};
+    double arr[] = {123,123,120,120,116,114,114,116,121,121,126,126,125,125,120,
+                    120,116,116,116,116,120,120,127,127,130,130,128,128,122,122,
+		    117,117,117,117,120,120,127,129,129,127,127,122,122,120,120,
+		    121,121,123,123,124,124,122};
+    double arr2[] = {125, 125, 122, 116, 116, 110, 110, 107, 109, 109, 115, 115,
+                     122, 127, 127, 120, 113, 110, 110, 111, 111, 117, 117, 129, 
+		     129, 138, 138, 138, 138, 129, 129, 121, 121, 117, 117, 118, 
+		     118, 128, 128, 137, 137, 143, 140, 140, 132, 124, 120, 120, 
+		     121, 121, 126, 132, 135, 132, 132, 127, 127, 120, 118, 118, 
+		     119, 119, 123, 130, 130, 131, 131, 127, 124, 124, 122, 122, 
+		     123, 123, 124, 124, 125, 125, 125, 125, 124, 124};
+
     std::vector<double> cdata(std::begin(arr), std::end(arr));
     std::vector<double> cdata2(std::begin(arr2), std::end(arr2));
     std::vector<double> template1;
@@ -70,7 +80,7 @@ int main(int argc, char** argv)
     
     while(true)
     {
-    	frame = cc.getCurrentFrame();
+    	frame = cc->getCurrentFrame();
 	frame.copyTo(image);
 	faces = fcd.Transform(eh.Transform(c2g.Transform(frame)));
 	flm.get_lm_points(image, faces, f_lms); //get lms

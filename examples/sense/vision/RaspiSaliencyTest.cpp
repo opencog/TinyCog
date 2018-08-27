@@ -32,9 +32,9 @@ int main(int argc, char **argv)
 	avg_time_pf = 0;
 	n_f = 0;
 	signal(SIGINT, sigint_handler);
-	RaspiCamCapture cc("c1", 320, 240, 20);
-	if (!cc.isOk()) { 
-		fprintf(stderr, "%s\n", cc.getState().c_str()); 
+	RaspiCamCapture *rc = RaspiCamCapture::init("c1", 320, 240, 20);
+	if (!rc->isOk()) { 
+		fprintf(stderr, "%s\n", rc->getState().c_str()); 
 		return -1;
 	}
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 	while (true)
 	{
 		st_time = getTickCount();
-		frame = cc.getCurrentFrame();
+		frame = rc->getCurrentFrame();
 		sal_d.update(frame, sal);
 	//	imshow("sal", sal);
 		threshold(sal, sal, 100, 255, CV_THRESH_BINARY);

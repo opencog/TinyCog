@@ -35,8 +35,8 @@ int main(int argc, char** argv)
     avg_time_pf = 0;
     n_f = 0;
     signal(SIGINT, sigint_handler);
-    CamCapture cc("cam1",320,240,0,20);
-    if (!cc.isOk()){std::cout<<std::endl<<cc.getState()<<std::endl;return -1;}
+    CamCapture *cc = CamCapture::init("cam1",320,240,0,20);
+    if (!cc->isOk()){std::cout<<std::endl<<cc->getState()<<std::endl;return -1;}
     
     cv::Mat frame, image;
     ITColor2Gray c2g("c2g1");
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
     while(true)
     {
         st_time = getTickCount();
-    	frame = cc.getCurrentFrame();
+    	frame = cc->getCurrentFrame();
 	frame.copyTo(image);
 
 	/*
