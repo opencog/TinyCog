@@ -80,6 +80,10 @@ target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${
 add_executable(RaspiSaliencyTest examples/sense/vision/RaspiSaliencyTest.cpp)
 target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
+install (FILES include/sense/vision/RaspiCamCapture.hpp
+               include/sense/vision/RaspiVision.hpp
+         DESTINATION "include/TinyCog/sense/vision")
+
 
 endif(raspicam_FOUND)
 
@@ -105,8 +109,6 @@ install (FILES include/sense/vision/BoxTracker.hpp
 	       include/sense/vision/FacialLandMark.hpp
 	       include/sense/vision/FingersCount.hpp
 	       include/sense/vision/ITDetectHand.hpp
-	       include/sense/vision/RaspiCamCapture.hpp
-	       include/sense/vision/RaspiVision.hpp
 	       include/sense/vision/VisionCommon.hpp
 	       include/sense/vision/Vision.hpp
     DESTINATION "include/TinyCog/sense/vision")
@@ -194,3 +196,7 @@ configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in
 add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
 target_link_libraries(dr_roboto ${DR_ROBOTO_LIBS})
 install( TARGETS dr_roboto DESTINATION lib/TinyCog )
+
+install(FILES
+"${CMAKE_SOURCE_DIR}/cmake/FindTinyCog.cmake"
+DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake)
