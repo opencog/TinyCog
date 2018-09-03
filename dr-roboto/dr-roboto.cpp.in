@@ -161,7 +161,7 @@ void init_dr_roboto()
     #if _DR_ROBOTO_RPI_
         cap = RaspiCamCapture::init("cap", 320, 240, 20);
     #else //_DR_ROBOTO_RPI_
-        cap = CamCapture::init("cap", 320, 240, 20, 0);
+        cap = CamCapture::init("cap", 320, 240, 0, 20);
     #endif //_DR_ROBOTO_RPI_
     
     c2g = new ITColor2Gray("c2g");
