@@ -13,8 +13,9 @@ To test the c++ detector functions that currently have a scheme wrapper
     * (det-face)------------>To detect face.
     It returns the size and positions of faces detected
     
-    * (det-face-smaile)------>To detect smile.
-    It returns the size and positions of smiles detected
+    * (det-face-smile)------>To detect smile.
+    It returns the size and positions of smiles detected and the position of the face. 
+    It also return a boolean telling if the face is smiling or not. 
     
     * (det-salient-point)----->To detect a saliency.
     It returns the position where saliency is detected
