@@ -198,5 +198,5 @@ target_link_libraries(dr_roboto ${DR_ROBOTO_LIBS})
 install( TARGETS dr_roboto DESTINATION lib/TinyCog )
 
 install(FILES
-"${CMAKE_SOURCE_DIR}/cmake/FindTinyCog.cmake"
+"${CMAKE_SOURCE_DIR}/cmake/TinyCogConfig.cmake"
 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake)
