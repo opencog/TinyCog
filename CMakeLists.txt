@@ -12,7 +12,11 @@ find_package( dlib REQUIRED )
 find_package( Protobuf REQUIRED )
 find_package( raspicam QUIET )
 find_package( Guile REQUIRED )
-include_directories("include" ${GUILE_INCLUDE_DIRS})
+include_directories("include"
+                    "include/act/audio"
+                    "include/network"
+                    "include/comm/spi" 
+                    "include/sense/vision" ${GUILE_INCLUDE_DIRS})
 
 if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
