@@ -9,7 +9,7 @@
 #ifndef ITDETECTHAND_H_
 #define ITDETECTHAND_H_
 
-#include "sense/vision/ImageTransform.hpp"
+#include "ImageTransform.hpp"
 
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"

@@ -13,9 +13,9 @@
 
 #include <opencv2/opencv.hpp>
 
-#include "sense/vision/ITColor2Gray.hpp"
-#include "sense/vision/ITEqualizeHist.hpp"
-#include "sense/vision/ITDetectHand.hpp"
+#include "ITColor2Gray.hpp"
+#include "ITEqualizeHist.hpp"
+#include "ITDetectHand.hpp"
 
 #include <stdio.h>
 #include <stdlib.h>
