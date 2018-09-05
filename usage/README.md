@@ -5,7 +5,7 @@ Before using tinycog functionalities be sure to
   3. Enable the camera via raspi-config
   
 To test the c++ detector functions that currently have a scheme wrapper
-  1. cd to the/tinycog/build/dir and open a guile shell
+  1. cd to TinyCog/build and open a guile shell
   2. load the dr_roboto library
     (load-extension "libdr_roboto" "init_dr_roboto")
   3. Run some available detector functions
