@@ -7,19 +7,18 @@ Before using tinycog functionalities be sure to
 To test the c++ detector functions that currently have a scheme wrapper
   1. cd to TinyCog/build and open a guile shell
   2. load the dr_roboto library
-    (load-extension "libdr_roboto" "init_dr_roboto")
+    (load-extension "./libdr_roboto" "init_dr_roboto")
   3. Run some available detector functions
   
     * (det-face)------------>To detect face.
     It returns the size and positions of faces detected
     
     * (det-face-smile)------>To detect smile.
-    It returns the size and positions of smiles detected and the position of the face. 
-    It also return a boolean telling if the face is smiling or not. 
+    It returns the size and position of a face along with a true/false if the face is smiling or not.
     
     * (det-salient-point)----->To detect a saliency.
-    It returns the position where saliency is detected
+    It returns the point of saliency
     
-    * (act-say "your-input-text")------->To make your speaker repeat your input text.
-    It won't return a value but command your device speaker to say your input word
+    * (act-say "your-input-text")------->To make your speaker say the text
+    It does TTS.
     
