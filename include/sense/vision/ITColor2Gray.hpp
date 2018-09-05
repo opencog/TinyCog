@@ -12,7 +12,7 @@
 #ifndef ITCOLOR2GRAY_H
 #define ITCOLOR2GRAY_H
 
-#include "sense/vision/ImageTransform.hpp"
+#include "ImageTransform.hpp"
 
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"

@@ -14,7 +14,7 @@
 
 #include <grpcpp/grpcpp.h>
 
-#include "sense/vision/VisionCommon.hpp"
+#include "VisionCommon.hpp"
 
 #include "img_base.grpc.pb.h"
 

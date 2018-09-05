@@ -9,7 +9,7 @@
 #define RASPICAMCAPTURE_H
 
 
-#include "sense/vision/ImageSource.hpp"
+#include "ImageSource.hpp"
 
 #include <raspicam/raspicam_cv.h>
 

@@ -12,7 +12,7 @@
 #ifndef ITDETECTSMILE_H
 #define ITDETECTSMILE_H
 
-#include "sense/vision/ImageTransform.hpp"
+#include "ImageTransform.hpp"
 
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
