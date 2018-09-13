@@ -13,7 +13,7 @@ To start the shell you simply type ```guile``` on the terminal and a scheme prom
 
 The most common thing we practice in guile while handling C++ functions is loading C-extensions. We can create a compiled code module of C functions. Once the module has been correctly installed, it should be possible to use it like this:
 
-         ```guile> (load-extension "./libSomeLibrary.so" "init_some_function")```
+         (load-extension "./libSomeLibrary.so" "init_some_function")
  A compiled module should have a specially named module init function.  Guile knows about this special name and will call that function automatically after having linked in the library. 
 
 In the above example libSomeLibrary.so is the module and “init_some_function” is the module init function.
