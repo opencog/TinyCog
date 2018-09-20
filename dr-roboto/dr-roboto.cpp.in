@@ -11,10 +11,10 @@
 #define _DR_ROBOTO_RPI_ @ON_RPI_3@_RPI
 
 
-#include <libguile.h>
-
 #include <stdio.h>
 #include <vector>
+
+
 #if _DR_ROBOTO_RPI_
     #include "sense/vision/RaspiVision.hpp"
 #else //_DR_ROBOTO_RPI
@@ -22,18 +22,133 @@
 #endif
 #include "act/audio/FestivalTTS.hpp"
 
-//#include "util/SCMWrapper.hpp"
 
-
+//debug consts 
 #define _NEED_GUI_
 #define _NEED_TIME_INFO_
 
-#define SCALE 0.1
+
+// opencog headers
+#define HAVE_GUILE
+#include <opencog/atomspace/AtomSpace.h>
+#include <opencog/atomspace/guile/SchemePrimitive.h>
+#include <opencog/truthvalue/TruthValue.h>
+#include <opencog/truthvalue/AttentionValue.h>
+
+using namespace std;
+
+
+class DrRoboto
+{
+	private:
+		AtomSpace *_as;
+		static bool ok;
+		
+		#if _DR_ROBOTO_RPI_
+			RaspiCamCapture *cap;
+		#else //_DR_ROBOTO_RPI_
+			CamCapture *cap;
+		#endif //_DR_ROBOTO_RPI_
+
+		ITColor2Gray c2g;
+		ITEqualizeHist eh;
+		ITDetectFace fcd;
+		ITDetectSmile smd;
+		FacialLandMark flm;
+		ITDetectHand dh;
+		FingersCount fc;
+		DSaliency sal_d;
+		FestivalTTS tts;
+
+	public:
+		/* 
+			XXX don't know if this is the right way to do it. 
+			The AS is shared b/n this program and the guile instance once this module 
+			is loaded and init_as is called from guile with the AS address as arg. 
+					(init_as (cog-atomspace))   ; this should be called first
+			Also the AS is just copied. 
+		*/
+		DrRoboto();
+		~DrRoboto();
+		void init_as(AtomSpace *as) { _as = as; ok = true;}
+		
+		//sensor functions
+		void start_sense();
+		void stop_sense();
+};
 
 
 extern "C" {
   void init_dr_roboto();
 };
+
+
+DrRoboto::DrRoboto() : c2g("c2g") , eh("eh") , fcd("fcd") , smd("smd") , 
+							  dh("dh") , fc("fc") , sal_d(SAL_STATIC, SAL_FINE_GRAINED)
+{
+	ok = false;
+	#ifdef _NEED_TIME_INFO_
+		avg_nh = avg_oh = avg_of = avg_nf = avg_time_pf = 0;
+		oh = nh = of = nf = n_f = 0;
+	#endif //_NEED_TIME_INFO_
+
+	#if _DR_ROBOTO_RPI_
+		cap = new RaspiCamCapture("cap", 320, 240, 20);
+	#else //_DR_ROBOTO_RPI_
+		cap = new CamCapture("cap", 320, 240, 20, 0);
+	#endif //_DR_ROBOTO_RPI_
+
+	/*
+	c2g = new ITColor2Gray("c2g");
+	eh = new ITEqualizeHist("eh");
+	fcd = new ITDetectFace("fcd");
+	smd = new ITDetectSmile("smd");
+	dh = new ITDetectHand("dh");
+	fc = new FingersCount(true);
+	sal_d = new DSaliency(SAL_STATIC, SAL_FINE_GRAINED); 
+	*/
+} 
+
+DrRoboto::~DrRoboto() {}
+
+
+void DrRoboto::start_sense()
+{
+	cv::Mat frame, gr, he;
+	std::vector<cv::Rect> faces, smile;
+	cv::Point2d cent;
+	std::string str;
+	Handle h;
+	Handle hl;
+	Handle sm = _as->add_node(PREDICATE_NODE, "smile");
+	ProtoAtomPtr pap;
+	while(ok) {
+		frame = cap->getCurrentFrame();
+		gr = c2g.Transform(frame);
+		eh = eh.Transform(gr);
+		faces = fc.Transform(eh);
+		for(size_t i = 0; i < faces.size(); i++) {
+			str = "face_";
+			str.append<int>(1);
+			h = _as->add_node(CONCEPT_NODE, str.c_str());
+			smile = smd.Transform(eh(faces[i])); //only check on the smaller face region 
+			if(!smile.empty())
+				pap = createFloatValue(1.0);
+			else 
+				pap = createFloatValue(0.0);
+			h->setValue(sm, pap);
+		}
+
+		//salient point
+	} //while ok
+}
+
+
+void DrRoboto::stop_sense()
+{
+	ok = false;
+}
+
 
 float avg_time_pf, en_time, acc, avg_oh, avg_nh, avg_nf, avg_of;
 uint64_t st_time;
@@ -41,21 +156,6 @@ int n_f, nh, oh, nf, of;
 std::string ret;
 std::string text = "";
 
-#if _DR_ROBOTO_RPI_
-    RaspiCamCapture *cap;
-#else //_DR_ROBOTO_RPI_
-    CamCapture *cap;
-#endif //_DR_ROBOTO_RPI_
-
-ITColor2Gray *c2g;
-ITEqualizeHist *eh;
-ITDetectFace *fcd;
-ITDetectSmile *smd;
-FacialLandMark flm;
-ITDetectHand *dh;
-FingersCount *fc;
-DSaliency *sal_d;
-FestivalTTS tts;
 
 void print_report()
 {       
@@ -72,57 +172,6 @@ void print_report()
 }
 
 
-// return FACE_LOC[X,Y,W,H];;
-const char *face_detect()
-{
-    ret = "";
-    std::vector<cv::Rect> faces;
-    cv::Mat frame = cap->getCurrentFrame();
-    faces = fcd->Transform(eh->Transform(c2g->Transform(frame)));
-    for(size_t i = 0; i < faces.size(); i++)
-        ret = std::to_string(faces[i].x) + "," + 
-	      std::to_string(faces[i].y) + "," +
-	      std::to_string(faces[i].width) + "." +
-	      std::to_string(faces[i].height) + ";";
-    //ret += ";";
-    //cv::imshow("image", frame);
-    cv::imwrite("face.jpg", frame);
-    return ret.c_str();
-}
-
-SCM scm_face_detect() 
-{ 
-  return scm_from_locale_string(face_detect()); 
-}
-
-// return FACE_LOC[X,Y,W,H];SMILE(TRUE/FALSE);;
-const char *face_smile_detect()
-{
-    ret = "";
-    std::vector<cv::Rect> faces, smile;
-    cv::Mat frame = cap->getCurrentFrame();
-    faces = fcd->Transform(eh->Transform(c2g->Transform(frame)));
-    for(size_t i = 0; i < faces.size(); i++) {
-        ret = std::to_string(faces[i].x) + "," + 
-	      std::to_string(faces[i].y) + "," +
-	      std::to_string(faces[i].width) + "." +
-	      std::to_string(faces[i].height) + ",";
-	smile = smd->Transform(c2g->Transform(frame(faces[i])));
-	ret += (smile.empty())? "false;" : "true;";
-    }
-    //ret += ";";
-    //cv::imshow("image", frame);
-    //std::cout<<ret<<std::endl;
-    //cv::imwrite("face_smile.jpg", frame);
-    return ret.c_str();
-}
-
-SCM scm_face_smile_detect() 
-{ 
-  return scm_from_locale_string(face_smile_detect()); 
-}
-
-// return SALIENT_POINT[X,Y];
 const char *salient_point()
 {
     cv::Mat frame = cap->getCurrentFrame();
@@ -153,28 +202,8 @@ void scm_say(SCM txt)
 
 void init_dr_roboto()
 {
-    #ifdef _NEED_TIME_INFO_
-    avg_nh = avg_oh = avg_of = avg_nf = avg_time_pf = 0;
-    oh = nh = of = nf = n_f = 0;
-    #endif //_NEED_TIME_INFO_
-
-    #if _DR_ROBOTO_RPI_
-        cap = new RaspiCamCapture("cap", 320, 240, 20);
-    #else //_DR_ROBOTO_RPI_
-        cap = new CamCapture("cap", 320, 240, 20, 0);
-    #endif //_DR_ROBOTO_RPI_
-    
-    c2g = new ITColor2Gray("c2g");
-    eh = new ITEqualizeHist("eh");
-    fcd = new ITDetectFace("fcd");
-    smd = new ITDetectSmile("smd");
-    dh = new ITDetectHand("dh");
-    fc = new FingersCount(true);
-    sal_d = new DSaliency(SAL_STATIC, SAL_FINE_GRAINED);
-
-    scm_c_define_gsubr("det-face", 0, 0, 0, (scm_t_subr)scm_face_detect);
-    scm_c_define_gsubr("det-face-smile", 0, 0, 0, (scm_t_subr)scm_face_smile_detect);
-    scm_c_define_gsubr("det-salient-point", 0, 0, 0, (scm_t_subr)scm_salient_point);
-    scm_c_define_gsubr("act-say", 1, 0, 0, (scm_t_subr)scm_say);
- 
+	DrRoboto *dr = new DrRoboto();
+	define_scheme_primitive("c-init-as", &DrRoboto::init_as, dr);
+	define_scheme_primitive("c-start-sensors", &DrRoboto::start_sense, dr);
+	define_scheme_primitive("c-stop-sensors", &DrRoboto::stop_sense, dr);
 }
