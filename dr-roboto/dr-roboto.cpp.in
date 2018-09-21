@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <vector>
+#include <unistd.h>
 
 
 #if _DR_ROBOTO_RPI_
@@ -32,14 +33,14 @@
 #define HAVE_GUILE
 
 #include <opencog/atomspace/AtomSpace.h>
-#include <opencog/atoms/base/Node.h>
+#include <opencog/truthvalue/TruthValue.h>
+#include <opencog/truthvalue/AttentionValue.h>
+
 #include <opencog/atoms/proto/FloatValue.h>
 #include <opencog/atoms/proto/LinkValue.h>
 #include <opencog/atoms/proto/StringValue.h>
 
 #include <opencog/guile/SchemePrimitive.h>
-#include <opencog/truthvalue/TruthValue.h>
-#include <opencog/truthvalue/AttentionValue.h>
 
 
 #define SCALE 0.1
@@ -106,7 +107,7 @@ DrRoboto::DrRoboto() : c2g("c2g") , eh("eh") , fcd("fcd") , smd("smd") ,
 	#if _DR_ROBOTO_RPI_
 		cap = new RaspiCamCapture("cap", 320, 240, 20);
 	#else //_DR_ROBOTO_RPI_
-		cap = new CamCapture("cap", 320, 240, 20, 0);
+		cap = new CamCapture("cap", 320, 240, 0, 20);
 	#endif //_DR_ROBOTO_RPI_
 
 	/*
@@ -138,7 +139,12 @@ void DrRoboto::start_sense()
 	Handle hh = _as->add_node(CONCEPT_NODE, "hand");
 	Handle fi = _as->add_node(CONCEPT_NODE, "fingers");
 	Handle pos_h = _as->add_node(CONCEPT_NODE, "position");
+	Handle sen_h = _as->add_node(CONCEPT_NODE, "sense");
+	Handle rate_h = _as->add_node(CONCEPT_NODE, "rate");
+	//sen_h->setValue(rate_h, createFloatValue(1000)); //u-secs to delay sensor
+
 	ProtoAtomPtr pap;
+	
 	while(ok) {
 		frame = cap->getCurrentFrame();
 		gr = c2g.Transform(frame);
@@ -231,7 +237,7 @@ void DrRoboto::start_sense()
 			h->setValue(fi, pap);
 		}
 
-
+		usleep(10000);
 	} //while ok
 }
 

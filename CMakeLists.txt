@@ -97,8 +97,8 @@ endif(raspicam_FOUND)
 configure_file(data/Haar_Cascades/haarcascade_frontalface_alt.xml haarcascade_frontalface_alt.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_smile.xml haarcascade_smile.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_hand.xml haarcascade_hand.xml COPYONLY)
-configure_file(data/Facial_Landmark_Model/shape_predictor_26_face_landmarks.dat 
-							shape_predictor_26_face_landmarks.dat COPYONLY)
+configure_file(data/Facial_Landmark_Model/shape_predictor_68_face_landmarks.dat 
+							shape_predictor_68_face_landmarks.dat COPYONLY)
 
 install (TARGETS sensor_vision DESTINATION lib/TinyCog)
 install (FILES include/sense/vision/BoxTracker.hpp 

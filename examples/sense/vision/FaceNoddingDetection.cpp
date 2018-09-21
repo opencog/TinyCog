@@ -24,7 +24,7 @@
 
 #define MODEL_FILE "shape_predictor_68_face_landmarks.dat"
 
-//#define DEBUG 
+//#define DBG 
  
 #define FRAME_RATE 20
 #define WINDOW FRAME_RATE*3
@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     
     std::vector<facial_lms> f_lms; //landmarks of faces detected 
 
-    #ifdef DEBUG 
+    #ifdef DBG 
     	dlib::image_window win;
     #endif
 
@@ -79,7 +79,7 @@ int main(int argc, char** argv)
 	{
 		facial_lms shape = f_lms[idx];
 		
-		#ifdef DEBUG
+		#ifdef DBG
 			//if(upping > 0.4)
 			std::cout<< shape.part(0).x() << "," << shape.part(16).x() << "," << shape.part(48).x() << "," 
 				<< shape.part(54).x() << "," << shape.part(33).x() << "," << shape.part(36).x() << "," 
@@ -118,7 +118,7 @@ int main(int argc, char** argv)
 	    q = 0;
 	}
 	
-	#ifdef DEBUG
+	#ifdef DBG
 		dlib::array2d<dlib::bgr_pixel> img;
 		dlib::assign_image(img, dlib::cv_image<dlib::bgr_pixel>(image));
 		win.clear_overlay();

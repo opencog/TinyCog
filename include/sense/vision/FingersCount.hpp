@@ -22,7 +22,7 @@
 #include <vector>
 #include <stdint.h>
 
-#define DEBUG
+#define DBG
 
 /* 
   TODO find a better way for depth range
