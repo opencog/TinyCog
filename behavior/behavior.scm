@@ -3,18 +3,6 @@
 ;; License: AGPL
 ;; Date: May, 2018
 
-(use-modules
-	(opencog)
-	(opencog exec)
-	(opencog atom-types)
-	(opencog pointmem)
-	(opencog nlp relex2logic)
-	(opencog openpsi)
-	(opencog openpsi dynamics)
-	(opencog eva-behavior)
-	(opencog nlp )
-	(opencog ghost))
-
 
 ;; ---------------------------------------------
 ;; Define functions used by the rules
