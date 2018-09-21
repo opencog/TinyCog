@@ -30,15 +30,19 @@
 
 // opencog headers
 #define HAVE_GUILE
-#include <opencog/atomspace/AtomSpace.h>
-#include <opencog/guile/SchemePrimitive.h>
-#include <opencog/truthvalue/TruthValue.h>
-#include <opencog/truthvalue/AttentionValue.h>
 
+#include <opencog/atomspace/AtomSpace.h>
+#include <opencog/atoms/base/Node.h>
 #include <opencog/atoms/proto/FloatValue.h>
 #include <opencog/atoms/proto/LinkValue.h>
 #include <opencog/atoms/proto/StringValue.h>
 
+#include <opencog/guile/SchemePrimitive.h>
+#include <opencog/truthvalue/TruthValue.h>
+#include <opencog/truthvalue/AttentionValue.h>
+
+
+#define SCALE 0.1
 
 
 using namespace std;
@@ -95,8 +99,8 @@ DrRoboto::DrRoboto() : c2g("c2g") , eh("eh") , fcd("fcd") , smd("smd") ,
 {
 	ok = false;
 	#ifdef _NEED_TIME_INFO_
-		avg_nh = avg_oh = avg_of = avg_nf = avg_time_pf = 0;
-		oh = nh = of = nf = n_f = 0;
+		//avg_nh = avg_oh = avg_of = avg_nf = avg_time_pf = 0;
+		//oh = nh = of = nf = n_f = 0;
 	#endif //_NEED_TIME_INFO_
 
 	#if _DR_ROBOTO_RPI_
@@ -133,18 +137,17 @@ void DrRoboto::start_sense()
 	Handle ey = _as->add_node(CONCEPT_NODE, "eyes");
 	Handle hh = _as->add_node(CONCEPT_NODE, "hand");
 	Handle fi = _as->add_node(CONCEPT_NODE, "fingers");
-	Handle pos_h = _as->add_node(CONCEPT_NDOE, "position");
+	Handle pos_h = _as->add_node(CONCEPT_NODE, "position");
 	ProtoAtomPtr pap;
 	while(ok) {
 		frame = cap->getCurrentFrame();
 		gr = c2g.Transform(frame);
-		eh = eh.Transform(gr);
-		faces = fcd.Transform(eh);
+		he = eh.Transform(gr);
+		faces = fcd.Transform(he);
 		for(size_t i = 0; i < faces.size(); i++) {
-			str = "face_";
-			str.append<int>(i);
+			str = "face_" + std::to_string(i);
 			h = _as->add_node(CONCEPT_NODE, str.c_str());
-			smile = smd.Transform(eh(faces[i])); //only check on the smaller face region 
+			smile = smd.Transform(he(faces[i])); //only check on the smaller face region 
 			if(!smile.empty())
 				pap = createFloatValue(1.0);
 			else 
@@ -159,7 +162,7 @@ void DrRoboto::start_sense()
 			*/
 
 			// facial lms
-			flm.get_lm_points(frame(faces[i]), faces[i], f_lms);
+			flm.get_lm_points(frame, faces[i], f_lms);
 			/*
 				TODO emo detector here... should just be a function that returns
 				the detected emo along with confidence (if it's possible)
@@ -185,9 +188,9 @@ void DrRoboto::start_sense()
 						FloatValue X
 						FloatValue Y
 		*/
-		cent = sal_d->sal_point(gr, gr);
-		pap = createLinkValue(std::vector<ProtoAtomPtr>({createFloatValue(cent.x),
-																		createFloatValue(cent.y)}));
+		cent = sal_d.sal_point(gr, gr);
+		pap = createLinkValue(std::vector<ProtoAtomPtr>({createFloatValue((float)cent.x),
+																		createFloatValue((float)cent.y)}));
 		ey->setValue(lk, pap);
 
 		/*
@@ -207,26 +210,25 @@ void DrRoboto::start_sense()
 				ConceptNode "fingers"
 				FloatValue X
 		*/
-		cv::threshold(eh, eh, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
-		hands = dh.Transform(eh);
+		cv::threshold(he, he, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
+		hands = dh.Transform(he);
 		for(size_t idx = 0; idx < hands.size(); idx++) {
-			img = cv::Mat(eh, cv::Rect(hands[i].x - hands[i].x*SCALE,
-												hands[i].y - hands[i].y*SCALE.
-												hands[i].width + hands[i].width*SCALE,
-												hands[i].height + hands[i].height*SCALE));
+			img = cv::Mat(he, cv::Rect(hands[idx].x - hands[idx].x*SCALE,
+												hands[idx].y - hands[idx].y*SCALE,
+												hands[idx].width + hands[idx].width*SCALE,
+												hands[idx].height + hands[idx].height*SCALE));
 			
-			str = "hand_";
-			str.append<int>(idx);
+			str = "hand_" + std::to_string(idx);
 			h = _as->add_node(CONCEPT_NODE, str.c_str());
 			
 			pap = createLinkValue(
 						std::vector<ProtoAtomPtr>({
-								createFloatValue(hands[i].x+(hands[i].width/2)),
-								createFloatValue(hands[i].y+(hands[i].height/2))}));
-			h->addValue(pos_h, pap);
+								createFloatValue((float)hands[idx].x+(hands[idx].width/2)),
+								createFloatValue((float)hands[idx].y+(hands[idx].height/2))}));
+			h->setValue(pos_h, pap);
 								
 			pap = createFloatValue((float)fc.num_fingers(img));
-			h->addValue(fi, pap);
+			h->setValue(fi, pap);
 		}
 
 
