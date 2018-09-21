@@ -12,11 +12,14 @@ find_package( dlib REQUIRED )
 find_package( Protobuf REQUIRED )
 find_package( raspicam QUIET )
 find_package( Guile REQUIRED )
+find_package( AtomSpace REQUIRED )
 include_directories("include"
                     "include/act/audio"
                     "include/network"
                     "include/comm/spi" 
-                    "include/sense/vision" ${GUILE_INCLUDE_DIRS})
+                    "include/sense/vision" 
+						  ${GUILE_INCLUDE_DIRS}
+						  ${ATOMSPACE_INCLUDE_DIRS})
 
 if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
@@ -186,12 +189,14 @@ endif(${WIRINGPI_FOUND})
 ######SCM Binding
 if(raspicam_FOUND)
     set(ON_RPI_3 "YES")
-    set(DR_ROBOTO_LIBS sensor_vision ${raspicam_CV_LIBS} 
-                       ${EXTRA_LIBS} dlib::dlib act_audio)
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
+	 							${raspicam_CV_LIBS} ${EXTRA_LIBS} 
+								${ATOMSPACE_LIBRARIES} )
 else(raspicam_FOUND)
     set(ON_RPI_3 "NO")
-    set(DR_ROBOTO_LIBS sensor_vision ${OpenCV_LIBS} 
-                       ${EXTRA_LIBS} dlib::dlib act_audio)
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
+	 							${OpenCV_LIBS} ${EXTRA_LIBS} 
+								${ATOMSPACE_LIBRARIES} )
 endif(raspicam_FOUND)
 
 configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 

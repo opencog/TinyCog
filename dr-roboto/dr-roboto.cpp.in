@@ -31,18 +31,25 @@
 // opencog headers
 #define HAVE_GUILE
 #include <opencog/atomspace/AtomSpace.h>
-#include <opencog/atomspace/guile/SchemePrimitive.h>
+#include <opencog/guile/SchemePrimitive.h>
 #include <opencog/truthvalue/TruthValue.h>
 #include <opencog/truthvalue/AttentionValue.h>
 
+#include <opencog/atoms/proto/FloatValue.h>
+#include <opencog/atoms/proto/LinkValue.h>
+#include <opencog/atoms/proto/StringValue.h>
+
+
+
 using namespace std;
+using namespace opencog;
 
 
 class DrRoboto
 {
 	private:
 		AtomSpace *_as;
-		static bool ok;
+		bool ok;
 		
 		#if _DR_ROBOTO_RPI_
 			RaspiCamCapture *cap;
@@ -114,22 +121,28 @@ DrRoboto::~DrRoboto() {}
 
 void DrRoboto::start_sense()
 {
-	cv::Mat frame, gr, he;
-	std::vector<cv::Rect> faces, smile;
+	cv::Mat frame, img, gr, he;
+	std::vector<cv::Rect> faces, smile, hands;
+	facial_lms f_lms;
 	cv::Point2d cent;
 	std::string str;
 	Handle h;
 	Handle hl;
 	Handle sm = _as->add_node(PREDICATE_NODE, "smile");
+	Handle lk = _as->add_node(PREDICATE_NODE, "look");
+	Handle ey = _as->add_node(CONCEPT_NODE, "eyes");
+	Handle hh = _as->add_node(CONCEPT_NODE, "hand");
+	Handle fi = _as->add_node(CONCEPT_NODE, "fingers");
+	Handle pos_h = _as->add_node(CONCEPT_NDOE, "position");
 	ProtoAtomPtr pap;
 	while(ok) {
 		frame = cap->getCurrentFrame();
 		gr = c2g.Transform(frame);
 		eh = eh.Transform(gr);
-		faces = fc.Transform(eh);
+		faces = fcd.Transform(eh);
 		for(size_t i = 0; i < faces.size(); i++) {
 			str = "face_";
-			str.append<int>(1);
+			str.append<int>(i);
 			h = _as->add_node(CONCEPT_NODE, str.c_str());
 			smile = smd.Transform(eh(faces[i])); //only check on the smaller face region 
 			if(!smile.empty())
@@ -137,9 +150,86 @@ void DrRoboto::start_sense()
 			else 
 				pap = createFloatValue(0.0);
 			h->setValue(sm, pap);
+			/*
+				^ this is 
+					Valuation
+						PredicateNode "smile"
+						ConceptNode "face_x"
+						FloatValue x.x
+			*/
+
+			// facial lms
+			flm.get_lm_points(frame(faces[i]), faces[i], f_lms);
+			/*
+				TODO emo detector here... should just be a function that returns
+				the detected emo along with confidence (if it's possible)
+
+				once the emo is detected, make a link to the current face 
+				with the conceptnode for the emo type and set stv based on 
+				confidence (if possible) 
+					Link
+						ConceptNode "face_x"
+						ConceptNode "emotion_x"
+						STV x.y x.z
+			*/
+			
+			// TODO do eye state here
 		}
 
-		//salient point
+		/*
+			salient point
+				Valuation
+					PredicateNode "look"
+					ConceptNode "eyes"
+					LinkValue
+						FloatValue X
+						FloatValue Y
+		*/
+		cent = sal_d->sal_point(gr, gr);
+		pap = createLinkValue(std::vector<ProtoAtomPtr>({createFloatValue(cent.x),
+																		createFloatValue(cent.y)}));
+		ey->setValue(lk, pap);
+
+		/*
+			hand detection and finger counting
+			
+			** hand detection **
+			Valuation
+				PredicateNode "position"
+				ConceptNode "hand"
+				LinkValue
+					FloatValue X
+					FloatValue Y
+
+			** finger count **
+			Valuation
+				ConceptNode "hand_x"
+				ConceptNode "fingers"
+				FloatValue X
+		*/
+		cv::threshold(eh, eh, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
+		hands = dh.Transform(eh);
+		for(size_t idx = 0; idx < hands.size(); idx++) {
+			img = cv::Mat(eh, cv::Rect(hands[i].x - hands[i].x*SCALE,
+												hands[i].y - hands[i].y*SCALE.
+												hands[i].width + hands[i].width*SCALE,
+												hands[i].height + hands[i].height*SCALE));
+			
+			str = "hand_";
+			str.append<int>(idx);
+			h = _as->add_node(CONCEPT_NODE, str.c_str());
+			
+			pap = createLinkValue(
+						std::vector<ProtoAtomPtr>({
+								createFloatValue(hands[i].x+(hands[i].width/2)),
+								createFloatValue(hands[i].y+(hands[i].height/2))}));
+			h->addValue(pos_h, pap);
+								
+			pap = createFloatValue((float)fc.num_fingers(img));
+			h->addValue(fi, pap);
+		}
+
+
 	} //while ok
 }
 
@@ -149,7 +239,7 @@ void DrRoboto::stop_sense()
 	ok = false;
 }
 
-
+/*
 float avg_time_pf, en_time, acc, avg_oh, avg_nh, avg_nf, avg_of;
 uint64_t st_time;
 int n_f, nh, oh, nf, of;
@@ -172,19 +262,6 @@ void print_report()
 }
 
 
-const char *salient_point()
-{
-    cv::Mat frame = cap->getCurrentFrame();
-    cv::Point2d cent = sal_d->sal_point(frame, frame);
-    ret = std::to_string(cent.x) + "," + std::to_string(cent.y);
-    return ret.c_str();
-}
-
-SCM scm_salient_point() 
-{ 
-  return scm_from_locale_string(salient_point()); 
-}
-
 
 void say(char *data)
 {
@@ -198,7 +275,7 @@ void scm_say(SCM txt)
 {
     say(scm_to_locale_string(txt));
 }
-
+*/
 
 void init_dr_roboto()
 {
