@@ -8,7 +8,12 @@ void my_callback(void* buffer, uint32_t size)
 
 int main(int argc, char **argv)
 {
-	AudioCap ac("default", 16000, SND_PCM_FORMAT_S16_LE, my_callback);
-	while (true) ;
+	AudioCap ac("default", 16000, false, AudioCap::fmt_bit_width::WORD, false, my_callback);
+	ac.start();
+	usleep(5000000);
+	ac.stop();
+	usleep(5000000);
+	ac.start();
+	usleep(5000000);
 return 0;
 }

@@ -1,49 +1,27 @@
 
 #include "sense/audio/AudioCap.hpp"
 
-AudioCap::AudioCap(string dev, unsigned int sample_rate, 
-                   snd_pcm_format_t pcm_format, 
-                   void(*f)(void *b, uint32_t s))
-{
-	 is_running = false;
-	 frms = 16;
-	 //open device
-	 ret = snd_pcm_open(&d_handle, dev.c_str(), SND_PCM_STREAM_CAPTURE, 0);
-	 if(ret < 0) {
-	   fprintf(stderr, "ERROR: Unable to open PCM Device for Recording: %s\n",
-		                snd_strerror(ret));
+AudioCap::AudioCap(string dev, unsigned int sample_rate,
+         bool usigned, fmt_bit_width bit_width,
+         bool big_endian, void(*f) (void *, uint32_t ))
+{  
+	this->device = dev;
+	this->sample_rate = sample_rate;
+	this->pcm_format = AUDIO_FMT[(int)usigned][(int)bit_width][(int)big_endian];
+	this->cb_func = f;
+	
+	if(bit_width == BYTE)
+		frms = 8;
+	else if(bit_width == WORD)
+		frms = 16;
+	else if(bit_width == DWORD)
+		frms = 32;
+	else {
+		fprintf(stderr, "ERROR: Unsupported BitWidth!\n");
 		exit(1);
 	}
 
-	snd_pcm_hw_params_alloca(&hw_params);
-
-	snd_pcm_hw_params_any(d_handle, hw_params);
-
-	snd_pcm_hw_params_set_format(d_handle, hw_params, pcm_format); // set format
-	snd_pcm_hw_params_set_channels(d_handle, hw_params, 1); // set channel
-	snd_pcm_hw_params_set_rate_near(d_handle, hw_params, &sample_rate, &dir); //set sample rate
-	snd_pcm_hw_params_set_period_size_near(d_handle, hw_params, &frms, &dir); //set period size
-
-	ret = snd_pcm_hw_params(d_handle, hw_params);
-	if(ret < 0) {
-       fprintf(stderr, "Unable to set HW Params: %s\n", snd_strerror(ret));
-		 exit(1);
-	}
-
-	snd_pcm_hw_params_get_period_size(hw_params, &frms, &dir);
-	size = frms * 2;
-	buffer = malloc(size); //XXX typed buffer could be good.... don't know
-
-	snd_pcm_hw_params_get_period_time(hw_params, &sample_rate, &dir);
-
-	fprintf(stdout, "Dir = %d\n", dir);
-	fprintf(stdout, "Sample Rate = %d\n", sample_rate);
-   
-	cb_func = f;
-
-	is_running = true;
-
-	run = new thread(AudioCap::run_capture, this);
+	setup();
 }
 
 
@@ -55,6 +33,50 @@ AudioCap::~AudioCap()
 	snd_pcm_close(d_handle);
 	free(buffer);
 	printf("CLOSED AUDIO CAPTURE DOWN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+}
+
+
+void AudioCap::setup()
+{
+	 is_running = false;
+	 //open device
+	 ret = snd_pcm_open(&d_handle, device.c_str(), SND_PCM_STREAM_CAPTURE, 0);
+	 if(ret < 0) {
+	   fprintf(stderr, "ERROR: Unable to open PCM Device for Recording: %s\n",
+		                snd_strerror(ret));
+		exit(1);
+	}
+
+	snd_pcm_hw_params_alloca(&hw_params);
+	snd_pcm_hw_params_any(d_handle, hw_params); // set default hardware params
+	snd_pcm_hw_params_set_format(d_handle, hw_params, pcm_format); // set format
+	snd_pcm_hw_params_set_channels(d_handle, hw_params, 1); // set channel
+	snd_pcm_hw_params_set_rate_near(d_handle, hw_params, &sample_rate, &dir); //set sample rate
+	snd_pcm_hw_params_set_period_size_near(d_handle, hw_params, &frms, &dir); //set period size
+
+	ret = snd_pcm_hw_params(d_handle, hw_params);
+	if(ret < 0) {
+       fprintf(stderr, "Unable to set HW Params: %s\n", snd_strerror(ret));
+		 exit(1);
+	}
+
+	size = frms * 2; // 2 bytes per sample
+	buffer = malloc(size);
+}
+
+
+void AudioCap::start()
+{
+	is_running = true;
+	snd_pcm_prepare(d_handle);
+	run = new thread(AudioCap::run_capture, this);
+}
+
+
+void AudioCap::stop()
+{
+	is_running = false;
+	snd_pcm_drop(d_handle);
 }
 
 
