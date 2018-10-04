@@ -12,6 +12,8 @@ find_package( dlib REQUIRED )
 find_package( Protobuf REQUIRED )
 find_package( raspicam QUIET )
 find_package( Guile REQUIRED )
+find_package( PkgConfig REQUIRED )
+
 include_directories("include" ${GUILE_INCLUDE_DIRS})
 
 if (raspicam_FOUND)
@@ -19,19 +21,20 @@ if (raspicam_FOUND)
 endif()
 
 add_library( sensor_vision sense/vision/capture/CamCapture.cpp           
-        ${RASPI_SUP}
-        sense/vision/capture/FileCapture.cpp
-        sense/vision/capture/ITColor2Gray.cpp
-        sense/vision/capture/ITEqualizeHist.cpp
-        sense/vision/detect/ITDetectFace.cpp
-        sense/vision/detect/ITDetectSmile.cpp
+	${RASPI_SUP}
+	sense/vision/capture/FileCapture.cpp
+	sense/vision/capture/ITColor2Gray.cpp
+	sense/vision/capture/ITEqualizeHist.cpp
+	sense/vision/detect/ITDetectFace.cpp
+	sense/vision/detect/ITDetectSmile.cpp
 	sense/vision/detect/ITDetectHand.cpp
 	sense/vision/detect/FacialLandMark.cpp
-        sense/vision/detect/FacialExpressions.cpp
+	sense/vision/detect/FacialExpressions.cpp
 	sense/vision/detect/FingersCount.cpp
 	sense/vision/detect/DSaliency.cpp
 	sense/vision/track/BoxTracker.cpp
-        sense/vision/track/BoxTrackerThread.cpp)
+   sense/vision/track/BoxTrackerThread.cpp
+)
 
 set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
@@ -112,6 +115,24 @@ install (FILES include/sense/vision/BoxTracker.hpp
     DESTINATION "include/TinyCog/sense/vision")
 
 
+########AudioCapture
+pkg_check_modules(ALSA alsa)
+add_definitions(-DHAVE_AUDIO)
+if(ALSA_FOUND)
+	message(STATUS	"Alsa Found... Building Audio Capture Library")
+	set(HAVE_AUDIO 1)
+	add_library(sensor_audio ${CMAKE_SOURCE_DIR}/sense/audio/AudioCap.cpp)
+	target_link_libraries(sensor_audio ${ALSA_LIBRARIES} pthread)
+
+	# build example
+	add_executable( AudioCapExample examples/sense/audio/AudioCapExample.cpp )
+	target_link_libraries( AudioCapExample sensor_audio)
+else(ALSA_FOUND)
+	message(STATUS	"Alsa Not Found... Not Going to Build Audio Functionality")
+	set(HAVE_AUDIO 0)
+endif(ALSA_FOUND)
+
+
 ########STT
 # XXX audio input should be general not attached to stt
 #     it should also serve for sound source localization. 
@@ -122,13 +143,13 @@ if (POCKETSPHINX_FOUND)
     configure_file( ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp.in 
                    ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp @ONLY )
     include_directories("include" ${POCKETSPHINX_INCLUDE_DIRS})
-    add_library( sensor_audio sense/audio/SSTT.cpp )
-    target_link_libraries( sensor_audio ${POCKETSPHINX_LIBRARIES} ${EXTRA_LIBS} )
+    add_library( pstt sense/audio/SSTT.cpp )
+    target_link_libraries( pstt ${POCKETSPHINX_LIBRARIES} ${EXTRA_LIBS} )
 
     add_executable( STT_Test examples/sense/audio/STT_Test.cpp )
-    target_link_libraries (STT_Test sensor_audio)
+    target_link_libraries (STT_Test pstt)
 
-    install( TARGETS sensor_audio DESTINATION lib/TinyCog)
+    install( TARGETS pstt DESTINATION lib/TinyCog)
     install( FILES include/sense/audio/SSTT.hpp DESTINATION "include/TinyCog/sense/audio")
 else (POCKETSPHINX_FOUND)
     message("STT Will Not Be Built.")
