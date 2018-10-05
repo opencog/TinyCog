@@ -9,14 +9,19 @@
 #define _SSTT_HPP_
 
 #include <stdio.h>
-#include <string>
+#include <stdlib.h>
 #include <unistd.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <string>
 #include <thread>
 #include <mutex>
 
 #include <sphinxbase/err.h>
 #include <sphinxbase/ad.h>
 #include <pocketsphinx.h>
+
+#include "sense/audio/AudioCap.hpp"
 
 #define SAMPLE_RATE 16000
 

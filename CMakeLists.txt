@@ -140,17 +140,17 @@ endif(ALSA_FOUND)
 #     both for this and others who may need it. 
 find_package( PocketSphinx REQUIRED )
 if (POCKETSPHINX_FOUND)
-    configure_file( ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp.in 
-                   ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp @ONLY )
+    configure_file( ${CMAKE_SOURCE_DIR}/sense/audio/STT.cpp.in 
+                   ${CMAKE_SOURCE_DIR}/sense/audio/STT.cpp @ONLY )
     include_directories("include" ${POCKETSPHINX_INCLUDE_DIRS})
-    add_library( pstt sense/audio/SSTT.cpp )
+    add_library( pstt sense/audio/STT.cpp )
     target_link_libraries( pstt ${POCKETSPHINX_LIBRARIES} ${EXTRA_LIBS} )
 
     add_executable( STT_Test examples/sense/audio/STT_Test.cpp )
     target_link_libraries (STT_Test pstt)
 
     install( TARGETS pstt DESTINATION lib/TinyCog)
-    install( FILES include/sense/audio/SSTT.hpp DESTINATION "include/TinyCog/sense/audio")
+    install( FILES include/sense/audio/STT.hpp DESTINATION "include/TinyCog/sense/audio")
 else (POCKETSPHINX_FOUND)
     message("STT Will Not Be Built.")
 endif (POCKETSPHINX_FOUND)

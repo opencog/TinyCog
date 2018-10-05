@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <signal.h>
 
-#include "sense/audio/SSTT.hpp"
+#include "sense/audio/STT.hpp"
 
 void sigint_handler(int sig)
 {

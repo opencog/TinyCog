@@ -3,12 +3,11 @@
 
 AudioCap::AudioCap(string dev, unsigned int sample_rate,
          bool usigned, fmt_bit_width bit_width,
-         bool big_endian, void(*f) (void *, uint32_t ))
+         bool big_endian)
 {  
 	this->device = dev;
 	this->sample_rate = sample_rate;
 	this->pcm_format = AUDIO_FMT[(int)usigned][(int)bit_width][(int)big_endian];
-	this->cb_func = f;
 	
 	if(bit_width == BYTE)
 		frms = 8;
@@ -62,6 +61,11 @@ void AudioCap::setup()
 
 	size = frms * 2; // 2 bytes per sample
 	buffer = malloc(size);
+}
+
+void AudioCap::set_callback(void(*f) (void* buf, uint32_t size))
+{
+	this->cb_func = f;
 }
 
 

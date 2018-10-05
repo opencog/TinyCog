@@ -31,8 +31,8 @@ public:
 	         unsigned int sample_rate=16000, 
 	         bool signd=true, 
 				fmt_bit_width bit_width=fmt_bit_width::WORD,
-				bool little_endian=true,
-	         void(*f) (void *, uint32_t )=NULL);
+				bool little_endian=true);
+	void set_callback(void(*f) (void*, uint32_t));
 
 	~AudioCap();
 
