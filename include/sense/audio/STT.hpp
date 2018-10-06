@@ -26,7 +26,16 @@
 #define SAMPLE_RATE 16000
 
 //Functions
-void tcstt_init (void (*f)(const char *s));
+void init_ps();
+void init_ad();
+void init_ac();
+void init_socket(std::string, bool client);
+
+void ac_callback(void *buffer, uint32_t size);
+void socket_send(const char *s);
+
+void tcstt_init (bool ps_ad, void (*f)(const char *s));
+void tcstt_init (bool ps_ad, std::string address, bool client);
 void tcstt_close ();
 bool tcstt_is_on();
 void tcstt_run();

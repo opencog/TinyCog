@@ -8,7 +8,7 @@
 #include "sense/audio/STT.hpp"
 
 // Data
-void (*uf_pt)(const char *s); //user defined func
+void (*send_text)(const char *s); //user defined func
 void (*get_audio) (void *buffer, uint32_t size); //func_a
 //std::thread *run;
 bool is_running;
@@ -16,14 +16,14 @@ ps_decoder_t *ps;
 cmd_ln_t *cfg;
 ad_rec_t *ad;
 uint8 utt_started, in_speech;
+char const *hyp;
 
 //AudioCap
 AudioCap ac;
 
 //socket
-int fd, cl;
+int fd, cl, ret;
 struct sockaddr_un addr;
-
 
 
 void init_ps()
@@ -55,9 +55,16 @@ void init_ad()
 	ad = ad_open();
 	if(ad == NULL) { fprintf(stderr, "Error Opening Device\n"); exit(1); }
 	if(ad_start_rec(ad) < 0) {
-		fprinf(stderr, "Error Starting Recording\n");
+		fprintf(stderr, "Error Starting Recording\n");
 		exit(1);
 	}
+}
+
+
+void init_ac()
+{
+	ac.set_callback(ac_callback);
+	ac.start();
 }
 
 
@@ -66,7 +73,7 @@ void init_socket(std::string address, bool client)
 	fd = socket(AF_UNIX, SOCK_STREAM, 0);
 	if(fd == -1) { fprintf(stderr, "Error Creating Socket\n"); exit(1); }
 
-	memset(&addr, 0, sizeof(addr);
+	memset(&addr, 0, sizeof(addr));
 	strncpy(addr.sun_path, address.c_str(), sizeof(addr.sun_path)-1);
 	unlink(address.c_str());
 
@@ -92,12 +99,15 @@ void init_socket(std::string address, bool client)
 }
 
 
-void tcstt_ad_init(void (*f)(const char *s))
+void tcstt_init(bool ps_ad, void (*f)(const char *s))
 {
 	init_ps();
-	init_ad();
+	if(ps_ad)
+		init_ad();
+	else
+		init_ac();
 
-	uf_pt = f; //set the callback function
+	send_text = f; //set the callback function
 	
 	if(ps_ad) {
 		std::thread run(tcstt_run);
@@ -106,52 +116,21 @@ void tcstt_ad_init(void (*f)(const char *s))
 }
 
 
-void tcstt_ad_init(std::string address, uint8_t port, bool client)
+void tcstt_init(bool ps_ad, std::string address, bool client)
 {
 	init_ps();
-	init_ad();
+	if(ps_ad)
+		init_ad();
+	else
+		init_ac();
 
 	//init socket
-	init_socket(address, port, client);
+	init_socket(address, client);
 	
 	if(ps_ad) {
 		std::thread run(tcstt_run);
 		run.join();
 	}
-}
-
-void tcstt_init(bool ps_ad, std::string address, std::string port, bool client)
-{
-	init_ps();
-	if(ps_ad) {
-		ad = ad_open_dev("plughw:1,0", SAMPLE_RATE);
-		if (ad == NULL) { 
-			fprintf(stderr, "Error Opening Device\n"); 
-			exit(1); 
-		}
-		if (ad_start_rec(ad) < 0) {
-			fprintf(stderr, "Error Starting Recording\n");
-			exit(1);
-		}
-	}
-	else {
-		//AudioCap
-	}
-		
-	if (ps_start_utt(ps) < 0) {
-		fprintf(stderr, "Error Starting Utterance\n");
-		exit(1);
-	}
-	 
-	utt_started = FALSE;
-	printf("Ready....\n");
-
-	if(ps_ad) {
-		std::thread run(tcstt_run);
-		run.join();
-	}
-	
-	is_running = true;
 }
 
 
@@ -169,14 +148,39 @@ bool tcstt_is_on()
 }
 
 
+void ac_callback(void *buffer, uint32_t size)
+{
+	fprintf(stderr, "Errpr Reading Audio Data\n");
+	ps_process_raw(ps, (const int16_t*)buffer, size, FALSE, FALSE);
+	in_speech = ps_get_in_speech(ps);
+	if (in_speech && !utt_started) { 
+		utt_started = TRUE;
+		printf("Listening...\n"); //XXX Remove when done
+	}
+	if (!in_speech && utt_started) {
+		ps_end_utt(ps);
+		hyp = ps_get_hyp(ps, NULL);
+		if (hyp != NULL)
+			send_text(hyp); //printf("Text: %s\n", hyp);
+			if (ps_start_utt(ps) < 0)
+				fprintf(stderr, "Error Starting Utterance\n");
+		utt_started = FALSE;
+		printf("Ready...\n"); //XXX Remove when done
+	}
+}
 
 
+void socket_send(const char *s)
+{
+	ret = write(fd, s, sizeof(s));
+	if(ret <= 0)
+		fprintf(stderr, "Error write text to socket. Wrote: %d\n", ret);
+}
 
 
 void tcstt_run()
 {
 	 int32 k;
-	 char const *hyp;
 	 int16 adbuf[2048];
 	 while (is_running) {
 		  if ((k = ad_read(ad, adbuf, 2048)) < 0)
@@ -185,18 +189,17 @@ void tcstt_run()
 		  in_speech = ps_get_in_speech(ps);
 		  if (in_speech && !utt_started) { 
 				utt_started = TRUE;
-				printf("Listening...\n") //XXX Remove when done;
+				printf("Listening...\n"); //XXX Remove when done
 		  }
 		  if (!in_speech && utt_started) {
 				ps_end_utt(ps);
 				hyp = ps_get_hyp(ps, NULL);
 				if (hyp != NULL)
-					 uf_pt(hyp); //printf("Text: %s\n", hyp);
-
+					 send_text(hyp);  //send text
 				if (ps_start_utt(ps) < 0)
 					 fprintf(stderr, "Error Starting Utterance\n");
 				utt_started = FALSE;
-				printf("Ready...\n") //XXX Remove when done;
+				printf("Ready...\n"); //XXX Remove when done;
 		 }
 	}
 }

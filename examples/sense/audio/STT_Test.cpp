@@ -25,7 +25,7 @@ void stt_callback(const char *text)
 int main(int argc, char **argv)
 {
     signal(SIGINT, sigint_handler);
-    tcstt_init(stt_callback);
+    tcstt_init(true, stt_callback);
     tcstt_close();
 return 0;
 }

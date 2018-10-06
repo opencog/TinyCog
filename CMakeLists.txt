@@ -147,7 +147,7 @@ if (POCKETSPHINX_FOUND)
     target_link_libraries( pstt ${POCKETSPHINX_LIBRARIES} ${EXTRA_LIBS} )
 
     add_executable( STT_Test examples/sense/audio/STT_Test.cpp )
-    target_link_libraries (STT_Test pstt)
+    target_link_libraries (STT_Test pstt sensor_audio)
 
     install( TARGETS pstt DESTINATION lib/TinyCog)
     install( FILES include/sense/audio/STT.hpp DESTINATION "include/TinyCog/sense/audio")
