@@ -10,7 +10,7 @@
 // Data
 void (*send_text)(const char *s); //user defined func
 void (*get_audio) (void *buffer, uint32_t size); //func_a
-//std::thread *run;
+//std::thread run;
 bool is_running;
 ps_decoder_t *ps;
 cmd_ln_t *cfg;
@@ -19,11 +19,14 @@ uint8 utt_started, in_speech;
 char const *hyp;
 
 //AudioCap
-AudioCap ac;
+AudioCap *ac;
 
 //socket
 int fd, cl, ret;
 struct sockaddr_un addr;
+
+
+AUDIO_TEST *at;
 
 
 void init_ps()
@@ -47,7 +50,7 @@ void init_ps()
 	}
 	 
 	utt_started = FALSE;
-	printf("Ready....\n"); //XXX Remove when done
+	printf("Ready......\n"); //XXX Remove when done
 }
 
 void init_ad()
@@ -63,8 +66,11 @@ void init_ad()
 
 void init_ac()
 {
-	ac.set_callback(ac_callback);
-	ac.start();
+	ac = new AudioCap();
+	ac->set_callback(ac_callback);
+	ac->start();
+
+	at = new AUDIO_TEST();
 }
 
 
@@ -109,6 +115,8 @@ void tcstt_init(bool ps_ad, void (*f)(const char *s))
 
 	send_text = f; //set the callback function
 	
+	is_running = true;
+
 	if(ps_ad) {
 		std::thread run(tcstt_run);
 		run.join();
@@ -127,6 +135,8 @@ void tcstt_init(bool ps_ad, std::string address, bool client)
 	//init socket
 	init_socket(address, client);
 	
+	is_running = true;
+
 	if(ps_ad) {
 		std::thread run(tcstt_run);
 		run.join();
@@ -150,7 +160,6 @@ bool tcstt_is_on()
 
 void ac_callback(void *buffer, uint32_t size)
 {
-	fprintf(stderr, "Errpr Reading Audio Data\n");
 	ps_process_raw(ps, (const int16_t*)buffer, size, FALSE, FALSE);
 	in_speech = ps_get_in_speech(ps);
 	if (in_speech && !utt_started) { 
@@ -165,7 +174,7 @@ void ac_callback(void *buffer, uint32_t size)
 			if (ps_start_utt(ps) < 0)
 				fprintf(stderr, "Error Starting Utterance\n");
 		utt_started = FALSE;
-		printf("Ready...\n"); //XXX Remove when done
+		printf("Ready.....\n"); //XXX Remove when done
 	}
 }
 
@@ -199,7 +208,7 @@ void tcstt_run()
 				if (ps_start_utt(ps) < 0)
 					 fprintf(stderr, "Error Starting Utterance\n");
 				utt_started = FALSE;
-				printf("Ready...\n"); //XXX Remove when done;
+				printf("Ready....\n"); //XXX Remove when done;
 		 }
 	}
 }

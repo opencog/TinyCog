@@ -23,6 +23,9 @@
 
 #include "sense/audio/AudioCap.hpp"
 
+
+#include "testaudio.hpp"
+
 #define SAMPLE_RATE 16000
 
 //Functions

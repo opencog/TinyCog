@@ -19,12 +19,12 @@ AudioCap::AudioCap(string dev, unsigned int sample_rate,
 		fprintf(stderr, "ERROR: Unsupported BitWidth!\n");
 		exit(1);
 	}
-
+	
 	setup();
 }
 
 
-AudioCap::~AudioCap()
+void AudioCap::shutdown()
 {
 	is_running = false;
 	run->join();
@@ -33,7 +33,6 @@ AudioCap::~AudioCap()
 	free(buffer);
 	printf("CLOSED AUDIO CAPTURE DOWN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 }
-
 
 void AudioCap::setup()
 {
@@ -77,7 +76,7 @@ void AudioCap::start()
 }
 
 
-void AudioCap::stop()
+void AudioCap::pause()
 {
 	is_running = false;
 	snd_pcm_drop(d_handle);

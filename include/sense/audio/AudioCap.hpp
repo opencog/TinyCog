@@ -29,16 +29,17 @@ public:
 	//Constructor for with callback function
 	AudioCap(string dev="default", 
 	         unsigned int sample_rate=16000, 
-	         bool signd=true, 
+	         bool usigned=false, 
 				fmt_bit_width bit_width=fmt_bit_width::WORD,
-				bool little_endian=true);
+				bool big_endian=false);
 	void set_callback(void(*f) (void*, uint32_t));
 
-	~AudioCap();
+	~AudioCap() { shutdown(); }
 
 	bool is_OK() { return is_running; }
 	void start();
-	void stop();
+	void pause();
+	void shutdown();
 
 private:
 	void setup();
