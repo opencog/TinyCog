@@ -39,36 +39,30 @@ void stt_callback(const char *text)
 
 int main(int argc, char **argv)
 {
-	if(argc == 1) {
+	if(argc < 3) {
 		print_help();
 	}
 	signal(SIGINT, sigint_handler);
 	switch((int)strtod(argv[1], NULL)) {
 		case 1:
-	printf("1\n");
-			tcstt_init(false, "/tmp/tc_stt", true);
+			tcstt_init(false, argv[2], true);
 			usleep(10000000);
 			break;
 		case 2:
-	printf("2\n");
-			tcstt_init(false, "/tmp/tc_stt", false);
+			tcstt_init(false, argv[2], false);
 			usleep(10000000);
 			break;
 		case 3:
-	printf("3\n");
 			tcstt_init(false, stt_callback);
 			usleep(10000000);
 			break;
 		case 4:
-	printf("4\n");
-			tcstt_init(true, "/tmp/tc_stt", true);
+			tcstt_init(true, argv[2], true);
 			break;
 		case 5:
-	printf("5\n");
-			tcstt_init(true, "/tmp/tc_stt", false);
+			tcstt_init(true, argv[2], false);
 			break;
 		case 6:
-	printf("6\n");
 			tcstt_init(true, stt_callback);
 			break;
 		default:

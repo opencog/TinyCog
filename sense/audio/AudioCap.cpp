@@ -100,6 +100,6 @@ void AudioCap::run_capture(AudioCap *ac)
 		}
 
 		//call callback
-		ac->cb_func(ac->buffer, ac->size);
+		ac->cb_func(ac->buffer, r);
 	}
 }

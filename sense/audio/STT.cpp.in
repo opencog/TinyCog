@@ -18,15 +18,15 @@ ad_rec_t *ad;
 uint8 utt_started, in_speech;
 char const *hyp;
 
+bool server;
+
 //AudioCap
 AudioCap *ac;
 
 //socket
-int fd, cl, ret;
+int fd, cl, ret, sock_fd;
 struct sockaddr_un addr;
 
-
-AUDIO_TEST *at;
 
 
 void init_ps()
@@ -69,8 +69,6 @@ void init_ac()
 	ac = new AudioCap();
 	ac->set_callback(ac_callback);
 	ac->start();
-
-	at = new AUDIO_TEST();
 }
 
 
@@ -80,14 +78,33 @@ void init_socket(std::string address, bool client)
 	if(fd == -1) { fprintf(stderr, "Error Creating Socket\n"); exit(1); }
 
 	memset(&addr, 0, sizeof(addr));
+	addr.sun_family = AF_UNIX;
 	strncpy(addr.sun_path, address.c_str(), sizeof(addr.sun_path)-1);
 	unlink(address.c_str());
 
 	if(client){
 		if(connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
 			fprintf(stderr, "Error Connecting to Socket: %s\n", address.c_str());
+			if(errno == EACCES) fprintf(stderr, "EACCES\n");
+			if(errno == EPERM) fprintf(stderr, "EPERM\n");
+			if(errno == EADDRINUSE) fprintf(stderr, "EADDRINUSE\n");
+			if(errno == EADDRNOTAVAIL) fprintf(stderr, "EADDRNOTAVAIL\n");
+			if(errno == EAFNOSUPPORT) fprintf(stderr, "EAFNOSUPPORT\n");
+			if(errno == EAGAIN) fprintf(stderr, "EAGAIN\n");
+			if(errno == EALREADY) fprintf(stderr, "EALREADY\n");
+			if(errno == EBADF) fprintf(stderr, "EBADF\n");
+			if(errno == ECONNREFUSED) fprintf(stderr, "ECONNREFUSED\n");
+			if(errno == EFAULT) fprintf(stderr, "EFAULT\n");
+			if(errno == EINPROGRESS) fprintf(stderr, "EINPROGRESS\n");
+			if(errno == EINTR) fprintf(stderr, "EINTR\n");
+			if(errno == EISCONN) fprintf(stderr, "EISCONN\n");
+			if(errno == ENETUNREACH) fprintf(stderr, "ENETUNREACH\n");
+			if(errno == ENOTSOCK) fprintf(stderr, "ENDTSOCK\n");
+			if(errno == EPROTOTYPE) fprintf(stderr, "EPROTOTYPE\n");
+			if(errno == ETIMEDOUT) fprintf(stderr, "ETIMEDOUT\n");
 			exit(1);
 		}
+		sock_fd = fd;
 	}
 	else {
 		if(bind(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
@@ -99,8 +116,29 @@ void init_socket(std::string address, bool client)
 			fprintf(stderr, "Error Listening on Socket:%s\n", address.c_str());
 			exit(1);
 		}
+		if((ret = accept(fd, NULL, NULL)) == -1) {
+			fprintf(stderr, "Error Accepting Connection: %d\n", ret); 
+			if(errno == ENETDOWN)
+				fprintf(stderr, "ERROR: ENETDOWN\n");
+			if(errno == EPROTO)
+				fprintf(stderr, "ERROR: EPROTO\n");
+			if(errno == ENOPROTOOPT)
+				fprintf(stderr, "ERROR: ENOPROTOOPT\n");
+			if(errno == EHOSTDOWN)
+				fprintf(stderr, "ERROR: EHOSTDOWN\n");
+			if(errno == ENONET)
+				fprintf(stderr, "ERROR: ENONET\n");
+			if(errno == EHOSTUNREACH)
+				fprintf(stderr, "ERROR: EHOSTUNREACH\n");
+			if(errno == ENETDOWN)
+				fprintf(stderr, "ERROR: EOPNOTSUPP\n");
+			if(errno == ENETDOWN)
+				fprintf(stderr, "ERROR: ENETUNREACH\n");
+			exit(1);
+		}
+		sock_fd = ret;
 	}
-
+	server = !client;
 	send_text = socket_send;
 }
 
@@ -181,9 +219,11 @@ void ac_callback(void *buffer, uint32_t size)
 
 void socket_send(const char *s)
 {
-	ret = write(fd, s, sizeof(s));
-	if(ret <= 0)
-		fprintf(stderr, "Error write text to socket. Wrote: %d\n", ret);
+	ret = write(sock_fd, s, sizeof(s)); //client
+		
+	if(ret <= 0) {
+		fprintf(stderr, "Error write text to socket.\n");
+	}
 }
 
 

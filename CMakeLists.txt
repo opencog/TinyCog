@@ -134,10 +134,6 @@ endif(ALSA_FOUND)
 
 
 ########STT
-# XXX audio input should be general not attached to stt
-#     it should also serve for sound source localization. 
-#     thus maybe have a general class to supply audio data
-#     both for this and others who may need it. 
 find_package( PocketSphinx REQUIRED )
 if (POCKETSPHINX_FOUND)
     configure_file( ${CMAKE_SOURCE_DIR}/sense/audio/STT.cpp.in 
