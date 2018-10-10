@@ -12,8 +12,8 @@
 #ifndef BOXTRACKERTHREAD_H
 #define BOXTRACKERTHREAD_H
 
-#include "sense/vision/ImageSource.hpp"
-#include "sense/vision/BoxTracker.hpp"
+#include "ImageSource.hpp"
+#include "BoxTracker.hpp"
 
 #include <iostream>
 #include <string>

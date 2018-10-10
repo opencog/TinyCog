@@ -10,7 +10,7 @@
 #ifndef FACIALEXPRESSIONS_H_
 #define FACIALEXPRESSIONS_H_
 
-#include "sense/vision/FacialLandMark.hpp"
+#include "FacialLandMark.hpp"
 
 #include <stdlib.h>
 #include <vector>

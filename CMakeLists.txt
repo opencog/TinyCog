@@ -13,8 +13,14 @@ find_package( Protobuf REQUIRED )
 find_package( raspicam QUIET )
 find_package( Guile REQUIRED )
 find_package( PkgConfig REQUIRED )
-
-include_directories("include" ${GUILE_INCLUDE_DIRS})
+find_package( AtomSpace REQUIRED )
+include_directories("include"
+                    "include/act/audio"
+                    "include/network"
+                    "include/comm/spi" 
+                    "include/sense/vision" 
+						  ${GUILE_INCLUDE_DIRS}
+						  ${ATOMSPACE_INCLUDE_DIRS})
 
 if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
@@ -83,14 +89,18 @@ target_link_libraries(RaspiFingersCountTest sensor_vision ${raspicam_CV_LIBS} ${
 add_executable(RaspiSaliencyTest examples/sense/vision/RaspiSaliencyTest.cpp)
 target_link_libraries(RaspiSaliencyTest sensor_vision ${raspicam_CV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 
+install (FILES include/sense/vision/RaspiCamCapture.hpp
+               include/sense/vision/RaspiVision.hpp
+         DESTINATION "include/TinyCog/sense/vision")
+
 
 endif(raspicam_FOUND)
 
 configure_file(data/Haar_Cascades/haarcascade_frontalface_alt.xml haarcascade_frontalface_alt.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_smile.xml haarcascade_smile.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_hand.xml haarcascade_hand.xml COPYONLY)
-configure_file(data/Facial_Landmark_Model/shape_predictor_26_face_landmarks.dat 
-							shape_predictor_26_face_landmarks.dat COPYONLY)
+configure_file(data/Facial_Landmark_Model/shape_predictor_68_face_landmarks.dat 
+							shape_predictor_68_face_landmarks.dat COPYONLY)
 
 install (TARGETS sensor_vision DESTINATION lib/TinyCog)
 install (FILES include/sense/vision/BoxTracker.hpp 
@@ -108,8 +118,6 @@ install (FILES include/sense/vision/BoxTracker.hpp
 	       include/sense/vision/FacialLandMark.hpp
 	       include/sense/vision/FingersCount.hpp
 	       include/sense/vision/ITDetectHand.hpp
-	       include/sense/vision/RaspiCamCapture.hpp
-	       include/sense/vision/RaspiVision.hpp
 	       include/sense/vision/VisionCommon.hpp
 	       include/sense/vision/Vision.hpp
     DESTINATION "include/TinyCog/sense/vision")
@@ -197,12 +205,14 @@ endif(${WIRINGPI_FOUND})
 ######SCM Binding
 if(raspicam_FOUND)
     set(ON_RPI_3 "YES")
-    set(DR_ROBOTO_LIBS sensor_vision ${raspicam_CV_LIBS} 
-                       ${EXTRA_LIBS} dlib::dlib act_audio)
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
+	 							${raspicam_CV_LIBS} ${EXTRA_LIBS} 
+								${ATOMSPACE_LIBRARIES} )
 else(raspicam_FOUND)
     set(ON_RPI_3 "NO")
-    set(DR_ROBOTO_LIBS sensor_vision ${OpenCV_LIBS} 
-                       ${EXTRA_LIBS} dlib::dlib act_audio)
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
+	 							${OpenCV_LIBS} ${EXTRA_LIBS} 
+								${ATOMSPACE_LIBRARIES} )
 endif(raspicam_FOUND)
 
 configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 
@@ -211,3 +221,7 @@ configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in
 add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
 target_link_libraries(dr_roboto ${DR_ROBOTO_LIBS})
 install( TARGETS dr_roboto DESTINATION lib/TinyCog )
+
+install(FILES
+"${CMAKE_SOURCE_DIR}/cmake/TinyCogConfig.cmake"
+DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake)

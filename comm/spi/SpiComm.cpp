@@ -111,7 +111,7 @@ std::string SpiComm::send_data(std::string data)
 	for(int i = 8; i < packet_len; i++)
 		packet[i] = (uint8_t)data.at(i-8);
 	
-	if(DEBUG){
+	if(DBG){
 		printf("Data in Packet:\n");
 		for(int i = 0; i < packet_len; i++)
 			printf("%.2X ", packet[i]);
@@ -137,7 +137,7 @@ std::string SpiComm::spi_send(uint8_t *packet, size_t packet_len)
 	tr.bits_per_word = bpw;
 
 	int ret = ioctl(fd, SPI_IOC_MESSAGE(1), &tr);
-	if(DEBUG) printf("Ret=%d\n", ret);
+	if(DBG) printf("Ret=%d\n", ret);
 	if(ret < 1)
 		exit_p("Couldn't Send The Message");
 	
@@ -150,7 +150,7 @@ std::string SpiComm::spi_send(uint8_t *packet, size_t packet_len)
 		//printf("%.2X ", ret_buffer[i]);
 	}
 	
-	if(DEBUG)
+	if(DBG)
 		printf("\nFinal Data Size = %d\n%s\n", ret_data.size(), 
 			ret_data.c_str());
 	return ret_data;

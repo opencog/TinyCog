@@ -9,7 +9,7 @@
 #define CAMCAPTURE_H
 
 
-#include "sense/vision/ImageSource.hpp"
+#include "ImageSource.hpp"
 
 #include "opencv2/core.hpp"
 #include "opencv2/highgui.hpp"
