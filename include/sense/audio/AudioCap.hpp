@@ -11,27 +11,19 @@
 #include <thread>
 #include <mutex>
 
-
 using namespace std;
 
 class AudioCap {
-    
-public:
-	// s/u , 8/16/32 , LE/BE
-	snd_pcm_format_t AUDIO_FMT[2][3][2] = {{{SND_PCM_FORMAT_S8, SND_PCM_FORMAT_S8},
-	                                  {SND_PCM_FORMAT_S16_LE, SND_PCM_FORMAT_S16_BE},
-	                                  {SND_PCM_FORMAT_S32_LE, SND_PCM_FORMAT_S32_BE}},
-                                    {{SND_PCM_FORMAT_U8, SND_PCM_FORMAT_U8},
-                                     {SND_PCM_FORMAT_U16_LE, SND_PCM_FORMAT_U16_BE},
-                                     {SND_PCM_FORMAT_U32_LE, SND_PCM_FORMAT_U32_BE}}}; 
-	enum fmt_bit_width {BYTE=0, WORD, DWORD}; // 8, 16, AND 32 bits
 
-	//Constructor for with callback function
-	AudioCap(string dev="default", 
-	         unsigned int sample_rate=16000, 
-	         bool usigned=false, 
-				fmt_bit_width bit_width=fmt_bit_width::WORD,
-				bool big_endian=false);
+/*
+ * Only audio with a width of 16 bits and sample rate at 16000
+ * because the main goal is to use in stt and pocketsphinx  models
+ * mostly prefer it. 
+*/
+
+
+public:
+	AudioCap(string dev="default");
 	void set_callback(void(*f) (void*, uint32_t));
 
 	~AudioCap() { shutdown(); }
@@ -53,11 +45,11 @@ private:
 	snd_pcm_t *d_handle;
 	snd_pcm_hw_params_t *hw_params;
 	snd_pcm_uframes_t frms;
-	uint32_t size, loops;
+	uint32_t size;
 	void *buffer;
 	uint16_t val, ret;
 	int dir;
-	void (*cb_func)(void *buf, uint32_t size);
+	void (*cb_func)(void *buf, uint32_t samples);
 };
 
 

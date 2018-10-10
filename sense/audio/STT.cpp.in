@@ -5,6 +5,7 @@
  * Date: May, 2018
 */
 
+#include <errno.h>
 #include "sense/audio/STT.hpp"
 
 // Data
@@ -80,28 +81,10 @@ void init_socket(std::string address, bool client)
 	memset(&addr, 0, sizeof(addr));
 	addr.sun_family = AF_UNIX;
 	strncpy(addr.sun_path, address.c_str(), sizeof(addr.sun_path)-1);
-	unlink(address.c_str());
 
 	if(client){
 		if(connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
-			fprintf(stderr, "Error Connecting to Socket: %s\n", address.c_str());
-			if(errno == EACCES) fprintf(stderr, "EACCES\n");
-			if(errno == EPERM) fprintf(stderr, "EPERM\n");
-			if(errno == EADDRINUSE) fprintf(stderr, "EADDRINUSE\n");
-			if(errno == EADDRNOTAVAIL) fprintf(stderr, "EADDRNOTAVAIL\n");
-			if(errno == EAFNOSUPPORT) fprintf(stderr, "EAFNOSUPPORT\n");
-			if(errno == EAGAIN) fprintf(stderr, "EAGAIN\n");
-			if(errno == EALREADY) fprintf(stderr, "EALREADY\n");
-			if(errno == EBADF) fprintf(stderr, "EBADF\n");
-			if(errno == ECONNREFUSED) fprintf(stderr, "ECONNREFUSED\n");
-			if(errno == EFAULT) fprintf(stderr, "EFAULT\n");
-			if(errno == EINPROGRESS) fprintf(stderr, "EINPROGRESS\n");
-			if(errno == EINTR) fprintf(stderr, "EINTR\n");
-			if(errno == EISCONN) fprintf(stderr, "EISCONN\n");
-			if(errno == ENETUNREACH) fprintf(stderr, "ENETUNREACH\n");
-			if(errno == ENOTSOCK) fprintf(stderr, "ENDTSOCK\n");
-			if(errno == EPROTOTYPE) fprintf(stderr, "EPROTOTYPE\n");
-			if(errno == ETIMEDOUT) fprintf(stderr, "ETIMEDOUT\n");
+			fprintf(stderr, "Error Connecting to Socket: %s\n", addr.sun_path); perror("");
 			exit(1);
 		}
 		sock_fd = fd;
@@ -109,31 +92,16 @@ void init_socket(std::string address, bool client)
 	else {
 		if(bind(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
 			fprintf(stderr, "Error Binding Address to Socket:%s\n", 
-			                 address.c_str());
+			                 address.c_str()); perror("");
 			exit(1);
 		}
 		if(listen(fd, 2) == -1) {
 			fprintf(stderr, "Error Listening on Socket:%s\n", address.c_str());
+			perror("");
 			exit(1);
 		}
 		if((ret = accept(fd, NULL, NULL)) == -1) {
-			fprintf(stderr, "Error Accepting Connection: %d\n", ret); 
-			if(errno == ENETDOWN)
-				fprintf(stderr, "ERROR: ENETDOWN\n");
-			if(errno == EPROTO)
-				fprintf(stderr, "ERROR: EPROTO\n");
-			if(errno == ENOPROTOOPT)
-				fprintf(stderr, "ERROR: ENOPROTOOPT\n");
-			if(errno == EHOSTDOWN)
-				fprintf(stderr, "ERROR: EHOSTDOWN\n");
-			if(errno == ENONET)
-				fprintf(stderr, "ERROR: ENONET\n");
-			if(errno == EHOSTUNREACH)
-				fprintf(stderr, "ERROR: EHOSTUNREACH\n");
-			if(errno == ENETDOWN)
-				fprintf(stderr, "ERROR: EOPNOTSUPP\n");
-			if(errno == ENETDOWN)
-				fprintf(stderr, "ERROR: ENETUNREACH\n");
+			fprintf(stderr, "Error Accepting Connection: %d\n", ret); perror("");
 			exit(1);
 		}
 		sock_fd = ret;
@@ -165,14 +133,14 @@ void tcstt_init(bool ps_ad, void (*f)(const char *s))
 void tcstt_init(bool ps_ad, std::string address, bool client)
 {
 	init_ps();
+	//init socket
+	init_socket(address, client);
+	
 	if(ps_ad)
 		init_ad();
 	else
 		init_ac();
 
-	//init socket
-	init_socket(address, client);
-	
 	is_running = true;
 
 	if(ps_ad) {
@@ -196,9 +164,9 @@ bool tcstt_is_on()
 }
 
 
-void ac_callback(void *buffer, uint32_t size)
+void ac_callback(void *buffer, uint32_t samples)
 {
-	ps_process_raw(ps, (const int16_t*)buffer, size, FALSE, FALSE);
+	ps_process_raw(ps, (const int16_t*)buffer, samples, FALSE, FALSE);
 	in_speech = ps_get_in_speech(ps);
 	if (in_speech && !utt_started) { 
 		utt_started = TRUE;
@@ -219,10 +187,9 @@ void ac_callback(void *buffer, uint32_t size)
 
 void socket_send(const char *s)
 {
-	ret = write(sock_fd, s, sizeof(s)); //client
-		
-	if(ret <= 0) {
-		fprintf(stderr, "Error write text to socket.\n");
+	ret = write(sock_fd, s, strlen(s));
+	if(ret < 0) {
+		fprintf(stderr, "Error write text to socket: "); perror("");
 	}
 }
 

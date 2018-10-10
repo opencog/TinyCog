@@ -1,24 +1,12 @@
 
 #include "sense/audio/AudioCap.hpp"
 
-AudioCap::AudioCap(string dev, unsigned int sample_rate,
-         bool usigned, fmt_bit_width bit_width,
-         bool big_endian)
+AudioCap::AudioCap(string dev)
 {  
 	this->device = dev;
-	this->sample_rate = sample_rate;
-	this->pcm_format = AUDIO_FMT[(int)usigned][(int)bit_width][(int)big_endian];
-	
-	if(bit_width == BYTE)
-		frms = 8;
-	else if(bit_width == WORD)
-		frms = 16;
-	else if(bit_width == DWORD)
-		frms = 32;
-	else {
-		fprintf(stderr, "ERROR: Unsupported BitWidth!\n");
-		exit(1);
-	}
+	this->sample_rate = 16000;
+	this->pcm_format = SND_PCM_FORMAT_S16_LE;
+	frms = 16;
 	
 	setup();
 }
@@ -27,6 +15,7 @@ AudioCap::AudioCap(string dev, unsigned int sample_rate,
 void AudioCap::shutdown()
 {
 	is_running = false;
+	usleep(10000);
 	run->join();
 	snd_pcm_drain(d_handle);
 	snd_pcm_close(d_handle);
@@ -62,7 +51,7 @@ void AudioCap::setup()
 	buffer = malloc(size);
 }
 
-void AudioCap::set_callback(void(*f) (void* buf, uint32_t size))
+void AudioCap::set_callback(void(*f) (void* buf, uint32_t samples))
 {
 	this->cb_func = f;
 }
