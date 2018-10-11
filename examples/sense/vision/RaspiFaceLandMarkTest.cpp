@@ -39,8 +39,8 @@ int main(int argc, char** argv)
     avg_nf = avg_of = avg_time_pf = 0;
     of = nf = n_f = 0;
     signal(SIGINT, sigint_handler);
-    RaspiCamCapture cc("Raspi",320,240,20);
-    if (!cc.isOk()){std::cout<<std::endl<<cc.getState()<<std::endl;return -1;}
+    RaspiCamCapture *rc = RaspiCamCapture::init("Raspi",320,240,20);
+    if (!rc->isOk()){std::cout<<std::endl<<rc->getState()<<std::endl;return -1;}
     
     cv::Mat frame, image;
     ITColor2Gray c2g("c2g1");
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
     while(true)
     {
         st_time = getTickCount();
-    	frame = cc.getCurrentFrame();
+    	frame = rc->getCurrentFrame();
 	frame.copyTo(image);
 
 	/*

@@ -49,8 +49,8 @@ int main( int argc, char** argv )
     avg_of = avg_nf = avg_time_pf = 0;
     of = nf = n_f = 0;
     signal(SIGINT, sigint_handler);
-    RaspiCamCapture cc("c1",320,240,30);
-    if (!cc.isOk()){cout<<endl<<cc.getState()<<endl;return -1;}
+    RaspiCamCapture *rc = RaspiCamCapture::init("c1",320,240,30);
+    if (!rc->isOk()){cout<<endl<<rc->getState()<<endl;return -1;}
     
     Mat frame;
    // namedWindow( "Tracking Face", 1 );
@@ -60,7 +60,7 @@ int main( int argc, char** argv )
     Rect box;
     vector<Rect> boxes;
     bool face_found = false;
-    frame = cc.getCurrentFrame();
+    frame = rc->getCurrentFrame();
     cout<<endl<<"Press q to exit"<<endl;
     BoxTrackerThread *bx;
     ITColor2Gray c2g("c2g1");
@@ -74,7 +74,7 @@ int main( int argc, char** argv )
         st_time = getTickCount();
 	if (!face_found)
         {
-            frame = cc.getCurrentFrame();
+            frame = rc->getCurrentFrame();
 //            imshow( "Tracking Face", frame );
             boxes = fcd.Transform(eh.Transform(c2g.Transform(frame)));
             if (boxes.size()>0)
@@ -84,7 +84,7 @@ int main( int argc, char** argv )
                 box2d.y = box.y;
                 box2d.width = box.width;
                 box2d.height = box.height;
-                bx = new BoxTrackerThread(&cc,frame,box2d);
+                bx = new BoxTrackerThread(rc,frame,box2d);
                 face_found = true;
             }
         } else { // face found

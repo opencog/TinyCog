@@ -25,15 +25,16 @@ using namespace cv;
 class RaspiCamCapture: public ImageSource
 {
     public:
-        RaspiCamCapture(string src_name, int width=320, int height=240, double max_fps=30.0);
-        
+        static RaspiCamCapture *init(string src_name, int width=320, int height=240, double max_fps=30.0);
         virtual ~RaspiCamCapture();
         bool isOn();
         bool isOk();
         string getState();
         Mat getCurrentFrame();//Mat is like shared_ptr, make deep copy here and use mutex
-    protected:
+    
     private:
+        RaspiCamCapture(string src_name, int width, int height, double max_fps);
+        static RaspiCamCapture *_raspi_cam_cap;
         int w,h;
         Mat current;
         raspicam::RaspiCam_Cv capture;

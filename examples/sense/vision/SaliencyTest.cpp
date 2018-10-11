@@ -25,9 +25,9 @@ void sigint_handler(int sig)
 int main(int argc, char **argv)
 {
 	signal(SIGINT, sigint_handler);
-	CamCapture cc("c1", 320, 240, 0, 20);
-	if (!cc.isOk()) { 
-		fprintf(stderr, "%s\n", cc.getState().c_str()); 
+	CamCapture *cc = CamCapture::init("c1", 320, 240, 0, 20);
+	if (!cc->isOk()) { 
+		fprintf(stderr, "%s\n", cc->getState().c_str()); 
 		return -1;
 	}
 
@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 	float rad;
 	while (true)
 	{
-		frame = cc.getCurrentFrame();
+		frame = cc->getCurrentFrame();
 		cent = sal_d.sal_point(frame, sal);
 		/*sal_d.update(frame, sal);
 		imshow("sal", sal);

@@ -14,13 +14,13 @@
 
 int main(int argc, char **argv)
 {
-    RaspiCamCapture rcap("rcap", 320, 240, 20);
+    RaspiCamCapture *rcap = RaspiCamCapture::init("rcap", 320, 240, 20);
     RPC_Client rpcc;
     cv::Mat frame; 
     std::vector<cv::Rect> faces;
     std::vector<std::vector<cv::Point> > f_lms;
     cv::Point spt;
-    frame = rcap.getCurrentFrame();
+    frame = rcap->getCurrentFrame();
     std::cout<<"Read Frame\n";
     bool fd = rpcc.detect_faces(frame, faces);
     bool fl = rpcc.detect_face_lms(frame, f_lms);

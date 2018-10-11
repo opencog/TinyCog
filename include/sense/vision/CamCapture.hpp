@@ -27,20 +27,22 @@ using namespace cv;
 class CamCapture: public ImageSource
 {
     public:
-        CamCapture(string src_name,int width=320,int height=240,
-            int cam = 0,double max_fps=30.0);
-            //max fps is not guaranteed
+        static CamCapture *init(string src_name,int width=320,int height=240,
+                                int cam = 0,double max_fps=30.0);
         virtual ~CamCapture();
         bool isOn();
         bool isOk();
         string getState();
         Mat getCurrentFrame();//Mat is like shared_ptr, make deep copy here and use mutex
-    protected:
+    
     private:
+        CamCapture(string src_name,int width=320,int height=240,
+                   int cam = 0,double max_fps=30.0); //max fps is not guaranteed
+        static CamCapture *_cam_cap;
         int w,h;
         int ccam;
         Mat current;
-	Mat *c_img;
+        Mat *c_img;
         VideoCapture capture;
         static void thread_loop(CamCapture* cc);
         thread* run;

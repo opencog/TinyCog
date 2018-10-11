@@ -5,6 +5,20 @@
 ;; Date: May, 2018
 ;;
 
+(add-to-load-path "/usr/local/share/opencog/scm")
+
+(use-modules
+   (opencog)
+   (opencog exec)
+   (opencog atom-types)
+   (opencog pointmem)
+   (opencog nlp relex2logic)
+   (opencog openpsi)
+   (opencog openpsi dynamics)
+   (opencog eva-behavior)
+   (opencog nlp )
+   (opencog ghost))
+
 
 (setlocale LC_CTYPE "C")
 
@@ -16,12 +30,9 @@
 	))
 )
 
-
-(add-to-load-path "/usr/local/share/opencog/scm")
-
 ; Load C++ detector functions
 (load-extension "libdr_roboto" "init_dr_roboto")
-
+(c-init-as (cog-atomspace))
 
 ; Load behavior scripts
 (include "behavior/behavior.scm")

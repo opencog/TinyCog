@@ -25,7 +25,7 @@
 
 #define PACKET_SIZE_L_IDX 2
 #define PACKET_SIZE_H_IDX 3
-#define DEBUG 1
+#define DBG 1
 
 class SpiComm
 {

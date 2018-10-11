@@ -12,30 +12,35 @@ find_package( dlib REQUIRED )
 find_package( Protobuf REQUIRED )
 find_package( raspicam QUIET )
 find_package( Guile REQUIRED )
+find_package( PkgConfig REQUIRED )
+find_package( AtomSpace REQUIRED )
 include_directories("include"
                     "include/act/audio"
                     "include/network"
                     "include/comm/spi" 
-                    "include/sense/vision" ${GUILE_INCLUDE_DIRS})
+                    "include/sense/vision" 
+						  ${GUILE_INCLUDE_DIRS}
+						  ${ATOMSPACE_INCLUDE_DIRS})
 
 if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
 endif()
 
 add_library( sensor_vision sense/vision/capture/CamCapture.cpp           
-        ${RASPI_SUP}
-        sense/vision/capture/FileCapture.cpp
-        sense/vision/capture/ITColor2Gray.cpp
-        sense/vision/capture/ITEqualizeHist.cpp
-        sense/vision/detect/ITDetectFace.cpp
-        sense/vision/detect/ITDetectSmile.cpp
+	${RASPI_SUP}
+	sense/vision/capture/FileCapture.cpp
+	sense/vision/capture/ITColor2Gray.cpp
+	sense/vision/capture/ITEqualizeHist.cpp
+	sense/vision/detect/ITDetectFace.cpp
+	sense/vision/detect/ITDetectSmile.cpp
 	sense/vision/detect/ITDetectHand.cpp
 	sense/vision/detect/FacialLandMark.cpp
-        sense/vision/detect/FacialExpressions.cpp
+	sense/vision/detect/FacialExpressions.cpp
 	sense/vision/detect/FingersCount.cpp
 	sense/vision/detect/DSaliency.cpp
 	sense/vision/track/BoxTracker.cpp
-        sense/vision/track/BoxTrackerThread.cpp)
+   sense/vision/track/BoxTrackerThread.cpp
+)
 
 set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
@@ -94,8 +99,8 @@ endif(raspicam_FOUND)
 configure_file(data/Haar_Cascades/haarcascade_frontalface_alt.xml haarcascade_frontalface_alt.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_smile.xml haarcascade_smile.xml COPYONLY)
 configure_file(data/Haar_Cascades/haarcascade_hand.xml haarcascade_hand.xml COPYONLY)
-configure_file(data/Facial_Landmark_Model/shape_predictor_26_face_landmarks.dat 
-							shape_predictor_26_face_landmarks.dat COPYONLY)
+configure_file(data/Facial_Landmark_Model/shape_predictor_68_face_landmarks.dat 
+							shape_predictor_68_face_landmarks.dat COPYONLY)
 
 install (TARGETS sensor_vision DESTINATION lib/TinyCog)
 install (FILES include/sense/vision/BoxTracker.hpp 
@@ -118,24 +123,38 @@ install (FILES include/sense/vision/BoxTracker.hpp
     DESTINATION "include/TinyCog/sense/vision")
 
 
+########AudioCapture
+pkg_check_modules(ALSA alsa)
+add_definitions(-DHAVE_AUDIO)
+if(ALSA_FOUND)
+	message(STATUS	"Alsa Found... Building Audio Capture Library")
+	set(HAVE_AUDIO 1)
+	add_library(sensor_audio ${CMAKE_SOURCE_DIR}/sense/audio/AudioCap.cpp)
+	target_link_libraries(sensor_audio ${ALSA_LIBRARIES} pthread)
+
+	# build example
+	add_executable( AudioCapExample examples/sense/audio/AudioCapExample.cpp )
+	target_link_libraries( AudioCapExample sensor_audio)
+else(ALSA_FOUND)
+	message(STATUS	"Alsa Not Found... Not Going to Build Audio Functionality")
+	set(HAVE_AUDIO 0)
+endif(ALSA_FOUND)
+
+
 ########STT
-# XXX audio input should be general not attached to stt
-#     it should also serve for sound source localization. 
-#     thus maybe have a general class to supply audio data
-#     both for this and others who may need it. 
 find_package( PocketSphinx REQUIRED )
 if (POCKETSPHINX_FOUND)
-    configure_file( ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp.in 
-                   ${CMAKE_SOURCE_DIR}/sense/audio/SSTT.cpp @ONLY )
+    configure_file( ${CMAKE_SOURCE_DIR}/sense/audio/STT.cpp.in 
+                   ${CMAKE_SOURCE_DIR}/sense/audio/STT.cpp @ONLY )
     include_directories("include" ${POCKETSPHINX_INCLUDE_DIRS})
-    add_library( sensor_audio sense/audio/SSTT.cpp )
-    target_link_libraries( sensor_audio ${POCKETSPHINX_LIBRARIES} ${EXTRA_LIBS} )
+    add_library( pstt sense/audio/STT.cpp )
+    target_link_libraries( pstt ${POCKETSPHINX_LIBRARIES} ${EXTRA_LIBS} )
 
     add_executable( STT_Test examples/sense/audio/STT_Test.cpp )
-    target_link_libraries (STT_Test sensor_audio)
+    target_link_libraries (STT_Test pstt sensor_audio)
 
-    install( TARGETS sensor_audio DESTINATION lib/TinyCog)
-    install( FILES include/sense/audio/SSTT.hpp DESTINATION "include/TinyCog/sense/audio")
+    install( TARGETS pstt DESTINATION lib/TinyCog)
+    install( FILES include/sense/audio/STT.hpp DESTINATION "include/TinyCog/sense/audio")
 else (POCKETSPHINX_FOUND)
     message("STT Will Not Be Built.")
 endif (POCKETSPHINX_FOUND)
@@ -186,12 +205,14 @@ endif(${WIRINGPI_FOUND})
 ######SCM Binding
 if(raspicam_FOUND)
     set(ON_RPI_3 "YES")
-    set(DR_ROBOTO_LIBS sensor_vision ${raspicam_CV_LIBS} 
-                       ${EXTRA_LIBS} dlib::dlib act_audio)
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
+	 							${raspicam_CV_LIBS} ${EXTRA_LIBS} 
+								${ATOMSPACE_LIBRARIES} )
 else(raspicam_FOUND)
     set(ON_RPI_3 "NO")
-    set(DR_ROBOTO_LIBS sensor_vision ${OpenCV_LIBS} 
-                       ${EXTRA_LIBS} dlib::dlib act_audio)
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
+	 							${OpenCV_LIBS} ${EXTRA_LIBS} 
+								${ATOMSPACE_LIBRARIES} )
 endif(raspicam_FOUND)
 
 configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 

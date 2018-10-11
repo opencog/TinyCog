@@ -21,9 +21,9 @@
    
 int main(int argc, char **argv)
 {    
-    CamCapture cc("c", 320, 240, 0, 20);
-    if( !cc.isOk()) { fprintf(stderr, "ERROR: Camera Opening : %s\n", 
-                             cc.getState().c_str()); return -1; }
+    CamCapture *cc = CamCapture::init("c", 320, 240, 0, 20);
+    if( !cc->isOk()) { fprintf(stderr, "ERROR: Camera Opening : %s\n", 
+                             cc->getState().c_str()); return -1; }
     ITColor2Gray c2g("c2g1");
     ITEqualizeHist eh("eh1");
     ITDetectHand dh("dh1");
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 
     while (true)
     {
-        frame = cc.getCurrentFrame();
+        frame = cc->getCurrentFrame();
         img = eh.Transform(c2g.Transform(frame));
 	cv::threshold(img, img, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
 	hands = dh.Transform(img);

@@ -13,6 +13,18 @@
 #define MIN_WAIT (10*1000)
 //wait in micro seconds
 
+
+CamCapture* CamCapture::_cam_cap = NULL;
+
+CamCapture *CamCapture::init(string src_name, int width, int height, int cam,
+     double max_fps)
+{
+    if(_cam_cap == NULL)
+        _cam_cap = new CamCapture(src_name, width, height, cam, max_fps);
+    return _cam_cap;
+}
+
+
 CamCapture::CamCapture(string src_name,int width,int height,int cam,
     double max_fps): ImageSource(src_name),w(width),h(height),ccam(cam)
 {

@@ -11,10 +11,12 @@
 #define _DR_ROBOTO_RPI_ @ON_RPI_3@_RPI
 
 
-#include <libguile.h>
-
 #include <stdio.h>
 #include <vector>
+#include <thread>
+#include <unistd.h>
+
+
 #if _DR_ROBOTO_RPI_
     #include "sense/vision/RaspiVision.hpp"
 #else //_DR_ROBOTO_RPI
@@ -22,120 +24,248 @@
 #endif
 #include "act/audio/FestivalTTS.hpp"
 
-//#include "util/SCMWrapper.hpp"
 
-
+//debug consts 
 #define _NEED_GUI_
 #define _NEED_TIME_INFO_
 
+
+// opencog headers
+#define HAVE_GUILE
+
+#include <opencog/atomspace/AtomSpace.h>
+#include <opencog/truthvalue/TruthValue.h>
+#include <opencog/truthvalue/AttentionValue.h>
+
+#include <opencog/atoms/proto/FloatValue.h>
+#include <opencog/atoms/proto/LinkValue.h>
+#include <opencog/atoms/proto/StringValue.h>
+
+#include <opencog/guile/SchemePrimitive.h>
+
+
 #define SCALE 0.1
+
+
+using namespace std;
+using namespace opencog;
+
+
+class DrRoboto
+{
+	private:
+		AtomSpace *_as;
+		bool ok;
+		thread *run;
+		static void sensor_loop(DrRoboto *);
+		
+		#if _DR_ROBOTO_RPI_
+			RaspiCamCapture *cap;
+		#else //_DR_ROBOTO_RPI_
+			CamCapture *cap;
+		#endif //_DR_ROBOTO_RPI_
+
+		ITColor2Gray c2g;
+		ITEqualizeHist eh;
+		ITDetectFace fcd;
+		ITDetectSmile smd;
+		FacialLandMark flm;
+		ITDetectHand dh;
+		FingersCount fc;
+		DSaliency sal_d;
+		FestivalTTS tts;
+
+	public:
+		/* 
+			XXX don't know if this is the right way to do it. 
+			The AS is shared b/n this program and the guile instance once this module 
+			is loaded and init_as is called from guile with the AS address as arg. 
+					(init_as (cog-atomspace))   ; this should be called first
+			Also the AS is just copied. 
+		*/
+		DrRoboto();
+		~DrRoboto();
+		void init_as(AtomSpace *as) { _as = as; ok = true;}
+		
+		//sensor functions
+		void start_sense();
+		void stop_sense();
+
+		//act functions
+		void say(std::string);
+		//TODO add body movement functions.
+};
 
 
 extern "C" {
   void init_dr_roboto();
 };
 
-float avg_time_pf, en_time, acc, avg_oh, avg_nh, avg_nf, avg_of;
-uint64_t st_time;
-int n_f, nh, oh, nf, of;
-std::string ret;
-std::string text = "";
 
-#if _DR_ROBOTO_RPI_
-    RaspiCamCapture *cap;
-#else //_DR_ROBOTO_RPI_
-    CamCapture *cap;
-#endif //_DR_ROBOTO_RPI_
-
-ITColor2Gray *c2g;
-ITEqualizeHist *eh;
-ITDetectFace *fcd;
-ITDetectSmile *smd;
-FacialLandMark flm;
-ITDetectHand *dh;
-FingersCount *fc;
-DSaliency *sal_d;
-FestivalTTS tts;
-
-void print_report()
-{       
-    avg_time_pf = acc / n_f;
-    avg_nh /= nh;
-    avg_oh /= oh;
-    avg_of /= of;
-    avg_nf /= nf;
-    printf("\nAverage Time per Frame (no Face): %f\n", avg_nf);
-    printf("Average Time per Frame (on Face): %f\n", avg_of);
-    printf("Average Time per Frame (no Hand): %f\n", avg_nh);
-    printf("Average Time per Frame (on Hand): %f\n", avg_oh);
-    printf("Average Time per Frame: %f\n\n", avg_time_pf);
-}
-
-
-// return FACE_LOC[X,Y,W,H];;
-const char *face_detect()
+DrRoboto::DrRoboto() : c2g("c2g") , eh("eh") , fcd("fcd") , smd("smd") , 
+                       dh("dh") , fc("fc") , sal_d(SAL_STATIC, SAL_FINE_GRAINED)
 {
-    ret = "";
-    std::vector<cv::Rect> faces;
-    cv::Mat frame = cap->getCurrentFrame();
-    faces = fcd->Transform(eh->Transform(c2g->Transform(frame)));
-    for(size_t i = 0; i < faces.size(); i++)
-        ret = std::to_string(faces[i].x) + "," + 
-	      std::to_string(faces[i].y) + "," +
-	      std::to_string(faces[i].width) + "." +
-	      std::to_string(faces[i].height) + ";";
-    //ret += ";";
-    //cv::imshow("image", frame);
-    cv::imwrite("face.jpg", frame);
-    return ret.c_str();
-}
+	ok = false;
+	#ifdef _NEED_TIME_INFO_
+		//avg_nh = avg_oh = avg_of = avg_nf = avg_time_pf = 0;
+		//oh = nh = of = nf = n_f = 0;
+	#endif //_NEED_TIME_INFO_
 
-SCM scm_face_detect() 
-{ 
-  return scm_from_locale_string(face_detect()); 
-}
+	#if _DR_ROBOTO_RPI_
+		cap = RaspiCamCapture::init("cap", 320, 240, 20);
+	#else //_DR_ROBOTO_RPI_
+		cap = CamCapture::init("cap", 320, 240, 0, 20);
+	#endif //_DR_ROBOTO_RPI_
 
-// return FACE_LOC[X,Y,W,H];SMILE(TRUE/FALSE);;
-const char *face_smile_detect()
+} 
+
+DrRoboto::~DrRoboto() {}
+
+
+void DrRoboto::sensor_loop(DrRoboto *dr)
 {
-    ret = "";
-    std::vector<cv::Rect> faces, smile;
-    cv::Mat frame = cap->getCurrentFrame();
-    faces = fcd->Transform(eh->Transform(c2g->Transform(frame)));
-    for(size_t i = 0; i < faces.size(); i++) {
-        ret = std::to_string(faces[i].x) + "," + 
-	      std::to_string(faces[i].y) + "," +
-	      std::to_string(faces[i].width) + "." +
-	      std::to_string(faces[i].height) + ",";
-	smile = smd->Transform(c2g->Transform(frame(faces[i])));
-	ret += (smile.empty())? "false;" : "true;";
-    }
-    //ret += ";";
-    //cv::imshow("image", frame);
-    //std::cout<<ret<<std::endl;
-    //cv::imwrite("face_smile.jpg", frame);
-    return ret.c_str();
+	cv::Mat frame, img, gr, he;
+	std::vector<cv::Rect> faces, smile, hands;
+	facial_lms f_lms;
+	cv::Point2d cent;
+	std::string str;
+	//XXX clean this up! lash new! maybe have all required nodes created from
+	//   within the scheme code
+	Handle h;
+	Handle hl;
+	Handle sm = dr->_as->add_node(PREDICATE_NODE, "smile");
+	Handle lk = dr->_as->add_node(PREDICATE_NODE, "look");
+	Handle ey = dr->_as->add_node(CONCEPT_NODE, "eyes");
+	Handle hh = dr->_as->add_node(CONCEPT_NODE, "hand");
+	Handle fi = dr->_as->add_node(CONCEPT_NODE, "fingers");
+	Handle pos_h = dr->_as->add_node(CONCEPT_NODE, "position");
+	Handle sen_h = dr->_as->add_node(CONCEPT_NODE, "sense");
+	Handle rate_h = dr->_as->add_node(CONCEPT_NODE, "rate");
+	//sen_h->setValue(rate_h, createFloatValue(1000)); //u-secs to delay sensor
+
+	ProtoAtomPtr pap;
+	
+	while(dr->ok) {
+		frame = dr->cap->getCurrentFrame();
+		gr = dr->c2g.Transform(frame);
+		he = dr->eh.Transform(gr);
+		faces = dr->fcd.Transform(he);
+		for(size_t i = 0; i < faces.size(); i++) {
+			str = "face_" + std::to_string(i);
+			h = dr->_as->add_node(CONCEPT_NODE, str.c_str());
+			smile = dr->smd.Transform(he(faces[i])); //only check on the smaller face region 
+			if(!smile.empty())
+				pap = createFloatValue(1.0);
+			else 
+				pap = createFloatValue(0.0);
+			h->setValue(sm, pap);
+			/*
+				^ this is 
+				    Valuation
+				      PredicateNode "smile"
+				      ConceptNode "face_x"
+				      FloatValue x.x
+			*/
+
+			// facial lms
+			dr->flm.get_lm_points(frame, faces[i], f_lms);
+			/*
+				TODO emo detector here... should just be a function that returns
+				the detected emo along with confidence (if it's possible)
+
+				once the emo is detected, make a link to the current face 
+				with the conceptnode for the emo type and set stv based on 
+				confidence (if possible) 
+				    Link
+				        ConceptNode "face_x"
+				        ConceptNode "emotion_x"
+				        STV x.y x.z
+			*/
+			
+			// TODO do eye state here
+		}
+
+		/*
+			salient point
+				Valuation
+				    PredicateNode "look"
+				    ConceptNode "eyes"
+				    LinkValue
+				        FloatValue X
+				        FloatValue Y
+		*/
+		cent = dr->sal_d.sal_point(gr, gr);
+		pap = createLinkValue(std::vector<ProtoAtomPtr>({createFloatValue((float)cent.x),
+																		createFloatValue((float)cent.y)}));
+		ey->setValue(lk, pap);
+
+		/*
+			hand detection and finger counting
+			
+			** hand detection **
+			Valuation
+				PredicateNode "position"
+				ConceptNode "hand"
+				LinkValue
+				    FloatValue X
+				    FloatValue Y
+
+			** finger count **
+			Valuation
+			    ConceptNode "hand_x"
+			    ConceptNode "fingers"
+			    FloatValue X
+		*/
+		cv::threshold(he, he, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
+		hands = dr->dh.Transform(he);
+		for(size_t idx = 0; idx < hands.size(); idx++) {
+			img = cv::Mat(he, cv::Rect(hands[idx].x - hands[idx].x*SCALE,
+			                           hands[idx].y - hands[idx].y*SCALE,
+			                           hands[idx].width + hands[idx].width*SCALE,
+			                           hands[idx].height + hands[idx].height*SCALE));
+			
+			str = "hand_" + std::to_string(idx);
+			h = dr->_as->add_node(CONCEPT_NODE, str.c_str());
+			
+			pap = createLinkValue(
+			          std::vector<ProtoAtomPtr>({
+			                  createFloatValue((float)hands[idx].x+(hands[idx].width/2)),
+			                  createFloatValue((float)hands[idx].y+(hands[idx].height/2))}));
+			h->setValue(pos_h, pap);
+								
+			pap = createFloatValue((float)dr->fc.num_fingers(img));
+			h->setValue(fi, pap);
+		}
+
+		usleep(10000);
+	} //while ok
 }
 
-SCM scm_face_smile_detect() 
-{ 
-  return scm_from_locale_string(face_smile_detect()); 
-}
 
-// return SALIENT_POINT[X,Y];
-const char *salient_point()
+
+void DrRoboto::start_sense()
 {
-    cv::Mat frame = cap->getCurrentFrame();
-    cv::Point2d cent = sal_d->sal_point(frame, frame);
-    ret = std::to_string(cent.x) + "," + std::to_string(cent.y);
-    return ret.c_str();
+	run = new thread(DrRoboto::sensor_loop, this);
 }
 
-SCM scm_salient_point() 
-{ 
-  return scm_from_locale_string(salient_point()); 
+
+void DrRoboto::stop_sense()
+{
+	ok = false;
+	run->join();
+	delete run; 
 }
 
+
+void DrRoboto::say(std::string data)
+{
+	tts.setSpeaker(FestivalTTS::speaker::DON);
+	tts.speak(data);
+}
+
+
+
+/*
 
 void say(char *data)
 {
@@ -145,36 +275,13 @@ void say(char *data)
     tts.speak(text.c_str());
 }
 
-void scm_say(SCM txt)
-{
-    say(scm_to_locale_string(txt));
-}
-
+*/
 
 void init_dr_roboto()
 {
-    #ifdef _NEED_TIME_INFO_
-    avg_nh = avg_oh = avg_of = avg_nf = avg_time_pf = 0;
-    oh = nh = of = nf = n_f = 0;
-    #endif //_NEED_TIME_INFO_
-
-    #if _DR_ROBOTO_RPI_
-        cap = new RaspiCamCapture("cap", 320, 240, 20);
-    #else //_DR_ROBOTO_RPI_
-        cap = new CamCapture("cap", 320, 240, 20, 0);
-    #endif //_DR_ROBOTO_RPI_
-    
-    c2g = new ITColor2Gray("c2g");
-    eh = new ITEqualizeHist("eh");
-    fcd = new ITDetectFace("fcd");
-    smd = new ITDetectSmile("smd");
-    dh = new ITDetectHand("dh");
-    fc = new FingersCount(true);
-    sal_d = new DSaliency(SAL_STATIC, SAL_FINE_GRAINED);
-
-    scm_c_define_gsubr("det-face", 0, 0, 0, (scm_t_subr)scm_face_detect);
-    scm_c_define_gsubr("det-face-smile", 0, 0, 0, (scm_t_subr)scm_face_smile_detect);
-    scm_c_define_gsubr("det-salient-point", 0, 0, 0, (scm_t_subr)scm_salient_point);
-    scm_c_define_gsubr("act-say", 1, 0, 0, (scm_t_subr)scm_say);
- 
+	DrRoboto *dr = new DrRoboto();
+	define_scheme_primitive("c-init-as", &DrRoboto::init_as, dr);
+	define_scheme_primitive("c-start-sensors", &DrRoboto::start_sense, dr);
+	define_scheme_primitive("c-stop-sensors", &DrRoboto::stop_sense, dr);
+	define_scheme_primitive("c-say", &DrRoboto::say, dr);
 }

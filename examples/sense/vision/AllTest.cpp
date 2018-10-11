@@ -63,8 +63,8 @@ int main(int argc, char **argv)
 	bool hand_found = false;
 
 	signal(SIGINT, sigint_handler);
-	CamCapture cc("cam", 320, 240, 0, 20);
-	if (!cc.isOk()){std::cout<<std::endl<<cc.getState()<<std::endl;return -1;}
+	CamCapture *cc = CamCapture::init("cam", 320, 240, 0, 20);
+	if (!cc->isOk()){std::cout<<std::endl<<cc->getState()<<std::endl;return -1;}
 
 	Mat frame, img, img2;
 
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 		#ifdef _NEED_TIME_INFO_ 
 		st_time = getTickCount();
 		#endif //_NEED_TIME_INFO_
-		frame = cc.getCurrentFrame();
+		frame = cc->getCurrentFrame();
 		img = eh.Transform(c2g.Transform(frame));
 		faces = fcd.Transform(img);
 		
