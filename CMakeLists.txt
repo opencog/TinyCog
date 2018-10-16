@@ -57,6 +57,9 @@ target_link_libraries(VisionTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 add_executable(VisionTestFace examples/sense/vision/VisionTestFace.cpp)
 target_link_libraries(VisionTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
 
+add_executable(FileTestFace examples/sense/vision/FileTestFace.cpp)
+target_link_libraries(FileTestFace sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS})
+
 add_executable(FaceLandMarkTest examples/sense/vision/FaceLandMarkTest.cpp)
 target_link_libraries(FaceLandMarkTest sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib)
 

@@ -16,16 +16,20 @@
 #include <vector>
 
 #define EAR_THRESH 0.09
-#define phi 1.6182 // The golden ratio
+
+
 
 class FacialExpressions
 {
-  public:
-	bool eyes_open();
-        uint8_t natural_face();
+public:
+	FacialExpressions() {}
+	double distance(dlib::point p1, dlib::point p2);
+	double eyes_state(facial_lms flms);
+
 	
     private:
-        facial_lms *flms;
+ //       facial_lms flms;
+		  double ear;
 };
 
 

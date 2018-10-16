@@ -210,7 +210,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 				    FloatValue X
 				    FloatValue Y
 
-			** finger count **
+			** finger count ** XXX not sure if this is the right way
 			Valuation
 			    ConceptNode "hand_x"
 			    ConceptNode "fingers"
@@ -262,20 +262,6 @@ void DrRoboto::say(std::string data)
 	tts.setSpeaker(FestivalTTS::speaker::DON);
 	tts.speak(data);
 }
-
-
-
-/*
-
-void say(char *data)
-{
-    tts.setSpeaker(FestivalTTS::speaker::DON);
-    text = data;
-    //printf("Speech output: %s\n", data);
-    tts.speak(text.c_str());
-}
-
-*/
 
 void init_dr_roboto()
 {
