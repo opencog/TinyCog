@@ -15,6 +15,7 @@
 #include "sense/vision/ITEqualizeHist.hpp"
 #include "sense/vision/ITDetectFace.hpp"
 #include "sense/vision/FacialLandMark.hpp"
+#include "sense/vision/FacialExpressions.hpp"
 
 
 float avg_time_pf, en_time, acc;
@@ -49,6 +50,9 @@ int main(int argc, char** argv)
     std::vector<facial_lms> f_lms; //landmarks of faces detected 
 
     dlib::image_window win;
+
+	 FacialExpressions fexp;
+	 float eye_s;
     
     while(true)
     {
@@ -70,6 +74,9 @@ int main(int argc, char** argv)
 	for (uint8_t idx = 0; idx < f_lms.size(); idx++)
 	{
 		facial_lms shape = f_lms[idx];
+		eye_s = fexp.eyes_state(shape) * 2.91176;
+		std::cout<<"Eye State = "<<eye_s<<std::endl;
+		if(eye_s > 1) std::cout<<"out of bount...\n";
 		for(uint8_t i = 0; i < shape.num_parts(); i++)
 		    cv::putText(frame, std::to_string(i), cv::Point(shape.part(i).x(), shape.part(i).y()),
 		    		FONT_HERSHEY_COMPLEX_SMALL, 0.4, CV_RGB(0, 255, 0), 0.8, CV_AA);
@@ -80,7 +87,7 @@ int main(int argc, char** argv)
 	if(27 == cv::waitKey(10))
 	    break;
     	en_time = (float)((getTickCount() - st_time) / getTickFrequency());
-	printf("Frame #%d, Time: %f\n", n_f, en_time);
+	//printf("Frame #%d, Time: %f\n", n_f, en_time);
 	acc += en_time;
 	n_f++;
     }

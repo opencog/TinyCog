@@ -16,6 +16,17 @@
 #include <thread>
 #include <unistd.h>
 
+#define BUILD_Debug 1
+#define BUILD_Release 0
+#define DEBUG_MODE BUILD_@CMAKE_BUILD_TYPE@
+
+#if DEBUG_MODE
+	#define _DEBUG_
+	#ifdef _DEBUG_
+		#include "sense/vision/FileCapture.hpp"
+	#endif
+#endif
+
 
 #if _DR_ROBOTO_RPI_
     #include "sense/vision/RaspiVision.hpp"
@@ -59,11 +70,12 @@ class DrRoboto
 		thread *run;
 		static void sensor_loop(DrRoboto *);
 		
-		#if _DR_ROBOTO_RPI_
+		/*#if _DR_ROBOTO_RPI_
 			RaspiCamCapture *cap;
 		#else //_DR_ROBOTO_RPI_
 			CamCapture *cap;
-		#endif //_DR_ROBOTO_RPI_
+		#endif //_DR_ROBOTO_RPI_*/
+		ImageSource *cap;
 
 		ITColor2Gray c2g;
 		ITEqualizeHist eh;
@@ -86,6 +98,11 @@ class DrRoboto
 		DrRoboto();
 		~DrRoboto();
 		void init_as(AtomSpace *as) { _as = as; ok = true;}
+		#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
+			std::string _dbg_fname;
+			bool _dbg_from_file;
+			void cap_from_file(std::string);
+		#endif
 		
 		//sensor functions
 		void start_sense();
@@ -106,14 +123,12 @@ DrRoboto::DrRoboto() : c2g("c2g") , eh("eh") , fcd("fcd") , smd("smd") ,
                        dh("dh") , fc("fc") , sal_d(SAL_STATIC, SAL_FINE_GRAINED)
 {
 	ok = false;
-	#ifdef _NEED_TIME_INFO_
-		//avg_nh = avg_oh = avg_of = avg_nf = avg_time_pf = 0;
-		//oh = nh = of = nf = n_f = 0;
-	#endif //_NEED_TIME_INFO_
+	#ifdef _DEBUG
+	#endif
 
 	#if _DR_ROBOTO_RPI_
 		cap = RaspiCamCapture::init("cap", 320, 240, 20);
-	#else //_DR_ROBOTO_RPI_
+	#else
 		cap = CamCapture::init("cap", 320, 240, 0, 20);
 	#endif //_DR_ROBOTO_RPI_
 
@@ -122,6 +137,15 @@ DrRoboto::DrRoboto() : c2g("c2g") , eh("eh") , fcd("fcd") , smd("smd") ,
 DrRoboto::~DrRoboto() {}
 
 
+#ifdef _DEBUG_
+void DrRoboto::cap_from_file(std::string file_name) 
+{ 
+	_dbg_from_file = true; 
+	_dbg_fname = file_name; 
+	cap = FileCapture::init("cap", _dbg_fname, 30); 
+}
+#endif 
+
 void DrRoboto::sensor_loop(DrRoboto *dr)
 {
 	cv::Mat frame, img, gr, he;
@@ -129,6 +153,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 	facial_lms f_lms;
 	cv::Point2d cent;
 	std::string str;
+	size_t idx = 0, didx = 0;
 	//XXX clean this up! lash new! maybe have all required nodes created from
 	//   within the scheme code
 	Handle h;
@@ -147,13 +172,19 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 	
 	while(dr->ok) {
 		frame = dr->cap->getCurrentFrame();
+		
+		#ifdef _DEBUG_ //XXX REMOVE WHEN DONE_
+			Mat _dbg_img;
+			_dbg_img = frame.clone();
+		#endif
+
 		gr = dr->c2g.Transform(frame);
 		he = dr->eh.Transform(gr);
 		faces = dr->fcd.Transform(he);
-		for(size_t i = 0; i < faces.size(); i++) {
-			str = "face_" + std::to_string(i);
+		for(idx = 0; idx < faces.size(); idx++) {
+			str = "face_" + std::to_string(idx);
 			h = dr->_as->add_node(CONCEPT_NODE, str.c_str());
-			smile = dr->smd.Transform(he(faces[i])); //only check on the smaller face region 
+			smile = dr->smd.Transform(he(faces[idx])); //only check on the smaller face region 
 			if(!smile.empty())
 				pap = createFloatValue(1.0);
 			else 
@@ -167,8 +198,17 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 				      FloatValue x.x
 			*/
 
+			#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
+				cv::rectangle(_dbg_img, faces[idx], cv::Scalar(0, 255, 0), 2, 1);
+				cv::putText(_dbg_img, (smile.empty() ? "not smiling" : "smiling"), 
+				            cv::Point(faces[idx].x + faces[idx].x*0.05, 
+								          faces[idx].y + faces[idx].y*0.05),
+								FONT_HERSHEY_COMPLEX_SMALL, 0.4, cv::Scalar(0, 0, 255),
+								0.8, CV_AA);
+			#endif
+
 			// facial lms
-			dr->flm.get_lm_points(frame, faces[i], f_lms);
+			dr->flm.get_lm_points(frame, faces[idx], f_lms);
 			/*
 				TODO emo detector here... should just be a function that returns
 				the detected emo along with confidence (if it's possible)
@@ -183,7 +223,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 			*/
 			
 			// TODO do eye state here
-		}
+		} // end of for faces
 
 		/*
 			salient point
@@ -199,6 +239,10 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 																		createFloatValue((float)cent.y)}));
 		ey->setValue(lk, pap);
 
+		#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
+			cv::circle(_dbg_img, cent, 2.0, cv::Scalar(255, 0, 0), 3);
+		#endif
+
 		/*
 			hand detection and finger counting
 			
@@ -210,7 +254,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 				    FloatValue X
 				    FloatValue Y
 
-			** finger count **
+			** finger count ** XXX not sure if this is the right way
 			Valuation
 			    ConceptNode "hand_x"
 			    ConceptNode "fingers"
@@ -218,7 +262,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 		*/
 		cv::threshold(he, he, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
 		hands = dr->dh.Transform(he);
-		for(size_t idx = 0; idx < hands.size(); idx++) {
+		for(idx = 0; idx < hands.size(); idx++) {
 			img = cv::Mat(he, cv::Rect(hands[idx].x - hands[idx].x*SCALE,
 			                           hands[idx].y - hands[idx].y*SCALE,
 			                           hands[idx].width + hands[idx].width*SCALE,
@@ -235,8 +279,20 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 								
 			pap = createFloatValue((float)dr->fc.num_fingers(img));
 			h->setValue(fi, pap);
-		}
 
+			#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
+				cv::rectangle(_dbg_img, hands[idx], cv::Scalar(255, 0, 0), 2, 1);
+				for(didx = 0; didx < dr->fc.f_tips.size(); didx++)
+					cv::circle(_dbg_img, cv::Point(dr->fc.f_tips[didx].x + hands[idx].x,
+					                               dr->fc.f_tips[didx].y + hands[idx].y), 
+					           2, cv::Scalar(0, 0, 255), 2);
+			#endif
+		}
+		
+		#ifdef _DEBUG_
+			cv::imshow("debug", _dbg_img);
+			cv::waitKey(10);
+		#endif
 		usleep(10000);
 	} //while ok
 }
@@ -263,20 +319,6 @@ void DrRoboto::say(std::string data)
 	tts.speak(data);
 }
 
-
-
-/*
-
-void say(char *data)
-{
-    tts.setSpeaker(FestivalTTS::speaker::DON);
-    text = data;
-    //printf("Speech output: %s\n", data);
-    tts.speak(text.c_str());
-}
-
-*/
-
 void init_dr_roboto()
 {
 	DrRoboto *dr = new DrRoboto();
@@ -284,4 +326,8 @@ void init_dr_roboto()
 	define_scheme_primitive("c-start-sensors", &DrRoboto::start_sense, dr);
 	define_scheme_primitive("c-stop-sensors", &DrRoboto::stop_sense, dr);
 	define_scheme_primitive("c-say", &DrRoboto::say, dr);
+
+	#ifdef _DEBUG_
+		define_scheme_primitive("c-dbg-cap-from-file", &DrRoboto::cap_from_file, dr);
+	#endif
 }

@@ -27,7 +27,7 @@ using namespace cv;
 class FileCapture: public ImageSource
 {
     public:
-        FileCapture(string src_name,string fileName,
+        static FileCapture *init(string src_name,string fileName,
             double max_fps=30.0);
             //max fps is not guaranteed
         virtual ~FileCapture();
@@ -37,6 +37,8 @@ class FileCapture: public ImageSource
         Mat getCurrentFrame();//Mat is like shared_ptr, make deep copy here and use mutex
     protected:
     private:
+        FileCapture(string src_name, string fileName, double max_fps);
+		  static FileCapture *_file_cap;
         string fName;
         Mat current;
         VideoCapture capture;

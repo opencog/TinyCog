@@ -21,34 +21,18 @@
 #include <stdint.h>
 
 
-#define LEU1 37 
-#define LEU2 38
-#define LEB1 41
-#define LEB2 40
-#define LELS 36
-#define LERS 39
-#define LETA 19 //left eyebrow top arc
-  
-#define RETA 24
-#define REU1 43
-#define REU2 44
-#define REB1 47
-#define REB2 46
-#define RELS 42
-#define RERS 45
+/*
+	Eye lm position macro
+	Left eye landmark starts from 36 to 41
+	so LE(0) would be the first point and 
+	LE(5) the last.
+*/
+#define LES 36 
+#define LE(x) (LES+x)
 
-#define NBT 33 // Nose bottom tip
-#define MCU1 50 //mouth center upper
-#define MCU2 51
-#define MCU3 52
-#define MRS  54 //mouth right side 
-#define MLS 48
-#define MCB1 67
-#define MCB2 66
-#define MCB3 65
+#define RES 42
+#define RE(x) (RES+x)
 
-
-#define BC 8 //bottom of chin   
 
 typedef dlib::full_object_detection facial_lms;
 

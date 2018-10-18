@@ -63,6 +63,7 @@ CamCapture::~CamCapture()
     running = false;
     run->join();
     delete run;
+	 fprintf(stdout, "DESTROYED THE CAMCAPTURE OBJECT\n");
 }
 
 bool CamCapture::isOn()

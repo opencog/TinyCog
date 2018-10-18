@@ -13,6 +13,18 @@
 #define MIN_WAIT (10*1000)
 //wait in micro seconds
 
+
+FileCapture *FileCapture::_file_cap = NULL;
+
+
+FileCapture *FileCapture::init(string src_name, string fileName, double max_fps)
+{
+    if(_file_cap == NULL)
+        _file_cap = new FileCapture(src_name, fileName, max_fps);
+    return _file_cap;
+}
+
+
 FileCapture::FileCapture(string src_name,string fileName,
     double max_fps): ImageSource(src_name),fName(fileName)
 {
