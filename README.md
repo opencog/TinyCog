@@ -66,8 +66,21 @@ Use cmake for building.
     cd to TinyCog dir
     mkdir build
     cd build
-    cmake .. 
+    cmake ..  # default build is Debug mode. Set CMAKE_BUILD_TYPE to Release to disapble debug mode. 
     make
+```
+
+
+### Testing
+
+* To test the sensors from the guile shell, run the following from within the build dir
+which opens up the camera and does a live view of the camera with markings for the sensors. 
+```
+    $ ./TestDrRoboto.scm
+```
+* To test from a video file instead of a camera, run the folloiwng way
+```
+    $ ./TestDrRoboto.scm -- <video_file_path>
 ```
 
 ### Running

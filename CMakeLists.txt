@@ -1,11 +1,21 @@
 cmake_minimum_required(VERSION 3.1)
 project( TinyCog )
+
 set (CMAKE_INSTALL_PREFIX "/usr/local")
 set (CMAKE_CXX_STANDARD 11)
+
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/" "/usr/local/lib/cmake/")
+
 if(CMAKE_COMPILER_IS_GNUCXX)
     set(EXTRA_LIBS ${EXTRA_LIBS} pthread)
 endif()
+
+# if no build type selected, select debug.
+if(CMAKE_BUILD_TYPE STREQUAL "")
+	set(CMAKE_BUILD_TYPE "Debug")
+	message(STATUS "Building in Debug Mode")
+endif(CMAKE_BUILD_TYPE STREQUAL "")
+
 ############Vision
 find_package( OpenCV REQUIRED )
 find_package( dlib REQUIRED )
@@ -228,3 +238,5 @@ install( TARGETS dr_roboto DESTINATION lib/TinyCog )
 install(FILES
 "${CMAKE_SOURCE_DIR}/cmake/TinyCogConfig.cmake"
 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake)
+
+configure_file(examples/TestDrRoboto.scm TestDrRoboto.scm COPYONLY)

@@ -16,10 +16,15 @@
 #include <thread>
 #include <unistd.h>
 
+#define BUILD_Debug 1
+#define BUILD_Release 0
+#define DEBUG_MODE BUILD_@CMAKE_BUILD_TYPE@
 
-#define _DEBUG_
-#ifdef _DEBUG_
-	#include "sense/vision/FileCapture.hpp"
+#if DEBUG_MODE
+	#define _DEBUG_
+	#ifdef _DEBUG_
+		#include "sense/vision/FileCapture.hpp"
+	#endif
 #endif
 
 
@@ -131,12 +136,15 @@ DrRoboto::DrRoboto() : c2g("c2g") , eh("eh") , fcd("fcd") , smd("smd") ,
 
 DrRoboto::~DrRoboto() {}
 
+
+#ifdef _DEBUG_
 void DrRoboto::cap_from_file(std::string file_name) 
 { 
 	_dbg_from_file = true; 
 	_dbg_fname = file_name; 
 	cap = FileCapture::init("cap", _dbg_fname, 30); 
 }
+#endif 
 
 void DrRoboto::sensor_loop(DrRoboto *dr)
 {

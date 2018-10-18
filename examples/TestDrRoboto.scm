@@ -22,13 +22,14 @@
 	cnt
 )
 
+(define-public (stop-dr-roboto) (c-stop-sensors))
 
 (load-extension "./libdr_roboto" "init_dr_roboto")
 (c-init-as (cog-atomspace))
 
 (cond 
 	((= (length (command-line)) 2)  
-	    (display "use ice-9 getopt-long for taking args" ;(cadr (command-line))
+	    (c-dbg-cap-from-file (cadr (command-line))
 	    )
 	)
 )
