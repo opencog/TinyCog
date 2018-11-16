@@ -10,9 +10,7 @@
 #ifndef FACIALLANDMARK_H_
 #define FACIALLANDMARK_H_
 
-#include <dlib/image_processing/render_face_detections.h>
 #include <dlib/image_processing.h>
-#include <dlib/gui_widgets.h>
 #include <dlib/image_io.h>
 #include <dlib/opencv.h>
 

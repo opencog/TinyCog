@@ -49,8 +49,6 @@ int main(int argc, char** argv)
     
     std::vector<facial_lms> f_lms; //landmarks of faces detected 
 
-    dlib::image_window win;
-
 	 FacialExpressions fexp;
 	 float eye_s;
     
