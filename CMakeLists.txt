@@ -190,7 +190,14 @@ endif(raspicam_FOUND)
 
 configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in 
                ${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/emo_demo.cpp.in 
+               ${CMAKE_SOURCE_DIR}/dr-roboto/emo_demo.cpp @ONLY)
 
 add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
 target_link_libraries(dr_roboto ${DR_ROBOTO_LIBS})
 install( TARGETS dr_roboto DESTINATION lib/TinyCog )
+
+include_directories(${CMAKE_BINARY_DIR}/generated)
+
+add_library(emo_demo SHARED dr-roboto/emo_demo.cpp)
+target_link_libraries(emo_demo ${RPC_LINK_LIBS} sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} act_audio)

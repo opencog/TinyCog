@@ -52,4 +52,7 @@ if(raspicam_FOUND)
 add_executable(RPC_Client_Test ${CMAKE_SOURCE_DIR}/examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_PB_FILES})
 target_link_libraries(RPC_Client_Test rpc_client grpc++_unsecure grpc gpr 
                      ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision base_64)
+
+set(RPC_LINK_LIBS rpc_client grpc++_unsecure grpc gpr ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision base_64 PARENT_SCOPE)
+
 endif(raspicam_FOUND)

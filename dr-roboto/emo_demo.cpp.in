@@ -1,0 +1,90 @@
+/*
+  File: dr-roboto.cpp
+  Author: Dagim Sisay <dagiopia@gmail.com>
+  License: AGPL
+  Date: November, 2018
+*/
+
+
+#define YES_RPI 1
+#define NO_RPI 0
+
+#define _DR_ROBOTO_RPI_ @ON_RPI_3@_RPI
+
+
+#include <libguile.h>
+
+#include <stdio.h>
+#include <vector>
+#if _DR_ROBOTO_RPI_
+    #include "sense/vision/RaspiVision.hpp"
+#else //_DR_ROBOTO_RPI
+    #include "sense/vision/Vision.hpp"
+#endif
+#include "comm/rpc/RPC_Client.hpp"
+#include "act/audio/FestivalTTS.hpp"
+
+extern "C" {
+  void init_emo_demo();
+};
+
+
+#if _DR_ROBOTO_RPI_
+    RaspiCamCapture *cap;
+#else //_DR_ROBOTO_RPI_
+    CamCapture *cap;
+#endif //_DR_ROBOTO_RPI_
+
+RPC_Client rpcc;
+FestivalTTS tts;
+
+cv::Mat frame;
+std::string text;
+
+
+const char *emo_detect()
+{
+	std::string ret = "";
+	std::vector<std::string> emo_preds;
+	std::vector<cv::Rect> emo_boxes;
+	frame = cap->getCurrentFrame();
+	bool ed = rpcc.detect_emotion(frame, emo_preds, emo_boxes);
+	if(ed)
+		for(uint32_t idx = 0; idx < emo_preds.size(); idx++)
+			ret += (emo_preds[idx] + ",");
+	return ret.c_str();
+}
+
+
+SCM scm_emo_detect()
+{
+	return scm_from_locale_string(emo_detect());
+}
+
+
+void say(char *data)
+{
+	tts.setSpeaker(FestivalTTS::speaker::DON);
+	text = data;
+	//printf("Speech output: %s\n", data);
+	tts.speak(text.c_str());
+}
+
+void scm_say(SCM txt)
+{
+	say(scm_to_locale_string(txt));
+}
+
+
+
+void init_emo_demo()
+{
+	#if _DR_ROBOTO_RPI_
+		cap = RaspiCamCapture::init("cap", 320, 240, 20);
+	#else //_DR_ROBOTO_RPI_
+		cap = CamCapture::init("cap", 320, 240, 20, 0);
+	#endif //_DR_ROBOTO_RPI_
+
+	scm_c_define_gsubr("det-emo", 0, 0, 0, (scm_t_subr)scm_emo_detect);
+	scm_c_define_gsubr("act-say", 1, 0, 0, (scm_t_subr)scm_say);
+}

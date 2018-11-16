@@ -46,7 +46,8 @@ bool RPC_Client::detect_emotion(cv::Mat &in, std::vector<std::string> &out_emos,
         return false;
     }
     for(size_t idx = 0; idx < resp.predictions_size(); idx++) {
-        out_emos.push_back(resp.predictions(idx));
+        printf("Emo: %s\n", resp.predictions(idx).c_str());
+		  out_emos.push_back(resp.predictions(idx));
 	out_boxes.push_back(cv::Rect(resp.bounding_boxes(idx).x(),
 	                          resp.bounding_boxes(idx).y(),
 			          resp.bounding_boxes(idx).w(),
