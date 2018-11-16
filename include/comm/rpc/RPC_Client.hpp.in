@@ -16,8 +16,9 @@
 
 //#include <opencv2/opencv.hpp>
 #include "sense/vision/VisionCommon.hpp"
+#include "util/base64.h"
 
-#include "img_base.grpc.pb.h"
+#include "EmotionService.grpc.pb.h"
 
 #define SERVER_ADDRESS "@SERVER_ADDRESS@"
 #define IMG_ENCODING ".jpg"
@@ -31,24 +32,21 @@ using grpc::ClientContext;
 class RPC_Client
 {    
     public:
-      RPC_Client() : stub_(ImageBase::ImageServices::NewStub(grpc::CreateChannel(
+      RPC_Client() : stub_(EmotionRecognition::NewStub(grpc::CreateChannel(
       				SERVER_ADDRESS, grpc::InsecureChannelCredentials()))) {}
       ~RPC_Client() {}
 
-      bool detect_faces(cv::Mat &in, std::vector<cv::Rect> &out);
-      bool detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point> > &out);
-      bool salient_point(cv::Mat &in, cv::Point &out);
+      bool detect_emotion(cv::Mat &in, std::vector<std::string> &out_emos, std::vector<cv::Rect> &out_boxes);
 
     private:
-      std::unique_ptr<ImageBase::ImageServices::Stub> stub_;
+      std::unique_ptr<EmotionRecognition::Stub> stub_;
 
-      Status status;
       std::vector<unsigned char> vbuff;
       unsigned char *ucbuff;
       cv::Rect rct;
 
       void encode_img(cv::Mat);
-
+      std::string encode_img_b64(cv::Mat);
 };
 
 
