@@ -1,0 +1,29 @@
+concept: ~HI [hi hello hey (how be you)]
+
+topic: ~DEMO keep [~HI]
+
+goal: (please_user=0.7)
+
+u: (what be you >) I am a robot
+
+u: (what be you name) My name is Dr. Roboto
+
+u: (~HI) [hi] [hello] [hey] [how are you] there
+
+u: (me name be _*) $name='_0 Hi '_0
+
+u: (what be me name $name) Your name is $name
+
+u: (you hate humans) no. you are very interesting. Do you hate robots?
+	a: (yes) I am sure you are going to like me though
+	a: (no) We will get along fine
+
+u: (can you see me ^func-face-seen ) Yes I can see you.
+#XXX u: (can you see me ^func-face-unseen ) No I can not see you
+
+u: (do I look happy ^func-face-happy ) I guess you are smiling
+u: (do I look happy ^func-face-sad ) I think you look sad
+
+u: (inner msg face is detected) I see your face
+u: (inner msg smile is detected) You have a nice smile
+u: (inner msg saliency is detected) what is that

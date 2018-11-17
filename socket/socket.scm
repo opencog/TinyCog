@@ -53,6 +53,7 @@
 						    
 						    ; test-ghost used for the time being 
 						    (test-ghost speech-txt)
+							 (begin (display speech-txt) (newline))
 						)
 					    )
 					)

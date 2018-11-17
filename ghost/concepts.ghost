@@ -1,0 +1,693 @@
+concept: ~GREETING_MIRROR
+(
+ (morning) (konnichiwa) (konnichi wa) (konbanwa) (konban wa)
+ (howdy) (hola) (hiya) (hi you all) (hi there) (hi) (hey you) (hey there)
+ (hey there) (hey) (how are you) (hello there)
+ (hello and welcome) (hello) (hella) (hallo) (greetings) (good morning)
+ (good evening) (good afternoon) (gidday) (cheers) (aloha)
+)
+
+
+## to be replied with `u: (~GREETHING_THANK) THANK YOU HOW [ARE YOU] [HAVE YOU BEEN]`
+concept: ~GREETING_THANK
+(
+ (welcome) (hello and welcome)
+)
+
+
+## to be used as `u: (_~GREEING_TOO) _0 TOO`
+concept: ~GREETING_TOO
+(
+ (nice to see you) (nice to meet you) (good to see you again) (good to meet you)
+ (top of the morning to you)
+)
+
+concept: ~GOODBYE (
+  (through with you for now) (through for now) (I will be back) (goodbye)
+  (gbye) (byebye) (you all come back now) (until next time) (toodles)
+  (toodle pip) (toodeloo) (time to go) (time to be) (till next time)
+  (til we meed again) (til next time) (til another time)
+  (talk to you later) (take it easy) (take care of yourself) (take care)
+  (so long) (see you another time) (see you next time) (see you)
+  (see you tomorrow) (see you soon) (see you later   alligator)
+  (see you later) (sayonara) (quit) (nite nite) (nighty night)
+  (later gator) (later) (it was nice to meet you)
+  (it was nice meeting you) (it was good to meet you)
+  (it was good meeting you) (I want to go now) (I need to go now)
+  (I need to go) (I must go now) (I must go) (I have to run)
+  (I have to leave you) (I am leaving) (I am late for)
+  (have to get going) (have to boogie) (have a nice night)
+  (have a nice day) (have a great weekend) (have a great evening)
+  (have a great day) (have a good weekend) (have a good evening)
+  (have a good one) (have a better un) (got to run) (got to go)
+  (goodnight) (good night   sleep tight   do not let the bed bugs bite)
+  (good night) (good day) (good bye) (good by) (god bless you) (farewell)
+  (ciao) (cheerio) (catch you later) (bye bye) (bye) (be seeing you)
+  (bai bai) (auf wiedersehen) (au revoir) (another time) (adios) (adieu)
+  (have to leave) (have to stop) (have to go) (have to quit)
+)
+
+
+concept: ~YES
+(
+ (we do) (touche) (they do) (they are) (she is) (she does) (right o)
+ (okey) (okay) (it is) (it does) (I would say so) (he is) (he does)
+ (daccord) (bring it on) (yuppers) (yup) (you may have a point)
+ (you may be right) (you may) (you could say that) (you bet)
+ (you are right) (yip) (yes really) (yes please) (yes) (yeppers) (yep)
+ (yeh) (yeah sure) (yeah definitely) (yeah) (yea) (yay) (yah)
+ (wonderful) (without a doubt) (with pleasure) (will do) (whatever)
+ (well perhaps you are right) (well maybe you are right) (we should try)
+ (we did) (we can try) (very well indeed) (very well) (unquestionably)
+ (undoubtedly) (uh huh) (two thumbs up) (true) (totally) (thumbs up)
+ (that is right) (that is good) (that is correct) (that is alright)
+ (surely) (sure thing) (sure) (supposedly) (sounds wonderful)
+ (so will you) (si) (shure) (righty ho) (righto) (right on) (right brah)
+ (right) (probably) (precisely) (positively) (please do) (perfect)
+ (only just) (one hundred percent) (okey dokey) (ok) (OK) (oh sure)
+ (oh okay) (oh alright) (of course) (nods) (nod) (no problem)
+ (no objections) (no doubt) (naturally) (my pleasure) (mostly)
+ (most certainly) (most assuredly) (makes sense) (let us try)
+ (it would be a pleasure) (it will be my pleasure to)
+ (it will be a pleasure to) (it is highly likely) (indubitably)
+ (indefinitely) (indeed) (in this case) (I will drink to that)
+ (I totally agree) (I think so) (I have no objection) (i guess)
+ (I give my consent) (I give consent) (I do) (I did)
+ (I could not agree with you more) (I consent) (I can try)
+ (I can see that) (I can believe that) (I can believe it) (I am)
+ (I am sure) (I am pleased to) (I am listening) (I am certain) (I agree)
+ (I understand) (how true) (highly likely) (hell yeah) (go ahead)
+ (generally) (fully) (fortune smiles on that) (for sure) (fine)
+ (fantastic) (extremely) (exactly) (evidently) (especially) (delighted)
+ (definitely) (damn skippy) (damn straight) (damn good) (da)
+ (could not have said it better) (could be) (correct) (constantly)
+ (confirmed) (completely) (certainly) (can not argue with that)
+ (by all means) (but of course) (beyond a doubt) (be my guest) (aye)
+ (ay) (approved) (apparently) (always) (alright) (all right) (ah yes)
+ (agreed) (affirmative) (accepted) (accept) (absolutely)
+ (abso fucking lutely) (aright) (aight) (I guess so) (do it)
+ (make it so) (continue)
+)
+
+concept: ~NO
+(
+ (we do not) (they do not) (they are not) (she is not) (she does not)
+ (it is not) (it does not) (he is not) (he does not)
+ (you must be kidding) (you must be joking) (you have got to be kidding)
+ (you have got that wrong) (you can not be serious)
+ (you are winding me up) (you are not serious) (you are kidding)
+ (you are joking) (you are having me on) (you are dead wrong)
+ (yeah yeah) (unlikely) (unfortunately not) (unbelievable) (uhuh)
+ (uh uh) (uh hu) (thinks not) (there is no reason to think so)
+ (that is unbelievable) (that is rubbish) (that is impossible)
+ (surely not) (strange) (seldom) (rubbish) (on the contrary)
+ (oh come on) (of course not) (nuts to you) (not very often)
+ (not to speak of) (not to my knowledge) (not that I know of)
+ (not so much) (not really) (not particularly) (not on your life)
+ (not much) (not many) (not likely) (not in a million years)
+ (not especially) (not by any means) (not by a long shot) (not at all)
+ (not a snowball s chance in hell) (not a chance) (nope) (noo)
+ (no thanks) (no thank you) (no chance) (no can do) (never mind)
+ (negative) (nay) (naw) (nah) (naah) (naaah) (most certainly not)
+ (me thinks not) (it is unlikely) (it is not possible) (inconceivable)
+ (improbable) (impossible) (iie) (if you say so) (I would not)
+ (I will not) (I think not) (I refuse) (I just do not get it)
+ (I doubt it) (I dont think so) (I do not) (I do not want to)
+ (I do not think so) (I do not believe you) (I do not believe so)
+ (I do not believe it) (I do not agree) (I disagree)
+ (I could not disagree more) (I am not sure that I)
+ (I am not sure I agree) (I am afraid not) (I am afraid I do not agree)
+ (I am afraid I disagree with you) (horse hockey) (hell no) (hardly)
+ (get real) (get out) (fortune does not smile on that) (fat chance)
+ (false) (doubtful) (does not seem possible) (does not seem likely)
+ (do not be stupid) (do not be silly) (do not be ridiculous)
+ (do not be absurd) (disagree) (did not) (come off it) (by no means)
+ (but of course not) (but no) (bollocks) (neah) (no way) (barely)
+ (rarely) (none) (no) (never) (not a prayer)
+)
+
+
+concept: ~CHARACTER_TRAIT_ADJECTIVES
+(
+    able accepting adventurous aggressive ambitious annoying arrogant
+    articulate athletic awkward boastful bold bossy brave bright busy calm
+    careful careless caring cautious cheerful clever clumsy compassionate
+    complex conceited confident considerate cooperative courageous creative
+    curious dainty daring dark defiant demanding determined devout disagreeable
+    disgruntled eager efficient embarrassed energetic excited expert fair
+    hard-working helpful honest hopeful humble humorous imaginative impulsive
+    independent intelligent inventive jealous joyful judgmental keen kind
+    knowledgeable lazy leader light-hearted light likeable lively lovable
+    loving loyal manipulative materialistic mature melancholy merry messy
+    mischievous naive neat nervous noisy obnoxious opinionated organized
+    outgoing Passive patient patriotic perfectionist personable pitiful plain
+    pleasant pleasing poor popular  prim proper proud questioning quiet radical
+    realistic rebellious reflective relaxed reliable religious reserved
+    respectful responsible reverent rich rigid rude sad sarcastic
+    self-confident self-conscious selfish sensible sensitive serious short shy
+    silly simple-minded simple smart stable strong stubborn studious successful
+    tantalizing tender tense thoughtful thrilling timid tireless tolerant tough
+    tricky trusting ugly understanding unhappy unique unlucky unselfish vain
+    warm wild willing wise witty
+)
+
+
+concept: ~JOB
+(
+  (a career) (a job) career (dream job) employment (ideal job) job
+  livelihood living occupation (perfect job) profession vocation
+  work business
+)
+
+
+concept: ~JOB_FIELDS_MEDICINE
+(
+  anesthesiology cardiology dentistry dermatology endocrinology epidemiology
+  gastroenterology geriatrics gerontology gynecology hematology histology
+  immunology nephrology neurology obstetrics oncology ophthalmology orthopedics
+  osteology osteopathy paleopathology parasitology pathology pediatrics
+  pharmacology physiotherapy (plastic surgery) proctology psychiatry psychology
+  pulmonology radiology rheumatology surgery toxicology urology
+)
+
+concept: ~JOB_FIELDS_ENGINEERING
+(
+  (acoustic engineering) (aerospace engineering) (agricultural engineering) (applied engineering)
+  (architectural engineering) (audio engineering) (automotive engineering) (biomedical engineering)
+  (chemical engineering) (civil engineering) (computer engineering) (electrical engineering)
+  (environmental engineering) (industrial engineering) (marine engineering) (materials science
+  engineering) ( mechanical engineering) (mechatronic engineering) (mining geological engineering)
+  (molecular engineering) (nanoengineering) (nuclear engineering) (petroleum engineering) (software
+  engineering) (structural engineering) (telecommunications engineering) (thermal engineering)
+  (transport engineering) (vehicle engineering) engineering
+)
+
+concept: ~JOB_FIELDS_BUSINESS
+(
+  accounting consulting entrepreneurship entrepreneur (small business) (event planning) hospitality
+  finance (human resources) (leadership development) marketing (real estate) retail sales
+)
+
+
+concept: ~JOB_FIELDS_SOCIAL_SCIENCE
+(
+  administration artisanship (body care) commerce economy fashion industry law
+  military pedagogy politics publishing sexuality sociology telecommunication
+  tourism transport
+)
+
+
+concept: ~JOB_FIELDS
+(
+  ~JOB_FIELDS_MEDICINE ~JOB_FIELDS_ENGINEERING ~JOB_FIELDS_BUSINESS JOB_FIELDS_SOCIAL_SCIENCE
+)
+
+
+concept: ~MEANINGLESS_PRAISE_WORDS
+(
+  admirable amazing best certified champion choice darling decadent deluxe
+  desirable distinctive elite exceptional extraordinaire extraordinary fabulous
+  famous fantastic fascinating favorable favorite finest funny grand great
+  heavenly hi-tech ideal impressive infamous ingenious inspiring irresistible
+  lovely luxurious luxury magnificent mighty miracle miraculous ostentatious
+  perfect persuasive popular powerful practical preeminent preferable preferred
+  premium pretentious prime prize-winning (prize winning) prominent remarkable
+  revolutionary scientific select showy significant smart sophisticated special
+  stringent sublime super supreme tremendous unparalleled versatile wonderful
+  worthwhile
+)
+
+concept: ~GIVE
+(
+  award bequeath bestow contribute convey deed deliver (dish out) dish dispense
+  (dole out) donate (fork over) fund furnish gift give grant (hand over) hand
+  reward (turn over)
+)
+
+concept: ~DIFFERENT
+(
+  contrast contrasting differ difference different differentiation
+  differentiator disparate dissimilar divergent incomparable opposed unalike
+  unrelated
+)
+
+
+concept: ~FEW
+(
+  few insufficient meager minority (not many) scant (scarcely any) scarce
+  scattering slight sporadic stingy
+)
+
+concept: ~MUCH
+(
+  (a lot) abounding bounteous bountiful copious crowded divers innumerable legion
+  many much multifarious myriad (no end) endless numberless numerous
+  plentiful populous rife teeming umpteen uncounted
+)
+
+
+concept: ~IGNORANCE
+(
+ (you expect me to know) (the answer escapes me) (the answer eludes me)
+ (not a clue) (I have no idea) (I do not know) (how would I know)
+ (how would I know that) (do not ask me) (beats me)
+)
+
+
+concept: ~DONTKNOW
+(
+  ~IGNORANCE (NOT KNOW) (NO IDEA) (DOUBT IT) (DOUBT SO) (NOT SURE)
+  (don't know) (what are you saying) (not clear) ~NO
+)
+
+
+concept: ~THINKSO
+(
+  (think so) (kind of) (pretty sure) (sort of) (seems right) (okay) ~YES
+)
+
+concept: ~ADEQUATE
+(
+  adequate capable competent composed confident encouraged excited (in control)
+  organized proud responsible satisfied
+)
+
+
+concept: ~FEELING_ALONE
+(
+  alienated alone (cut off) detached excluded forsaken isolated left_out lonely
+  lonesome misunderstood rejected shut_out
+)
+
+concept: ~FEELING_ANGRY
+(
+  acrimonious anger angry annoyed appalled bitter boiling cross devastated
+  disgusted enraged (fed up) frustrated fuming furious hostile (in a huff) (in a stew)
+  incensed indignant inflamed infuriated irate irritated livid loathing mad
+  offended outraged pique provoked rageful rancor resentful sullen temper
+  (up in arms) virulent (worked up) wrathful (wrought up)
+)
+
+concept: ~FEELING_APATHETIC
+(
+  apathetic complacent full_of_ennui immobilized lazy lethargic numb passive
+  quiescent unconcerned unmotivated
+)
+
+concept: ~FEELING_ATTACHED
+(
+  affectionate attached belonging captivated cherished compassionate connected
+  empathetic included liked loved loving understood
+)
+
+concept: ~FEELING_ATTRACTED
+(
+  absorbed affected inspiring intent interested intrigued keen motivated
+  agog anxious attracted avid challenged concerned confident craving curious
+  dedicated desirous eager earnest enchanted engrossed enthusiastic excited
+  fascinated fervent fervid (full of anticipation) hopeful inquisitive
+  needed nosey snoopy zealous
+)
+
+concept: ~FEELING_BELITTLE
+(
+  belittled chagrined degraded diminished discounted discredited disgraced
+  disrespected insignificant underestimated unsupported
+)
+
+concept: ~FEELING_BORED
+(
+  ambivalent apathetic (bore me) bored boredom boring complacent
+  diffidence (full of ennui) indifferent lackadaisical (not interested) uninterested
+  uninteresting unmotivated
+)
+
+concept: ~FEELING_BURDEN
+(
+  burdened obligated pressured (put upon) thwarted (weighed down)
+)
+
+concept: ~FEELING_CHEATED
+(
+  abused accused betrayed cheated coerced conned deceived disparaged duped
+  exploited framed (lied to) manipulated tricked victimized violated
+)
+
+concept: ~FEELING_CODEPENDENT
+(
+  addicted codependent insecure needy
+)
+
+concept: ~FEELING_DEMORALIZED
+(
+  demoralized disappointed discouraged disheartened disillusioned disinclined
+  stifled thwarted
+)
+
+concept: ~FEELING_DERAILED
+(
+  derailed disjointed disoriented torn
+)
+
+concept: ~FEELING_DISGUST
+(
+  appalled appalling disgust revolted revolting
+)
+
+concept: ~FEELING_EMBARRASS
+(
+  ashamed awkward disparaged embarrassed guilty
+)
+
+concept: ~FEELING_ENTITLED
+(
+  entitled exempt favored immune privileged
+)
+
+concept: ~FEELING_ESTEEM
+(
+  admired appreciated esteemed respected revered significant supported valued
+  worshiped
+)
+
+concept: ~FEELING_FEARFUL
+(
+  afraid aghast alarmed anxious appalled apprehension apprehensive attacked awed
+  cautious concern concerned cowardly defenseless diffident dismayed distrustful
+  doubtful dread dubious exposed fainthearted fear fearful fidgety fright
+  frightened full_of_misgiving hesitant horrified horror hysterical in_fear
+  indecisive insecure irresolute menaced misgiving nervous panic panicked
+  paranoid pensive perplexed petrified phobic quaking questioning scared shaky
+  shocked skeptical suspicious tense terrified terrorized threatened timid
+  timorous trembling tremulous unbelieving uncertain uncomfortable upset
+  wavering worried
+)
+
+concept: ~FEELING_FEARLESS
+(
+  audacious bold brave certain confident courageous daring dauntless determined
+  encouraged enterprising gallant hardy heroic reassured resolute secure
+  self-reliant spirited stout
+)
+
+concept: ~FEELING_FOCUSED
+(
+  committed complacent determined focused (in the zone)
+)
+
+concept: ~FEELING_FREE
+(
+  autonomous free independent released unshackled
+)
+
+concept: ~FEELING_GRATEFUL
+(
+  grateful gratitude
+)
+
+concept: ~FEELING_HAPPY
+(
+  affection airy amused animated beatific blissful blithe bright brisk buoyant
+  cheerful cheery chipper comfortable compassion contented convivial debonair
+  delight delighted eager eagerness ecstatic elated enthused enthusiastic
+  excited exhilarated exultant fabulous fain fantastic festive free_and_easy
+  frisky genial glad gleeful great happiness happy harmony high-spirited
+  hilarious hope humorous important inspired jaunty jocular jolly jovial joy
+  joyful joyous jubilant laughing lighthearted lively love lucky merry mirthful
+  optimism optimistic overjoyed peaceful playful pleased pleasure rapturous
+  satisfaction satisfied saucy self-satisfied serene sparkling spirited
+  sprightly sunny terrific thankful tranquil transported triumph vivacious
+  wonderful
+)
+
+concept: ~FEELING_HATED
+(
+  abandoned chastised criticized deserted discarded forsaken hated humiliated
+  ignored (left out) (let down) overlooked punished rejected replaced unapproved_of
+  unlovable unloved
+)
+
+concept: ~FEELING_INDEPENDENT
+(
+  arrogant autonomous cocky independent macho strong
+)
+
+concept: ~FEELING_IRRISTABLE
+(
+  aggressive exuberant immortal indestructible invincible invulnerable
+  irresistible powerful unstoppable
+)
+
+concept: ~FEELING_JUSTIFIED
+(
+  absolved acquitted appeased justified redeemed satisfied vindicated
+)
+
+concept: ~FEELING_LOST
+(
+  baffled bewildered confused confusion lost unfocussed
+)
+
+concept: ~FEELING_LOVED
+(
+  accepted adorable adored approved_of desirable entrusted loved validated
+  valued welcomed
+)
+
+concept: ~FEELING_LUSTFUL
+(
+  addicted ardent aroused horny (hot and bothered) infatuated lustful needy
+  passionate randy (turned on) yearning
+)
+
+concept: ~FEELING_OBSESSED
+(
+  compelled consumed obsessed
+)
+
+concept: ~FEELING_OUTOFCONTROL
+(
+  careless impotent obligated obliterated (out of control) powerless reckless
+  vulnerable weak
+)
+
+concept: ~FEELING_POWERLESS
+(
+  bashful beaten_down blocked defeated discouraged disorganized exhausted
+  frustrated hopeless irresponsible overwhelmed powerless stifled thwarted
+  (worn down) (worn out)
+)
+
+concept: ~FEELING_REPROACHFUL
+(
+  calumniating castigating censorious contumelious defamatory derisive
+  disparaging invective libelous maligning opprobrious reproachful reviling
+  sarcastic scathing scolding scurrilous
+)
+
+concept: ~FEELING_SAD
+(
+  aching afflicted agonized anguished bereaved cheerless clouded crestfallen
+  crushed dark dejected depress depressed depressing despair despairing
+  despondent disappointing disconsolate discontented discouraged disheartened
+  dismal displeased disspirited distress distressed dolorous down downcast
+  downhearted dreadful dreary dull embarrassed feel_blue flat frowning funereal
+  gloomy glum grief grief-stricken grieved guilt hapless heartbroken
+  heavyhearted hopelessness humiliated hurt (in despair) (in pain) (in the dumps)
+  injured joyless listless listlessness lonely low lugubrious melancholy
+  miserable moody moping mournful offended oppressed (out of sorts) pathetic
+  pessimism piteous regretful remorse rueful sad sadness shamed shocked somber
+  sorrow sorrowful spiritless suffering sulky sullen tortured tragic unhappy
+  victimized withdrawn woebegone woeful worried
+)
+
+concept: ~FEELING_SAFE
+(
+  at_ease calm comfortable composed peaceful relieved secure
+)
+
+concept: ~FEELING_SINGLEDOUT
+(
+  affronted categorized cross-examined guilty interrogated judged labeled rated
+  singled_out stereotyped wronged
+)
+
+concept: ~FEELING_SURPRISE
+(
+  astonished bewildered confused shock shocked startled surprise surprised
+)
+
+concept: ~FEELING_SYMPATHY
+(
+  compassion kindness pity sympathy
+)
+
+concept: ~FEELING_TRAPPED
+(
+  cornered deceived imprisoned optionless outmaneuvered (set up) stifled trapped
+  tricked
+)
+
+concept: ~FEELING_WORDS
+(
+  ~ADEQUATE ~FEELING_ALONE ~FEELING_ANGRY ~FEELING_APATHETIC ~FEELING_ATTACHED
+  ~FEELING_ATTRACTED ~FEELING_BELITTLE ~FEELING_BORED ~FEELING_BURDEN
+  ~FEELING_CHEATED ~FEELING_CODEPENDENT ~FEELING_DEMORALIZED ~FEELING_DERAILED
+  ~FEELING_DISGUST ~FEELING_EMBARRASS ~FEELING_ENTITLED ~FEELING_ESTEEM
+  ~FEELING_FEARFUL ~FEELING_FEARLESS ~FEELING_FOCUSED ~FEELING_FREE
+  ~FEELING_GRATEFUL ~FEELING_HAPPY ~FEELING_HATED ~FEELING_INDEPENDENT
+  ~FEELING_IRRISTABLE ~FEELING_JUSTIFIED ~FEELING_LOST ~FEELING_LOVED
+  ~FEELING_LUSTFUL ~FEELING_OBSESSED ~FEELING_OUTOFCONTROL ~FEELING_POWERLESS
+  ~FEELING_REPROACHFUL ~FEELING_SAD ~FEELING_SAFE ~FEELING_SINGLEDOUT
+  ~FEELING_SURPRISE ~FEELING_SYMPATHY ~FEELING_TRAPPED
+)
+
+concept: ~EMOTIONS
+(
+  ~FEELING_WORDS FEEL IRRITATE JEALOUS JEALOUSY LOVE KINDNESS MISS MOOD NERVE
+  nightmare panic pity please pleasure pressure pride puzzle rage regret relax
+  relief relieve respect satisfy scare scary shame shock sorry spirit
+  startle stress stun suffer sure surprise surprisingly trouble wonder worry
+)
+
+
+concept: ~FRIEND
+(
+  acquaintance ally beau boyfriend buddy chum (close friend) confidant friend
+  girlfriend kith lover pal partner sidekick swain
+)
+
+concept: ~PRO_FRIEND
+(
+  colleague comrade confederate teammate
+)
+
+
+concept: ~MOTHER
+(
+  ma mama mamma mammy mom momma mommy mother mum mummy mother step-mother stepmother
+)
+
+concept: ~FAMILY_AUDLT_FEMALE
+(
+  ~MOTHER AUNT AUNTY GODMOTHER GRAN GRANDMA GRANDMOM GRANDMOTHER GRANNY MATRIARCH MOTHER-IN-LAW SISTER WIDOW WIFE
+)
+
+concept: ~FAMILY_ADULT_GENERIC
+(
+  ancestor clan cousin descendant descendent elders folks grandparent heir
+  parent partner spouse stepparent tribe
+)
+
+concept: ~FAMILY_GRANDFATHER
+(
+  granddad granddaddy grandfather grandpa grandpaw grandpop
+)
+
+concept: ~BROTHER
+(
+  bro brother (male sibling)
+)
+
+concept: ~FATHER
+(
+  dad dada daddy father old_man pa papa pappy pop step-father
+)
+
+concept: ~FAMILY_ADULT_MALE
+(
+  ~BROTHER ~FAMILY_GRANDFATHER ~FATHER BOYFRIEND BROTHER-IN-LAW EX-HUSBAND
+  father-in-law fiance hubby husband patriarch scion son-in-law step-father
+  stepfather uncle widower
+)
+
+concept: ~FAMILY_ADULT
+(
+  ~FAMILY_ADULT_FEMALE ~FAMILY_ADULT_GENERIC ~FAMILY_ADULT_MALE
+)
+
+concept: ~SISTER
+(
+  sis sister
+)
+
+concept: ~FAMILY_CHILDREN_FEMALE
+(
+  ~SISTER DAUGHTER GRANDDAUGHTER GRANDNIECE NIECE SISTER SISTER-IN-LAW
+  step-daughter step-sister stepdaughter stepsister
+)
+
+concept: ~FAMILY_CHILDREN_GENERIC
+(
+  baby child cousin grandchild grandkid infant kid offspring progeny sibling
+  step-child stepchild teen teenager toddler tot twin ward youth nephling
+)
+
+concept: ~FAMILY_CHILDREN_MALE
+(
+  ~BROTHER BROTHER GRANDNEPHEW GRANDSON NEPHEW SCION SON SSTEP-SON STEP-BROTHER
+  stepson
+)
+
+concept: ~FAMILY_CHILDREN
+(
+  ~FAMILY_CHILDREN_FEMALE ~FAMILY_CHILDREN_GENERIC ~FAMILY_CHILDREN_MALE
+)
+
+concept: ~FAMILY_MEMBERS
+(
+  ~FAMILY_ADULT ~FAMILY_CHILDREN RELATIVE TWIN
+)
+
+concept: ~ROLE_FAMILY
+(
+  ~FAMILY_MEMBERS ADOLESCENT BABY CHILD GROWN-UP RELATIVE
+)
+
+concept: ~IMPORTANT_RELATIONS
+(
+  ~FRIEND ~PRO_FRIEND ~ROLE_FAMILY
+)
+
+concept: ~GOOD_QUALITY_ADJECTIVES
+(
+  best excellent fine first-rate good great matchless outstanding peerless
+  superb superior unrivaled
+)
+
+concept: ~VERBAL_AGREE
+(
+  acknowledge affirm agree approve compromise consent rubberstamp stipulate
+)
+
+concept: ~MAYBE
+(
+  (within the realm of possiblity) (that may be true) (possibly)
+  perhaps maybe (it may not be true)
+  (I do not know if that is true or not)
+  (I do not know if it is true or not) (I can imagine it)
+  (I am uncertain) (for all I know) conceivably (not sure)
+)
+
+concept: ~BAD_QUALITY_ADJECTIVES
+(
+  atrocious awful bad mediocre poor
+)
+
+concept: ~AGREE
+(
+  ~YES ~GOOD_QUALITY_ADJECTIVES ~VERBAL_AGREE BETTER ~THINKSO
+  ~MAYBE(WHY NOT)
+)
+
+concept: ~DISAGREE
+(
+  ~NO ~BAD_QUALITY_ADJECTIVES
+)
+
+concept: ~REPEAT
+(
+    (repeat that) (repeat what) (say that again) (say it again) (what did you say)
+)
+
+
