@@ -50,13 +50,12 @@
 						; Finally give txt to Ghost
 						(if (string-null? speech-txt)
 						    (begin (display "Empty string\n" client) (continue))
-						    
 						    ; test-ghost used for the time being 
 						    (test-ghost speech-txt)
-							 (begin (display speech-txt) (newline))
 						)
 					    )
 					)
+					(begin (display (ghost-get-result)) (newline))
 				)
 				(close client)
 				(display "INPUT: Client closed.\n")

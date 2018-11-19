@@ -40,11 +40,12 @@ FestivalTTS tts;
 
 cv::Mat frame;
 std::string text;
+std::string ret;
 
 
 const char *emo_detect()
-{
-	std::string ret = "";
+{	
+	ret = "";
 	std::vector<std::string> emo_preds;
 	std::vector<cv::Rect> emo_boxes;
 	frame = cap->getCurrentFrame();
