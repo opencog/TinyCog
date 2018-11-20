@@ -9,11 +9,13 @@
 #include "comm/rpc/RPC_Client_Face_Emotion.hpp"
 
 
-void RPC_Client_Face_Basic::encode_img(cv::Mat in)
+std::string RPC_Client_Face_Basic::encode_img_b64(cv::Mat in)
 {
 	vbuff.clear();
 	cv::imencode(IMG_ENCODING, in, vbuff);
-	ucbuff = &vbuff[0];
+	//unsigned char *enc_data = new unsigned char[vbuff.size()];
+	//std::copy(vbuff.begin(), vbuff.end(), enc_data);
+	return base64_encode(vbuff.data(), vbuff.size()).c_str();
 }
 
 
@@ -27,7 +29,7 @@ bool RPC_Client_Face_Basic::detect_faces(cv::Mat &in, std::vector<std::string> &
 
 	out_emos.clear();
 	out_boxes.clear();
-	img.set_image(encode_img(in));
+	img.set_image(encode_img_b64(in));
 	img.set_image_type(IMG_ENCODING);
 	status = stub_->classify(&ctxt, img, &resp);
 	 

@@ -14,7 +14,8 @@
 
 #include <grpcpp/grpcpp.h>
 
-#include  "VisionCommon.hpp"
+#include "VisionCommon.hpp"
+#include "util/base64.h"
 
 #include "EmotionService.grpc.pb.h"
 
@@ -45,7 +46,7 @@ class RPC_Client_Face_Emotion
       unsigned char *ucbuff;
       cv::Rect rct;
 
-      void encode_img(cv::Mat);
+      std::string encode_img_b64(cv::Mat);
 
 };
 

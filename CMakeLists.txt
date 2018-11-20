@@ -56,6 +56,7 @@ set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
 
 add_library(tinycog_util util/util.cpp)
+add_library(base_64 util/base64.cpp)
 
 
 ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/comm/rpc)
