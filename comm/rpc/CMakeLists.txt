@@ -58,12 +58,12 @@ target_link_libraries( RPC_Server_Image_Basic_Test rpc_ib_server grpc++_unsecure
                                        ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} sensor_vision)
 
 add_executable(RPC_Client_Image_Basic_Test ${CMAKE_SOURCE_DIR}/examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_IB_PB_FILES})
-target_link_libraries(RPC_Client_Face_Basic_Test rpc_ib_client grpc++_unsecure grpc gpr 
+target_link_libraries(RPC_Client_Image_Basic_Test rpc_ib_client grpc++_unsecure grpc gpr 
                      ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision)
 
-#add_executable(RPC_Client_Face_Emotion_Test ${CMAKE_SOURCE_DIR}/examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_FE_PB_FILES})
-#target_link_libraries(RPC_Client_Face_Basic_Test rpc_fe_client grpc++_unsecure grpc gpr 
-#                     ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision base_64)
+add_executable(RPC_Client_Face_Emotion_Test ${CMAKE_SOURCE_DIR}/examples/comm/rpc/RPC_Client_Face_Emotion_Test.cpp ${GENERATED_FE_PB_FILES})
+target_link_libraries(RPC_Client_Face_Emotion_Test rpc_fe_client grpc++_unsecure grpc gpr 
+                     ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision base_64)
 set(RPC_IB_LINK_LIBS rpc_ib_client grpc++_unsecure grpc gpr ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision PARENT_SCOPE)
-#set(RPC_FE_LINK_LIBS rpc_fe_client grpc++_unsecure grpc gpr ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision base_64 PARENT_SCOPE)
+set(RPC_FE_LINK_LIBS rpc_fe_client grpc++_unsecure grpc gpr ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision base_64 PARENT_SCOPE)
 endif(raspicam_FOUND)
