@@ -1,5 +1,7 @@
 ; guile module for emotion recognition demo
 
+(use-modules (ice-9 hash-table))
+
 (setlocale LC_CTYPE "C")
 (define TOPDIR (getcwd))
 
@@ -12,13 +14,59 @@
 (define t (stv 1 1))
 (define f (stv 0 1))
 
+(define emo_types (make-hash-table))
+(hash-set! emo_types "anger" "angry")
+(hash-set! emo_types "disgust" "disgusted")
+(hash-set! emo_types "fear" "fearful")
+(hash-set! emo_types "happy" "happy")
+(hash-set! emo_types "sad" "sad")
+(hash-set! emo_types "surprise" "surprised")
+(hash-set! emo_types "neutral" "normal")
+
 ; functions for ghost
-(define-public (func-face-seen) (if (not (equal? (car (string-split (det-emo) #\,)) "")) t f))
-(define-public (func-no-face-seen) (if (equal? (car (string-split (det-emo) #\,))  "") t f))
-(define-public (func-happy-face-seen) (if (equal? (car (string-split (det-emo) #\,)) "happy") t f))
-(define-public (func-sad-face-seen) (if (equal? (car (string-split (det-emo) #\,))  "sad") t f))
-(define-public (func-angry-face-seen) (if (equal? (car (string-split (det-emo) #\,))  "angry") t f))
-(define-public (func-neutral-face-seen) (if (equal? (car (string-split (det-emo) #\,))  "neutral") t f))
+(define-public (func-see-face) 
+	(if (not 
+			(equal? 
+				(car (string-split (det-emo) #\,)) 
+				""
+			)
+		) 
+		(ListLink (WordNode "Yes,")
+		          (WordNode "I")
+					 (WordNode "can")
+		)
+		(ListLink (WordNode "No,")
+		          (WordNode "I")
+					 (WordNode "can")
+					 (WordNode "not")
+		)
+	)
+)
+
+; anger, disgust, fear, happy, sad, surprise, neutral
+(define-public (func-face-emotion) 
+	(define emo_ (car (string-split (det-emo) #\,)))
+	(if (equal? emo_ "")
+		 (ListLink (WordNode "I")
+		           (WordNode "can't")
+		           (WordNode "actually")
+		           (WordNode "see")
+		           (WordNode "you")
+		           (WordNode "now.")
+		           (WordNode "could")
+		           (WordNode "you")
+		           (WordNode "maybe")
+		           (WordNode "move")
+		           (WordNode "closer")
+		 )
+		 (ListLink (WordNode "I")
+		           (WordNode "think")
+		           (WordNode "you")
+	              (WordNode "look")
+		           (WordNode (hash-ref emo_types emo_))
+		 )
+	)
+)
 
 
 (use-modules (opencog)
@@ -34,24 +82,3 @@
 (begin (display "Done Loading Ghost Scriptas") (newline))
 
 (include "socket/socket.scm")
-
-(define txt-str-prev)
-
-; loop on ghost
-#!
-(while #t
-	(let ((txt-str "") (ghost-result '()))
-		(set! ghost-result (ghost-get-result))
-		(set! txt-str (string-join (map cog-name (ghost-get-result)) " "))
-		(if (equal? txt-str txt-str-prev)
-			(continue)
-			(begin 
-				(act-say txt-str)
-				(begin (display txt-str) (newline))
-				(set! txt-str-prev txt-str)
-			)
-		)
-		(usleep 10000)
-	)
-)
-!#

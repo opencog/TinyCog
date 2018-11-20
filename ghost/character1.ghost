@@ -1,23 +1,27 @@
+#intro
+urge: (intro=0.9 please_user=0.4)
+u: () hello, my name is Dr Roboto. I have been sent here to destroy you and there's a million of
+      us just like me who cuss like me, who just don't give a fuck like me, who dress like me. 
+      Walk, talk and act like me, it just might be the next best thing, but not quite me.
+
+
 concept: ~HI (hi hello hey sup (what's up) (how be you))
+goal: (please_user=0.9)
 u: (what be you >) I am a robot
 
 u: (what be you name) My name is Dr. Roboto
 
-u: (~HI) [hi] [hello] [hey] [how are you] there
+u: (~HI) [hi] [hello] [hey] [how are you] there ^keep
 
-u: (me name be _*) $name='_0 Hi '_0
+u: (me name be _*) $name='_0 Hi '_0  ^keep
 
-u: (what be me name $name) Your name is $name
+u: (what be me name $name) Your name is $name ^keep
 
 u: (you hate humans) no. you are very interesting. Do you hate robots?
 	a: (yes) I am sure you are going to like me though
 	a: (no) We will get along fine
 
-u: (can you see me ^func-face-seen ) Yes I can see you.
-u: (can you see me ^func-no-face-seen ) No I can not see you
+u: (can you see me ) ^func-see-face see you. ^keep
 
-u: (how do I look ^func-happy-face-seen) you look happy ^keep
-u: (how do I look ^func-sad-face-seen) you look sad ^keep
-u: (how do I look ^func-angry-face-seen) you look angry ^keep
-u: (how do I look ^func-neutral-face-seen) you look normal, I see no exagurated emotions ^keep
+u: (how do I look) ^func-face-emotion ^keep
 
