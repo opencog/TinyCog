@@ -25,7 +25,7 @@ using grpc::ServerContext;
 using grpc::ServerBuilder;
 
 
-class RPC_Server_Image_Basic final : public ImageServices::Service 
+class RPC_Server_Image_Basic final : public ImageBase::ImageServices::Service 
 {    
     public:
       RPC_Server_Image_Basic(std::string server_address = "0.0.0.0:50051") : 

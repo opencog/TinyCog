@@ -39,7 +39,7 @@ class RPC_Client_Face_Emotion
 		                                 std::vector<cv::Rect> &out_boxes);
 
     private:
-      std::unique_ptr<ImageBase::ImageServices::Stub> stub_;
+      std::unique_ptr<EmotionRecognition::Stub> stub_;
 
       Status status;
       std::vector<unsigned char> vbuff;

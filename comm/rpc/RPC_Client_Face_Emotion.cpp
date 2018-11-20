@@ -9,7 +9,7 @@
 #include "comm/rpc/RPC_Client_Face_Emotion.hpp"
 
 
-std::string RPC_Client_Face_Basic::encode_img_b64(cv::Mat in)
+std::string RPC_Client_Face_Emotion::encode_img_b64(cv::Mat in)
 {
 	vbuff.clear();
 	cv::imencode(IMG_ENCODING, in, vbuff);
@@ -19,8 +19,9 @@ std::string RPC_Client_Face_Basic::encode_img_b64(cv::Mat in)
 }
 
 
-bool RPC_Client_Face_Basic::detect_faces(cv::Mat &in, std::vector<std::string> &out_emos,
-																		std::vector<cv::Rect> &out_boxes)
+bool RPC_Client_Face_Emotion::detect_emotion(cv::Mat &in, 
+                                             std::vector<std::string> &out_emos,
+                                             std::vector<cv::Rect> &out_boxes)
 {
 	ClientContext ctxt;
 	RecognizeRequest img;

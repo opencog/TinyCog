@@ -30,7 +30,7 @@ using grpc::ClientContext;
 class RPC_Client_Image_Basic
 {    
     public:
-      RPC_Client_Image_Basic() : stub_(ImageServices::NewStub(grpc::CreateChannel(
+      RPC_Client_Image_Basic() : stub_(ImageBase::ImageServices::NewStub(grpc::CreateChannel(
       				SERVER_ADDRESS, grpc::InsecureChannelCredentials()))) {}
       ~RPC_Client_Image_Basic() {}
 
@@ -39,7 +39,7 @@ class RPC_Client_Image_Basic
       bool salient_point(cv::Mat &in, cv::Point &out);
 
     private:
-      std::unique_ptr<ImageServices::Stub> stub_;
+      std::unique_ptr<ImageBase::ImageServices::Stub> stub_;
 
       Status status;
       std::vector<unsigned char> vbuff;

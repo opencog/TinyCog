@@ -2,7 +2,8 @@
 if (NOT DEFINED SERVER_ADDRESS)
   SET(SERVER_ADDRESS "localhost:50051")
 endif()
-configure_file( ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client.hpp.in ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client.hpp @ONLY)
+configure_file( ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client_Image_Basic.hpp.in ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client_Image_Basic.hpp @ONLY)
+configure_file( ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client_Face_Emotion.hpp.in ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Client_Face_Emotion.hpp @ONLY)
 
 set(PROTOF_PATH "${CMAKE_SOURCE_DIR}/protos")
 set(GENERATED_PB_PATH "${CMAKE_BINARY_DIR}/generated")
@@ -57,7 +58,7 @@ add_executable(RPC_Server_Image_Basic_Test ${CMAKE_SOURCE_DIR}/examples/comm/rpc
 target_link_libraries( RPC_Server_Image_Basic_Test rpc_ib_server grpc++_unsecure grpc gpr 
                                        ${PROTOBUF_LIBRARY} ${OpenCV_LIBS} sensor_vision)
 
-add_executable(RPC_Client_Image_Basic_Test ${CMAKE_SOURCE_DIR}/examples/comm/rpc/RPC_Client_Test.cpp ${GENERATED_IB_PB_FILES})
+add_executable(RPC_Client_Image_Basic_Test ${CMAKE_SOURCE_DIR}/examples/comm/rpc/RPC_Client_Image_Basic_Test.cpp ${GENERATED_IB_PB_FILES})
 target_link_libraries(RPC_Client_Image_Basic_Test rpc_ib_client grpc++_unsecure grpc gpr 
                      ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision)
 
