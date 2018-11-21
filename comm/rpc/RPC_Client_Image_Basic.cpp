@@ -1,15 +1,15 @@
 /*
-  File: RPC_Client.cpp
+  File: RPC_Client_Image_Basic.cpp
   Date: May, 2018
   Author: Dagim Sisay <dagiopia@gmail.com>
   License: AGPL
 */
 
 
-#include "comm/rpc/RPC_Client.hpp"
+#include "comm/rpc/RPC_Client_Image_Basic.hpp"
 
 
-void RPC_Client::encode_img(cv::Mat in)
+void RPC_Client_Image_Basic::encode_img(cv::Mat in)
 {
     vbuff.clear();
     cv::imencode(IMG_ENCODING, in, vbuff);
@@ -17,7 +17,7 @@ void RPC_Client::encode_img(cv::Mat in)
 }
 
 
-bool RPC_Client::detect_faces(cv::Mat &in, std::vector<cv::Rect> &out)
+bool RPC_Client_Image_Basic::detect_faces(cv::Mat &in, std::vector<cv::Rect> &out)
 {
     ClientContext ctxt;
     ImageBase::Image img;
@@ -40,7 +40,7 @@ bool RPC_Client::detect_faces(cv::Mat &in, std::vector<cv::Rect> &out)
 
 
 //the output param is only a vvp because I don't know how to insert into full_object_detection obj
-bool RPC_Client::detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point> > &out)
+bool RPC_Client_Image_Basic::detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point> > &out)
 {
     ClientContext ctxt;
     ImageBase::Image img;
@@ -68,7 +68,7 @@ bool RPC_Client::detect_face_lms(cv::Mat &in, std::vector<std::vector<cv::Point>
 }
 
 
-bool RPC_Client::salient_point(cv::Mat &in, cv::Point &out)
+bool RPC_Client_Image_Basic::salient_point(cv::Mat &in, cv::Point &out)
 {
     ClientContext ctxt;
     ImageBase::Image img;

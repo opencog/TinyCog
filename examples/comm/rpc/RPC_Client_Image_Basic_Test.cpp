@@ -5,7 +5,7 @@
   License: AGPL
 */
 
-#include "comm/rpc/RPC_Client.hpp"
+#include "comm/rpc/RPC_Client_Image_Basic.hpp"
 #include "sense/vision/RaspiVision.hpp"
 
 #include <opencv2/opencv.hpp>
@@ -15,7 +15,7 @@
 int main(int argc, char **argv)
 {
     RaspiCamCapture *rcap = RaspiCamCapture::init("rcap", 320, 240, 20);
-    RPC_Client rpcc;
+    RPC_Client_Image_Basic rpcc;
     cv::Mat frame; 
     std::vector<cv::Rect> faces;
     std::vector<std::vector<cv::Point> > f_lms;

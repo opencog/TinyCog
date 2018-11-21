@@ -1,5 +1,5 @@
 /*
-  File: RPC_Server.hpp
+  File: RPC_Server_Image_Basic.hpp
   Date: May, 2018
   Author: Dagim Sisay <dagiopia@gmail.com>
   License: AGPL
@@ -25,10 +25,10 @@ using grpc::ServerContext;
 using grpc::ServerBuilder;
 
 
-class RPC_Server final : public ImageBase::ImageServices::Service 
+class RPC_Server_Image_Basic final : public ImageBase::ImageServices::Service 
 {    
     public:
-      RPC_Server(std::string server_address = "0.0.0.0:50051") : 
+      RPC_Server_Image_Basic(std::string server_address = "0.0.0.0:50051") : 
         c2g("c2g") , eh("eh") , fcd("fcd"), smd("smd"), 
         flm(), dh("dh"), fc(true), sal_d(SAL_STATIC, SAL_FINE_GRAINED)
       {

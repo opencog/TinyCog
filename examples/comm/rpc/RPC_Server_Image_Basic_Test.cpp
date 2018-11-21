@@ -6,10 +6,10 @@
 */
 
 
-#include "comm/rpc/RPC_Server.hpp"
+#include "comm/rpc/RPC_Server_Image_Basic.hpp"
 
 int main(int argc, char **argv)
 {
-    RPC_Server rpcs("0.0.0.0:50051"); 
+    RPC_Server_Image_Basic rpcs("0.0.0.0:50051"); 
 return 0;
 }

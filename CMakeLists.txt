@@ -56,6 +56,7 @@ set_property(TARGET sensor_vision PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries( sensor_vision ${OpenCV_LIBS} ${EXTRA_LIBS} dlib::dlib )
 
 add_library(tinycog_util util/util.cpp)
+add_library(base_64 util/base64.cpp)
 
 
 ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/comm/rpc)
@@ -218,12 +219,12 @@ endif(${WIRINGPI_FOUND})
 ######SCM Binding
 if(raspicam_FOUND)
     set(ON_RPI_3 "YES")
-    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib_shared act_audio
 	 							${raspicam_CV_LIBS} ${EXTRA_LIBS} 
 								${ATOMSPACE_LIBRARIES} )
 else(raspicam_FOUND)
     set(ON_RPI_3 "NO")
-    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib_shared act_audio
 	 							${OpenCV_LIBS} ${EXTRA_LIBS} 
 								${ATOMSPACE_LIBRARIES} )
 endif(raspicam_FOUND)
