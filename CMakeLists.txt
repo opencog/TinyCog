@@ -29,6 +29,7 @@ include_directories("include"
                     "include/network"
                     "include/comm/spi" 
                     "include/sense/vision" 
+						  "${CMAKE_BINARY_DIR}/generated"
 						  ${GUILE_INCLUDE_DIRS}
 						  ${ATOMSPACE_INCLUDE_DIRS})
 
@@ -220,12 +221,12 @@ endif(${WIRINGPI_FOUND})
 if(raspicam_FOUND)
     set(ON_RPI_3 "YES")
     set(DR_ROBOTO_LIBS sensor_vision dlib::dlib_shared act_audio
-	 							${raspicam_CV_LIBS} ${EXTRA_LIBS} 
+	 							${raspicam_CV_LIBS} ${EXTRA_LIBS} ${RPC_FE_LINK_LIBS}
 								${ATOMSPACE_LIBRARIES} )
 else(raspicam_FOUND)
     set(ON_RPI_3 "NO")
     set(DR_ROBOTO_LIBS sensor_vision dlib::dlib_shared act_audio
-	 							${OpenCV_LIBS} ${EXTRA_LIBS} 
+	 							${OpenCV_LIBS} ${EXTRA_LIBS} ${RPC_FE_LINK_LIBS}
 								${ATOMSPACE_LIBRARIES} )
 endif(raspicam_FOUND)
 
