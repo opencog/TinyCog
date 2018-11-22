@@ -178,10 +178,23 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 
 		gr = dr->c2g.Transform(frame);
 		he = dr->eh.Transform(gr);
+
+		/*
+			Face Detected
+				Value
+					ConceptNode "position"
+					ConceptNode "face_x"
+					FloatValue X Y
+		*/
 		faces = dr->fcd.Transform(he);
 		for(idx = 0; idx < faces.size(); idx++) {
 			str = "face_" + std::to_string(idx);
 			h = dr->_as->add_node(CONCEPT_NODE, str.c_str());
+
+			pap = createFloatValue(std::vector<double>({(double) faces[idx].x + faces[idx].width/2,
+			                                            (double) faces[idx].y + faces[idx].height/2}));
+			h->setValue(pos_h, pap);
+
 			img = he(faces[idx]);
 			smile = dr->smd.Transform(img); //only check on the smaller face region 
 			if(!smile.empty())
@@ -263,8 +276,8 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 
 			** finger count ** XXX not sure if this is the right way
 			Valuation
-			    ConceptNode "hand_x"
 			    ConceptNode "fingers"
+			    ConceptNode "hand_x"
 			    FloatValue X
 		*/
 		cv::threshold(he, he, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);

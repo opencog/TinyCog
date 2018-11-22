@@ -38,3 +38,5 @@
 
 ; load scratch interface
 (include "scratch/scratch.scm")
+
+; (c-start-sensors)
