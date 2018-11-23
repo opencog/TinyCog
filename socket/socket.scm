@@ -125,6 +125,23 @@
 	)
 )
 
+(
+define (output-to-einstein)
+	(define txt-prev "")
+	(define txt-curr "")
+	(while #t 
+		(set! txt-curr (ghost-get-result))
+		(if (equal? txt-prev txt-curr)
+			(continue)
+			(begin 
+				;(act-say txt-curr) ; send directly to speaker ... but we don't need this now. 
+				(send-to-einstein (cmd-to-einstein txt-curr)) ; we need this one now.
+				(set! txt-prev txt-curr)
+			)
+		)
+		(usleep 100000) ; 100ms
+	)
+)
 
 
 ;; Instantiate functions in threads
@@ -133,5 +150,6 @@
 (display "Text input thread started.\n")
 
 
-(define output-thread (call-with-new-thread output-to-tts))
+;(define output-thread (call-with-new-thread output-to-tts))   ; we don't need this now. 
+(define output-thread (call-with-new-thread output-to-einstein))
 (display "Text output thread started.\n")
