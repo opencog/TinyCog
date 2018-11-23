@@ -131,11 +131,12 @@ define (output-to-einstein)
 	(define txt-curr "")
 	(while #t 
 		(set! txt-curr (ghost-get-result))
+		(set! txt-curr (string-concatenate (map append-space txt-curr)))
 		(if (equal? txt-prev txt-curr)
 			(continue)
 			(begin 
 				;(act-say txt-curr) ; send directly to speaker ... but we don't need this now. 
-				(send-to-einstein (cmd-to-einstein txt-curr)) ; we need this one now.
+				(send-to-einstein txt-curr) ; we need this one now.
 				(set! txt-prev txt-curr)
 			)
 		)
@@ -151,5 +152,6 @@ define (output-to-einstein)
 
 
 ;(define output-thread (call-with-new-thread output-to-tts))   ; we don't need this now. 
-(define output-thread (call-with-new-thread output-to-einstein))
+(call-with-new-thread output-to-einstein)
 (display "Text output thread started.\n")
+

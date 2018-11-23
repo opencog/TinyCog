@@ -110,7 +110,7 @@
 ; it approprietly so that it's acceptable
 (define-public (cmd-to-einstein cmd)
 	(define x 
-		(scm->json-string `(("data" . (("output" ,@s))) ("cmd" . "activity.recieved")))
+		(scm->json-string `(("data" . (("output" ,@cmd))) ("cmd" . "activity.recieved")))
 	)
 	(string-append (format #f "~5,'0d" (string-length x)) x)
 )
@@ -123,7 +123,7 @@
 (define sck (socket PF_INET SOCK_STREAM 0))
 (connect sck AF_INET (inet-pton AF_INET "192.168.1.1") 8080)
 (define-public (send-to-einstein STR)
-	(display STR sck)
+	(display (cmd-to-einstein STR) sck)
 )
 
 (begin (display "Loading Ghost Scripts...") (newline))
