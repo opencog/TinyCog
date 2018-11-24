@@ -126,6 +126,9 @@
 	(display (cmd-to-einstein STR) sck)
 )
 
+; append space at the end of a string
+(define-public (append-space STR) (string-append STR " "))
+
 (begin (display "Loading Ghost Scripts...") (newline))
 ;(ghost-parse-file (string-append TOPDIR "/ghost/concepts.ghost"))
 (ghost-parse-file (string-append TOPDIR "/ghost/character1.ghost"))
