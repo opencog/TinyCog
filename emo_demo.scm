@@ -46,12 +46,12 @@
 		) 
 		(ListLink (WordNode "Yes,")
 		          (WordNode "I")
-					 (WordNode "can")
+		          (WordNode "can")
 		)
 		(ListLink (WordNode "No,")
 		          (WordNode "I")
-					 (WordNode "can")
-					 (WordNode "not")
+		          (WordNode "can")
+		          (WordNode "not")
 		)
 	)
 )
@@ -75,7 +75,7 @@
 		 (ListLink (WordNode "I")
 		           (WordNode "think")
 		           (WordNode "you")
-	              (WordNode "look")
+		           (WordNode "look")
 		           (WordNode (hash-ref emo_types emo_))
 		 )
 	)
@@ -105,26 +105,7 @@
 ;   only tells the last rule that was executed. If the rule has a ^keep
 ;   and gets executed again, that value remains the same. But something like that... 
 
-
-; function to encode commands to the einstein robot into json and then format 
-; it approprietly so that it's acceptable
-(define-public (cmd-to-einstein cmd)
-	(define x 
-		(scm->json-string `(("data" . (("output" ,@cmd))) ("cmd" . "activity.recieved")))
-	)
-	(string-append (format #f "~5,'0d" (string-length x)) x)
-)
-
-; send text through a socket -> this is intended to serve in sending to the prof
-; einstein robot. 
-; XXX there should be error checks here... just have to make sure the robot has its
-;     port 8080 open before starting this script. Don't know how to do the error checks
-;     in the time I have now. 
-(define sck (socket PF_INET SOCK_STREAM 0))
-(connect sck AF_INET (inet-pton AF_INET "192.168.1.1") 8080)
-(define-public (send-to-einstein STR)
-	(display (cmd-to-einstein STR) sck)
-)
+(include "cmd_einstein.scm")
 
 ; append space at the end of a string
 (define-public (append-space STR) (string-append STR " "))
