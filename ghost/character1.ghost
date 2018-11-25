@@ -1,8 +1,8 @@
 #intro
-urge: (intro=0.9 please_user=0.4)
-u: () hello, my name is Dr Roboto. I have been sent here to destroy you and there's a million of
-      us just like me who cuss like me, who just don't give a fuck like me, who dress like me. 
-      Walk, talk and act like me, it just might be the next best thing, but not quite me.
+#urge: (intro=0.9 please_user=0.4)
+#u: () hello, my name is Dr Roboto. I have been sent here to destroy you and there's a million of
+#      us just like me who cuss like me, who just don't give a fuck like me, who dress like me. 
+#      Walk, talk and act like me, it just might be the next best thing, but not quite me.
 
 
 concept: ~HI (hi hello hey sup (what's up) (how be you))
