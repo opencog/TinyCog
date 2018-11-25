@@ -136,7 +136,9 @@ define (output-to-einstein)
 			(continue)
 			(begin 
 				;(act-say txt-curr) ; send directly to speaker ... but we don't need this now. 
+				(set! do-random-actions #f)
 				(send-to-einstein txt-curr) ; we need this one now.
+				(set! do-random-actions #t)
 				(set! txt-prev txt-curr)
 			)
 		)
