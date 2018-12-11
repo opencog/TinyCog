@@ -16,11 +16,11 @@
 (use-modules
    (opencog)
    (opencog exec)
-	(opencog query)
-	(opencog nlo)
+   (opencog query)
+   (opencog nlo)
    (opencog nlp relex2logic)
    (opencog ghost)
-	(opencog ghost procedures))
+   (opencog ghost procedures))
 
 
 
@@ -39,4 +39,4 @@
 ; load scratch interface
 (include "scratch/scratch.scm")
 
-; (c-start-sensors)
+(c-start-sensors)

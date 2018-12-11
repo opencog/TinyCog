@@ -50,12 +50,12 @@
 						; Finally give txt to Ghost
 						(if (string-null? speech-txt)
 						    (begin (display "Empty string\n" client) (continue))
-						    
 						    ; test-ghost used for the time being 
 						    (test-ghost speech-txt)
 						)
 					    )
 					)
+					(begin (display (ghost-get-result)) (newline))
 				)
 				(close client)
 				(display "INPUT: Client closed.\n")
@@ -125,6 +125,26 @@
 	)
 )
 
+(
+define (output-to-einstein)
+	(define txt-prev "")
+	(define txt-curr "")
+	(while #t 
+		(set! txt-curr (map cog-name (ghost-get-result)))
+		(set! txt-curr (string-concatenate (map append-space txt-curr)))
+		(if (or (equal? txt-prev txt-curr) (equal? txt-curr ""))
+			(continue)
+			(begin 
+				;(act-say txt-curr) ; send directly to speaker ... but we don't need this now. 
+				(set! do-random-actions #f)
+				(send-to-einstein txt-curr) ; we need this one now.
+				(set! do-random-actions #t)
+				(set! txt-prev txt-curr)
+			)
+		)
+		(usleep 100000) ; 100ms
+	)
+)
 
 
 ;; Instantiate functions in threads
@@ -133,5 +153,7 @@
 (display "Text input thread started.\n")
 
 
-(define output-thread (call-with-new-thread output-to-tts))
+;(define output-thread (call-with-new-thread output-to-tts))   ; we don't need this now. 
+(call-with-new-thread output-to-einstein)
 (display "Text output thread started.\n")
+

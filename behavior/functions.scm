@@ -50,8 +50,16 @@
 	(stv 1 1)
 )
 
+
+(define-public (append-space STR) (string-append STR " "))
+
 ; Convert string to ListLink of WordNodes
 (define-public (str-to-listlink txt)
 	(ListLink (map WordNode (string-split txt #\ ))))
+
+; Convert list of WordNode to string
+(define-public (wordlist-to-str wrdlst)
+	(string-concatenate (map append-space (map cog-name (wrdlist)))))
+
 
 
