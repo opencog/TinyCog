@@ -17,8 +17,9 @@
    (opencog)
    (opencog exec)
    (opencog query)
-   (opencog nlo)
+   (opencog nlp)
    (opencog nlp relex2logic)
+   (opencog openpsi)
    (opencog ghost)
    (opencog ghost procedures))
 

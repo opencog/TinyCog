@@ -13,6 +13,7 @@
 ;     port 8080 open before starting this script. Don't know how to do the error checks
 ;     in the time I have now. 
 (define sck (socket PF_INET SOCK_STREAM 0))
+;; // XXX uncomment the following line and the one in the function send-to-einstein
 ;(connect sck AF_INET (inet-pton AF_INET "192.168.1.1") 8080)
 
 ; the command codes
@@ -131,4 +132,8 @@
 	)
 )
 
+; send random commands to einstein on a new thread so that it doesn't 
+; go to sleep. When a speech or intentional command is to be sent, 
+; do-random-actions should be set to false so that no interfering cmnds
+; are sent during that time and then reenabled again. 
 (call-with-new-thread random-cmds)

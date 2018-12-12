@@ -150,8 +150,7 @@
 	)
 )
 
-(
-define (output-to-einstein)
+(define (output-to-einstein)
 	(define txt-prev "")
 	(define txt-curr "")
 	(while #t 
@@ -179,6 +178,6 @@ define (output-to-einstein)
 
 
 ;(define output-thread (call-with-new-thread output-to-tts))   ; we don't need this now. 
-(call-with-new-thread output-to-einstein)
+(define output-thread (call-with-new-thread output-to-einstein))
 (display "Text output thread started.\n")
 
