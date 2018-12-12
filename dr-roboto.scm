@@ -39,4 +39,7 @@
 ; load scratch interface
 (include "scratch/scratch.scm")
 
+; load prof eintein's commands
+(include "act/cmd_einstein.scm")
+
 (c-start-sensors)

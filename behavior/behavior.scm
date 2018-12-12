@@ -8,37 +8,12 @@
 ;; Define functions used by the rules
 (include "functions.scm")
 
-
-;; ----------------------------------------------
-;; Parse ghost topic files. 
-;; Ghost rules handle speech interactions.
-
-;(ghost-parse-file (string-append TOPDIR "behavior/" "test.top"))
-(ghost-parse-file (string-append TOPDIR "behavior/" "demo.top"))
-
-
-;; ----------------------------------------------
-;; Add events and callbacks.
-;; Events are monitored actions the robot periodically checks for.
-;; The detection of an event causes interaction rules to trigger.
-;; The interaction rules can then in turn cause ghost rules to trigger speech output
-;; or cause some other function to execute.
-
-(include "events.scm")
-
-
-;; ----------------------------------------------
-;; Add dynamic interaction rules.
-;; Interaction rules mainly handle non-speech triggered response.
-
-(include "interaction-rules.scm")
-
-;; ------------------------------------------------
-;; Add testing functions
-;; The functions are used to simulate the occurence of events for testing.
-
-;(include "test.scm")
-(include "updater.scm")
+;; Load ghost scripts
+(begin (display "Loading Ghost Scripts...") (newline))
+(ghost-parse-file (string-append TOPDIR "/ghost/concepts_1.ghost"))
+(ghost-parse-file (string-append TOPDIR "/ghost/character_1.ghost"))
+(ghost-parse-file (string-append TOPDIR "/ghost/intro1.ghost"))
+(begin (display "Done Loading Ghost Scripts.") (newline))
 
 
 ;; Run ghost loop
