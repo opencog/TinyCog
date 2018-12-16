@@ -48,9 +48,9 @@
 #include <opencog/truthvalue/TruthValue.h>
 #include <opencog/truthvalue/AttentionValue.h>
 
-#include <opencog/atoms/proto/FloatValue.h>
-#include <opencog/atoms/proto/LinkValue.h>
-#include <opencog/atoms/proto/StringValue.h>
+#include <opencog/atoms/value/FloatValue.h>
+#include <opencog/atoms/value/LinkValue.h>
+#include <opencog/atoms/value/StringValue.h>
 
 #include <opencog/guile/SchemePrimitive.h>
 
@@ -166,7 +166,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 	Handle rate_h = dr->_as->add_node(CONCEPT_NODE, "rate");
 	//sen_h->setValue(rate_h, createFloatValue(1000)); //u-secs to delay sensor
 
-	ProtoAtomPtr pap;
+	ValuePtr pap;
 	
 	while(dr->ok) {
 		frame = dr->cap->getCurrentFrame();
