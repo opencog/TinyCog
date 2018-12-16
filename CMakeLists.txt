@@ -25,13 +25,21 @@ find_package( Guile REQUIRED )
 find_package( PkgConfig REQUIRED )
 find_package( AtomSpace REQUIRED )
 include_directories("include"
-                    "include/act/audio"
+                    "include/util"
+						  "include/act/audio"
                     "include/network"
                     "include/comm/spi" 
                     "include/sense/vision" 
 						  "${CMAKE_BINARY_DIR}/generated"
+						  ${OpenCV_INCLUDE_DIRS}
 						  ${GUILE_INCLUDE_DIRS}
 						  ${ATOMSPACE_INCLUDE_DIRS})
+find_package(OpenMP)
+if (OPENMP_FOUND)
+    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
 
 if (raspicam_FOUND)
     set(RASPI_SUP sense/vision/capture/RaspiCamCapture.cpp)
@@ -220,12 +228,12 @@ endif(${WIRINGPI_FOUND})
 ######SCM Binding
 if(raspicam_FOUND)
     set(ON_RPI_3 "YES")
-    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib_shared act_audio
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
 	 							${raspicam_CV_LIBS} ${EXTRA_LIBS} ${RPC_FE_LINK_LIBS}
 								${ATOMSPACE_LIBRARIES} )
 else(raspicam_FOUND)
     set(ON_RPI_3 "NO")
-    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib_shared act_audio
+    set(DR_ROBOTO_LIBS sensor_vision dlib::dlib act_audio
 	 							${OpenCV_LIBS} ${EXTRA_LIBS} ${RPC_FE_LINK_LIBS}
 								${ATOMSPACE_LIBRARIES} )
 endif(raspicam_FOUND)

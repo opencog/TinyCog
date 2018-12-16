@@ -7,32 +7,27 @@
 */
 #include "sense/vision/DSaliency.hpp"
 
-DSaliency::DSaliency(uint8_t sal_type, string algorithm_t)
+DSaliency::DSaliency(int algorithm_t)
 {
-	switch(sal_type)
+	switch(algorithm_t)
 	{
-		case SAL_DEFAULT:
-			sal_det = Saliency::create(algorithm_t);
+		case SAL_FINE_GRAINED:
+			sal_det = StaticSaliencyFineGrained::create();
 			break;
-		case SAL_STATIC:
-			sal_det = StaticSaliency::create(algorithm_t);
+		case SAL_SPECTRAL_RESIDUAL:
+			sal_det = StaticSaliencySpectralResidual::create();
 			break;
+		case SAL_BING:
+			sal_det = ObjectnessBING::create();
+			break;
+		case SAL_BINWANG:
+			sal_det = MotionSaliencyBinWangApr2014::create();
+			break;
+		defualt:
+			sal_det = StaticSaliencyFineGrained::create();
 	}
 }
 
-DSaliency::DSaliency(uint8_t sal_type, string algorithm_t, int cols, int rows)
-{
-	if(SAL_MOTION == sal_type && SAL_BINWANG == algorithm_t)
-	{
-		sal_det = MotionSaliency::create(algorithm_t);
-		sal_det.dynamicCast<MotionSaliencyBinWangApr2014>()->setImagesize(cols, rows);
-		sal_det.dynamicCast<MotionSaliencyBinWangApr2014>()->init();
-	}
-	else
-	{
-		fprintf(stderr, "ERROR: Constructor only for BinWangApr2014 Motion Saliency\n");
-	}
-}
 
 Point DSaliency::sal_point(Mat in, Mat &out)
 {

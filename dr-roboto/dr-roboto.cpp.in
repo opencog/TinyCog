@@ -116,7 +116,7 @@ extern "C" {
 
 
 DrRoboto::DrRoboto() : c2g("c2g") , eh("eh") , fcd("fcd") , smd("smd") , 
-                       dh("dh") , fc("fc") , sal_d(SAL_STATIC, SAL_FINE_GRAINED)
+                       dh("dh") , fc("fc") , sal_d(SAL_FINE_GRAINED)
 {
 	ok = false;
 	#ifdef _DEBUG

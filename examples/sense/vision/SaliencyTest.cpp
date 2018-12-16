@@ -32,7 +32,7 @@ int main(int argc, char **argv)
 	}
 
 	Mat frame, sal;
-	DSaliency sal_d(SAL_STATIC, SAL_FINE_GRAINED);
+	DSaliency sal_d(SAL_FINE_GRAINED);
 	vector<vector<Point> > cntrs;
 	vector<Vec4i> hier;
 	Point2f cent;
@@ -43,27 +43,6 @@ int main(int argc, char **argv)
 	{
 		frame = cc->getCurrentFrame();
 		cent = sal_d.sal_point(frame, sal);
-		/*sal_d.update(frame, sal);
-		imshow("sal", sal);
-		threshold(sal, sal, 100, 255, CV_THRESH_BINARY);
-		imshow("t", sal);
-		findContours(sal, cntrs, hier, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
-		if(cntrs.size() > 0){
-			largest_cntr = 0;
-			max = 0;
-			for(size_t idx = 0; idx < cntrs.size(); idx++){
-				area = contourArea(cntrs[idx]);
-				if(area > max){
-					max = area;
-					largest_cntr = idx;
-				}
-			}
-			
-			minEnclosingCircle(cntrs[largest_cntr], cent, rad);
-			printf("Loc: %f, %f\n", cent.x, cent.y);
-			circle(frame, cent, rad, CV_RGB(0, 255, 0), 3);
-		}
-		*/
 		circle(frame, cent, 2.0, CV_RGB(0, 255, 0), 3);
 		imshow("saliencytest", frame);
 		if( waitKey(10) == 27)
