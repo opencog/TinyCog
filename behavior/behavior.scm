@@ -17,8 +17,39 @@
 
 
 ;; Run ghost loop
-(ghost-run)
+;(ghost-run)
 
 
 ;; Run dynamic psi
 ;(psi-updater-run)
+
+;; Behavior: where to look
+
+; utility vars
+(define no_faces)
+(define smiling_face_idx)
+(define loc_single_face)
+(define loc_smiling_face)
+
+; check if a face in sight
+(define-public (sense-any-face?)
+	(set! no_faces (car (cog-value->list (cog-value Afs Anof))))
+	(if (eq? (car (cog-value->list (cog-value x y))) 0)
+		(stv 0 1)
+		(stv 1 1)
+	)
+)
+
+
+(define-public (sense-any-smiling-face?)
+	(if (> no_faces 0)
+		(if (eq? no_faces 1)
+			(set! smiling_face_idx (car (cog-value->list (cog-value (ConceptNode "face_1") Asm))))
+			(set! smiling_face_idx 
+)
+
+
+
+
+
+

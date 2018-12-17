@@ -29,14 +29,16 @@
 ;; sensor iteration by 1000 us
 ;;      (cog-set-value sen_h rate_h (FloatValue 1000))
 
-(define-public sm (PredicateNode "smile"))
-(define-public lk (PredicateNode "look"))
-(define-public ey (ConceptNode "eyes"))
-(define-public hh (ConceptNode "hand"))
-(define-public fi (ConceptNode "fingers"))
-(define-public pos_h (ConceptNode "position"))
-(define-public sen_h (ConceptNode "sense"))
-(define-public rate_h (ConceptNode "rate"))
+(define-public Afs (ConceptNode "face"))
+(define-public Asm (PredicateNode "smile"))
+(define-public Alk (PredicateNode "look"))
+(define-public Anof (PredicateNode "number_of"))
+(define-public Aey (ConceptNode "eyes"))
+(define-public Ahh (ConceptNode "hand"))
+(define-public Afi (ConceptNode "fingers"))
+(define-public Apos_h (ConceptNode "position"))
+(define-public Asen_h (ConceptNode "sense"))
+(define-public Arate_h (ConceptNode "rate"))
 
 
 
@@ -62,4 +64,7 @@
 	(string-concatenate (map append-space (map cog-name (wrdlist)))))
 
 
-
+; Check if a number is between 0 and 1
+(define-public (bn-zero-one? VAL)
+	(and (>= VAL 0) (<= VAL 1))
+)

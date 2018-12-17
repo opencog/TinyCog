@@ -155,9 +155,11 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 	//   within the scheme code
 	Handle h;
 	Handle hl;
+	Handle fs = dr->_as->add_node(CONCEPT_NODE, "face");
 	Handle sm = dr->_as->add_node(PREDICATE_NODE, "smile");
 	Handle lk = dr->_as->add_node(PREDICATE_NODE, "look");
 	Handle em = dr->_as->add_node(PREDICATE_NODE, "emotion");
+	Handle nof = dr->_as->add_node(PREDICATE_NODE, "number_of");
 	Handle ey = dr->_as->add_node(CONCEPT_NODE, "eyes");
 	Handle hh = dr->_as->add_node(CONCEPT_NODE, "hand");
 	Handle fi = dr->_as->add_node(CONCEPT_NODE, "fingers");
@@ -188,7 +190,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 		*/
 		faces = dr->fcd.Transform(he);
 		for(idx = 0; idx < faces.size(); idx++) {
-			str = "face_" + std::to_string(idx);
+			str = "face_" + std::to_string(idx+1);
 			h = dr->_as->add_node(CONCEPT_NODE, str.c_str());
 
 			pap = createFloatValue(std::vector<double>({(double) faces[idx].x + faces[idx].width/2,
@@ -249,6 +251,16 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 			
 			// TODO do eye state here
 		} // end of for faces
+
+		/*
+			set number of faces
+				Value
+					ConceptNode "face"
+					PredicateNode "number_of"
+					FloatValue X
+
+		*/
+		fs->setValue(nof, createFloatValue((double)faces.size()));
 
 		/*
 			salient point
