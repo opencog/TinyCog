@@ -53,6 +53,22 @@
 )
 
 
+; remap a value from one range to another
+(define-public (remap val mi1 mx1 mi2 mx2)
+	(+ mi2 (/ (* (- val mi1) (- mx2 mi2)) (exact->inexact (- mx1 mi1))))
+)
+
+; convert from image width range to head pan range
+(define-public (image-width->head-pan val)
+	(remap val 0 IMAGE_WIDTH 0 1)
+)
+
+; conver from image height to head tilt range
+(define-public (image-height->head-tilt val)
+	(remap val 0 IMAGE_HEIGHT 0 1)
+)
+
+
 (define-public (append-space STR) (string-append STR " "))
 
 ; Convert string to ListLink of WordNodes
@@ -61,7 +77,7 @@
 
 ; Convert list of WordNode to string
 (define-public (wordlist-to-str wrdlst)
-	(string-concatenate (map append-space (map cog-name (wrdlist)))))
+	(string-concatenate (map append-space (map cog-name (wrdlst)))))
 
 
 ; Check if a number is between 0 and 1

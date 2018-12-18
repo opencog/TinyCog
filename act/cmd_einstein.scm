@@ -166,7 +166,12 @@
 	)
 )
 
-
+;; XXX TODO this is just to avoid an unimplemented function error
+;;          do it right!
+(define-public (act-face-a-point XY)
+	(act-pan-head (image-width->head-pan (car XY)))
+	(act-tilt-head (image-height->head-tilt (cadr XY)))
+)
 
 (define-public (random-cmds)
 	(while #t
