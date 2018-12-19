@@ -28,14 +28,6 @@
 ; as frequently as possible.
 (define-public do-random-actions #t)
 
-; pause the random actions thread when sending a command
-(define-public (send-cmd CMD)
-	(set! do-random-actions #f)
-	(send-to-einstein CMD)
-	(set! do-random-actions #t)
-)
-
-
 ; the command codes
 (define einstein-cmds (make-hash-table))
 (hash-set! einstein-cmds "head_right" "<MO=HT,1,0.5>")
@@ -64,15 +56,21 @@
 ; function to encode commands to the einstein robot.
 (define-public (cmd-to-einstein cmd)
 	(define fcmd (scm->json-string `(("data" . (("output" ,@cmd))) ("cmd" . "activity.recieved"))))
-	(string-append (format #f "~5,'0d" (string-length fcmd)) fcmd)
-)
+	(string-append (format #f "~5,'0d" (string-length fcmd)) fcmd))
 
 
 ; send einstein command through a socket to port 8080 which is the default for the robot
-(define-public (send-to-einstein STR)
+(define-public (send-cmd STR)
    ;(display (cmd-to-einstein STR) sck)
-	(display (cmd-to-einstein STR)) (newline)
-)
+	(display (cmd-to-einstein STR)) (newline))
+
+; pause the random actions thread when sending a command
+; TODO also need a que for commands
+(define-public (send-to-einstein CMD)
+	(set! do-random-actions #f)
+	(send-cmd CMD)
+	(set! do-random-actions #t))
+
 
 ; just an intro
 (send-to-einstein "Hello, I'm Dr Robot o")
@@ -86,18 +84,27 @@
 ; send a command CMD and delay for a random number of seconds less than 10
 (define (send-rnd-delay CMD) 
 	(send-to-einstein (hash-ref einstein-cmds CMD)) 
-	(usleep (us (random 10)))
-)
+	(usleep (us (random 10))))
 
+;; Status vars
+(define eye_state 0)
 ;; Define Routine acts
-
-(define-public (act-head-down) (send-to-einstein (hash-ref einstein-cmds "head_down")))
-(define-public (act-head-up) (send-to-einstein (hash-ref einstein-cmds "head_up")))
-(define-public (act-head-center) (send-to-einstein (hash-ref einstein-cmds "head_center")))
-(define-public (act-eyes-open) (send-to-einstein (hash-ref einstein-cmds "eyelid_open")))
-(define-public (act-eyes-close) (send-to-einstein (hash-ref einstein-cmds "eyelid_close")))
-(define-public (act-arm-up) (send-to-einstein (hash-ref einstein-cmds "arm_up")))
-(define-public (act-arm-down) (send-to-einstein (hash-ref einstein-cmds "arm_down")))
+(define-public (act-head-down)
+	(send-to-einstein (hash-ref einstein-cmds "head_down")))
+(define-public (act-head-up)
+	(send-to-einstein (hash-ref einstein-cmds "head_up")))
+(define-public (act-head-center)
+	(send-to-einstein (hash-ref einstein-cmds "head_center")))
+(define-public (act-eyes-open)
+	(send-to-einstein (hash-ref einstein-cmds "eyelid_open")))
+(define-public (act-eyes-close)
+	(send-to-einstein (hash-ref einstein-cmds "eyelid_close")))
+(define-public (act-eyes-toggle)
+	(send-to-einstein (format #f "<MO=EL,~d,0.5>" (invrt eye_state))))
+(define-public (act-arm-up)
+	(send-to-einstein (hash-ref einstein-cmds "arm_up")))
+(define-public (act-arm-down)
+	(send-to-einstein (hash-ref einstein-cmds "arm_down")))
 
 
 ; Shake head horizontally - nod no
@@ -106,83 +113,67 @@
 	(define act (list "head_left" "head_right" "head_left" "head_right"
 	                  "head_left" "head_right" "head_center"))
 	(define del (list 0.4 0.4 0.4 0.4 0.4 0.4 0.4))
-	(map send-delay act del)
-)
+	(map send-delay act del))
 
 ; Shake head vertically - nod yes
 (define-public (act-head-vshake)
 	(define act (list "head_up" "head_down" "head_up" "head_down" "head_up"))
 	(define del (list 0.4 0.4 0.4 0.4 0.4))
-	(map send-delay act del)
-)
+	(map send-delay act del))
 
 (define-public (look-side-to-side)
    (define act (list "head_center" "head_right" "head_left" "head_center"))
 	(define del (list 0.1 3 3 0.1))
-	(map send-delay act del)
-)
+	(map send-delay act del))
 
 ; smile for a few seconds and then back to normal
 (define-public (act-smile)
 	(define act (list "cheek_normal" "cheek_up" "cheek_normal"))
 	(define del (list (random 3) (random 5) 1))
-	(map send-delay act del)
-)
+	(map send-delay act del))
 
 ; show a sad face for a little while
 (define-public (act-sad)
 	(define act (list "cheek_normal" "cheek_down" "cheek_normal"))
 	(define del (list (random 3) (random 5) 1))
-	(map send-delay act del)
-)
+	(map send-delay act del))
 
 
 ; show an afraid face for a little while
 (define-public (act-silly)
 	(define act (list "cheek_normal" "cheek_up" "mouth_open" "mouth_close" "cheek_normal"))
 	(define del (list 2 1 (random 5) 1 2 ))
-	(map send-delay act del)
-)
+	(map send-delay act del))
 
 ; pan the head to a given point
 (define-public (act-pan-head POS)
 	(if (bn-zero-one? POS)
 		(begin
 			(send-to-einstein (format #f "<MO=HT,~f,0.5>" POS))
-			(stv 1 1)
-		)
-		(stv 0 1)
-	)
-)
+			(stv 1 1))
+		(stv 0 1)))
 
 ; tilt the head to a given point
 (define-public (act-tilt-head POS)
 	(if (bn-zero-one? POS)
 		(begin
 			(send-to-einstein (format #f "<MO=HN,~f,0.5>" POS))
-			(stv 1 1)
-		)
-		(stv 0 1)
-	)
-)
+			(stv 1 1))
+		(stv 0 1)))
 
 ;; XXX TODO this is just to avoid an unimplemented function error
 ;;          do it right!
 (define-public (act-face-a-point XY)
 	(act-pan-head (image-width->head-pan (car XY)))
-	(act-tilt-head (image-height->head-tilt (cadr XY)))
-)
+	(act-tilt-head (image-height->head-tilt (cadr XY))))
 
 (define-public (random-cmds)
 	(while #t
 		(if do-random-actions
-			(act-eyes-open) ; change this to something more relevant
-			(continue)
-		)
-		(usleep (us (random 30))) ; delay random no of seconds less than 30s
-		                          ; XXX check if the exact value should be 30s
-	)
-)
+			(act-eyes-toggle) ; change this to something more relevant
+			(continue))
+		(usleep (us (random 30))))) ; delay random no of seconds less than 30s
+		                            ; XXX check if the exact value should be 30s
 
 ; reset the prof to normal posture after
 ; internal startup script made him abnormal

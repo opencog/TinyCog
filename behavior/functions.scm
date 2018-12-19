@@ -31,6 +31,7 @@
 
 (define-public Afs (ConceptNode "face"))
 (define-public Asm (PredicateNode "smile"))
+(define-public Aem (PredicateNode "emotion"))
 (define-public Alk (PredicateNode "look"))
 (define-public Anof (PredicateNode "number_of"))
 (define-public Aey (ConceptNode "eyes"))
@@ -57,6 +58,9 @@
 (define-public (remap val mi1 mx1 mi2 mx2)
 	(+ mi2 (/ (* (- val mi1) (- mx2 mi2)) (exact->inexact (- mx1 mi1))))
 )
+
+; invert a number between 1 and 0
+(define-public (invrt val) (logxor 1 val))
 
 ; convert from image width range to head pan range
 (define-public (image-width->head-pan val)
