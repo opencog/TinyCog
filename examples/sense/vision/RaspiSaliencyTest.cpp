@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 	}
 
 	Mat frame, sal;
-	DSaliency sal_d(SAL_STATIC, SAL_FINE_GRAINED);
+	DSaliency sal_d(SAL_FINE_GRAINED);
 	vector<vector<Point> > cntrs;
 	vector<Vec4i> hier;
 	Point2f cent;

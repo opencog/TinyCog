@@ -5,11 +5,14 @@
 ;; Date: May, 2018
 ;;
 
-(setlocale LC_CTYPE "C")
-(define TOPDIR (getcwd))
+(setlocale LC_CTYPE "en_US.UTF-8")
 
-(add-to-load-path "/usr/local/share/opencog")
+(define-public TOPDIR (getcwd))
 (add-to-load-path TOPDIR)
+(setenv "LTDL_LIBRARY_PATH" 
+	(string-append (getenv "LTDL_LIBRARY_PATH") ":" (string-append TOPDIR "/build")))
+
+(chdir "build")
 
 (use-modules (ice-9 hash-table))
 
@@ -31,16 +34,16 @@
 
 
 ; Load behavior scripts
-(include "behavior/behavior.scm")
+(include-from-path "behavior/behavior.scm")
 
 ; TODO this should be changed to a practical i/o implementation.
 ; this is just for testing
-(include "socket/socket.scm")
+(include-from-path "socket/socket.scm")
 
 ; load scratch interface
-(include "scratch/scratch.scm")
+(include-from-path "scratch/scratch.scm")
 
 ; load prof eintein's commands
-(include "act/cmd_einstein.scm")
+(include-from-path "act/cmd_einstein.scm")
 
 (c-start-sensors)
