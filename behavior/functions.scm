@@ -41,7 +41,11 @@
 (define-public Asen_h (ConceptNode "sense"))
 (define-public Arate_h (ConceptNode "rate"))
 
-
+; some default values
+(define-public IMAGE_WIDTH 320)
+(define-public IMAGE_HEIGHT 240)
+(cog-set-value! Afs Anof (FloatValue 0))
+(cog-set-value! Aey Apos_h (FloatValue 0 0))
 
 ; A function which always returns false
 (define-public (func-false)

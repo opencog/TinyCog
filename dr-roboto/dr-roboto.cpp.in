@@ -48,9 +48,9 @@
 #include <opencog/truthvalue/TruthValue.h>
 #include <opencog/truthvalue/AttentionValue.h>
 
-#include <opencog/atoms/proto/FloatValue.h>
-#include <opencog/atoms/proto/LinkValue.h>
-#include <opencog/atoms/proto/StringValue.h>
+#include <opencog/atoms/value/FloatValue.h>
+#include <opencog/atoms/value/LinkValue.h>
+#include <opencog/atoms/value/StringValue.h>
 
 #include <opencog/guile/SchemePrimitive.h>
 
@@ -168,7 +168,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 	Handle rate_h = dr->_as->add_node(CONCEPT_NODE, "rate");
 	//sen_h->setValue(rate_h, createFloatValue(1000)); //u-secs to delay sensor
 
-	ProtoAtomPtr pap;
+	ValuePtr pap;
 	
 	while(dr->ok) {
 		frame = dr->cap->getCurrentFrame();
@@ -230,7 +230,9 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 				once the emo is detected, make a link to the current face 
 				with the conceptnode for the emo type and set stv based on 
 				confidence (if possible) 
-				    Value
+				
+				current implementation
+					 Value
 				        PredicateNode "emotion"
 				        ConceptNode "face_x"
 				        StringValue "emotion_x"

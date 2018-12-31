@@ -32,6 +32,12 @@
 (load-extension "libdr_roboto" "init_dr_roboto")
 (c-init-as (cog-atomspace))
 
+;; ---------------------------------------------
+;; Define functions used by the rules
+(include-from-path "behavior/functions.scm")
+
+; load prof eintein's commands
+(include-from-path "act/cmd_einstein.scm")
 
 ; Load behavior scripts
 (include-from-path "behavior/behavior.scm")
@@ -42,8 +48,5 @@
 
 ; load scratch interface
 (include-from-path "scratch/scratch.scm")
-
-; load prof eintein's commands
-(include-from-path "act/cmd_einstein.scm")
 
 (c-start-sensors)

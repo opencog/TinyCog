@@ -240,6 +240,7 @@ configure_file(${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp.in
                ${CMAKE_SOURCE_DIR}/dr-roboto/dr-roboto.cpp @ONLY)
 
 add_library(dr_roboto SHARED dr-roboto/dr-roboto.cpp)
+message(STATUS ${DR_ROBOTO_LIBS})
 target_link_libraries(dr_roboto ${DR_ROBOTO_LIBS})
 install( TARGETS dr_roboto DESTINATION lib/TinyCog )
 

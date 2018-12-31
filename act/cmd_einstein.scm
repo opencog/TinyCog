@@ -177,10 +177,10 @@
 
 ; reset the prof to normal posture after
 ; internal startup script made him abnormal
-(arm-down) (usleep (us 1))
-(head-up) (usleep (us 1))
-(head-center) (usleep (us 1))
-(eyes-open) (usleep (us 1))
+(act-arm-down) (usleep (us 1))
+(act-head-up) (usleep (us 1))
+(act-head-center) (usleep (us 1))
+(act-eyes-open) (usleep (us 1))
 
 ; send random commands to einstein on a new thread so that it doesn't 
 ; go to sleep. When a speech or intentional command is to be sent, 
