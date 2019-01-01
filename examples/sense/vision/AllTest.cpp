@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 	FacialLandMark flm;
 	ITDetectHand dh("dh1");
 	FingersCount fc(true);
-	DSaliency sal_d(SAL_STATIC, SAL_FINE_GRAINED);
+	DSaliency sal_d(SAL_FINE_GRAINED);
 
 	vector <Rect> faces, hands;
 	vector <facial_lms> f_lms;

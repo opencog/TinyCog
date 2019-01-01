@@ -45,13 +45,13 @@ set(GENERATED_FE_PB_FILES ${GENERATED_PB_FILES})
 include_directories(${GENERATED_PB_PATH})
 
 #BUILDING THE FACE BASIC SERVICE SERVER
-add_library(rpc_ib_server ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Server_Image_Basic.hpp ${GENERATED_IB_PB_FILES})
+add_library(rpc_ib_server SHARED ${CMAKE_SOURCE_DIR}/include/comm/rpc/RPC_Server_Image_Basic.hpp ${GENERATED_IB_PB_FILES})
 
 #BUILDING THE FACE BASIC SERVICE
-add_library(rpc_ib_client ${CMAKE_SOURCE_DIR}/comm/rpc/RPC_Client_Image_Basic.cpp ${GENERATED_IB_PB_FILES})
+add_library(rpc_ib_client SHARED ${CMAKE_SOURCE_DIR}/comm/rpc/RPC_Client_Image_Basic.cpp ${GENERATED_IB_PB_FILES})
 
 #BUILDING THE FACE EMOTION SERVICE
-add_library(rpc_fe_client ${CMAKE_SOURCE_DIR}/comm/rpc/RPC_Client_Face_Emotion.cpp ${GENERATED_FE_PB_FILES})
+add_library(rpc_fe_client SHARED ${CMAKE_SOURCE_DIR}/comm/rpc/RPC_Client_Face_Emotion.cpp ${GENERATED_FE_PB_FILES})
 
 if(raspicam_FOUND)
 add_executable(RPC_Server_Image_Basic_Test ${CMAKE_SOURCE_DIR}/examples/comm/rpc/RPC_Server_Image_Basic_Test.cpp ${GENERATED_IB_PB_FILES})
@@ -65,6 +65,8 @@ target_link_libraries(RPC_Client_Image_Basic_Test rpc_ib_client grpc++_unsecure 
 add_executable(RPC_Client_Face_Emotion_Test ${CMAKE_SOURCE_DIR}/examples/comm/rpc/RPC_Client_Face_Emotion_Test.cpp ${GENERATED_FE_PB_FILES})
 target_link_libraries(RPC_Client_Face_Emotion_Test rpc_fe_client grpc++_unsecure grpc gpr 
                      ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision base_64)
-set(RPC_IB_LINK_LIBS rpc_ib_client grpc++_unsecure grpc gpr ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision PARENT_SCOPE)
-set(RPC_FE_LINK_LIBS rpc_fe_client grpc++_unsecure grpc gpr ${PROTOBUF_LIBRARY} ${raspicam_CV_LIBS} dlib::dlib sensor_vision base_64 PARENT_SCOPE)
+
+MESSAGE(STATUS "RASPICAM_FOUND")
 endif(raspicam_FOUND)
+set(RPC_IB_LINK_LIBS rpc_ib_client grpc++_unsecure grpc gpr ${PROTOBUF_LIBRARY} dlib::dlib sensor_vision PARENT_SCOPE)
+set(RPC_FE_LINK_LIBS rpc_fe_client grpc++_unsecure grpc gpr ${PROTOBUF_LIBRARY} dlib::dlib sensor_vision base_64 PARENT_SCOPE)

@@ -18,14 +18,10 @@
 
 #include <stdio.h>
 
-#define SAL_DEFAULT 0
-#define SAL_STATIC 1
-#define SAL_MOTION 2
-
-#define SAL_FINE_GRAINED "FINE_GRAINED"
-#define SAL_SPECTRAL_RESIDUAL "SPECTRAL_RESIDUAL"
-#define SAL_BING "BING"
-#define SAL_BINWANG "BinWangApr2014"
+#define SAL_FINE_GRAINED 0
+#define SAL_SPECTRAL_RESIDUAL 1
+#define SAL_BING 3
+#define SAL_BINWANG 4
 
 using namespace std;
 using namespace cv;
@@ -33,14 +29,12 @@ using namespace saliency;
 
 class DSaliency
 {
-	public:
-	DSaliency(uint8_t sal_type, string algorithm_t);
-	// the following for BinWangApr2014 Motion Saliency only 
-	DSaliency(uint8_t sal_type, string algorithm_t, int cols, int rows); 
+public:
+	DSaliency(int algorithm_t=SAL_FINE_GRAINED);
 	~DSaliency();
 	bool update(Mat in, Mat &out);
 	Point sal_point(Mat in, Mat &out);
-	private:
+private:
 	Ptr<Saliency> sal_det;
 	vector<vector<Point> > cntrs;
 	vector<Vec4i> hier;

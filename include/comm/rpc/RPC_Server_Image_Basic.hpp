@@ -30,7 +30,7 @@ class RPC_Server_Image_Basic final : public ImageBase::ImageServices::Service
     public:
       RPC_Server_Image_Basic(std::string server_address = "0.0.0.0:50051") : 
         c2g("c2g") , eh("eh") , fcd("fcd"), smd("smd"), 
-        flm(), dh("dh"), fc(true), sal_d(SAL_STATIC, SAL_FINE_GRAINED)
+        flm(), dh("dh"), fc(true), sal_d(SAL_FINE_GRAINED)
       {
           ServerBuilder srvrb;
           srvrb.AddListeningPort(server_address, grpc::InsecureServerCredentials());

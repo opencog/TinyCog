@@ -7,6 +7,31 @@
 
 (use-modules (ice-9 textual-ports))
 
+; XXX checking last executed ghost rule
+;   The point of is that after calling (ghost TXT) or (test-ghost TXT)
+;   the response is caught using (ghost-get-result) which could still hold
+;   the response from the last rule. This could easily be checked by saving 
+;   the last response to another variable and waiting for the data from 
+;   (ghost-get-result) to change (like we did before). However, doing this 
+;   has a severe disadvantage where we have a rule with the ^keep function
+;   or two different rules that might responde with the same text. The 
+;   comparision would suggest that the last reponse haven't yet changed and 
+;   the totally legitimate response goes unused. 
+; 
+;   To aliviate this problem, I modified the ghost src ghost/test.scm
+;   changed L60-62. The change is: the ghost-result variable is set to
+;   empty set once the (ghost-get-result) function returns the response.
+;   Thus all subsequent calls would only receive ()
+;   Even if the same rule is triggred again, since the (ghost-get-result) 
+;   function was empty first, any change can tell this program that it's a new
+;   response which needs to be said out loud. 
+; 
+;   I think a much better method than this is to have a public function
+;   that gives the value of the anchor ghost-last-executed... but this 
+;   only tells the last rule that was executed. If the rule has a ^keep
+;   and gets executed again, that value remains the same. But something like that... 
+
+
 
 ;; Port 5555: Text input from STT
 (define input-port 5555)
@@ -50,12 +75,12 @@
 						; Finally give txt to Ghost
 						(if (string-null? speech-txt)
 						    (begin (display "Empty string\n" client) (continue))
-						    
 						    ; test-ghost used for the time being 
 						    (test-ghost speech-txt)
 						)
 					    )
 					)
+					(begin (display (ghost-get-result)) (newline))
 				)
 				(close client)
 				(display "INPUT: Client closed.\n")
@@ -125,6 +150,25 @@
 	)
 )
 
+(define (output-to-einstein)
+	(define txt-prev "")
+	(define txt-curr "")
+	(while #t 
+		(set! txt-curr (map cog-name (ghost-get-result)))
+		(set! txt-curr (string-concatenate (map append-space txt-curr)))
+		(if (or (equal? txt-prev txt-curr) (equal? txt-curr ""))
+			(continue)
+			(begin 
+				;(act-say txt-curr) ; send directly to speaker ... but we don't need this now. 
+				(set! do-random-actions #f)
+				(send-to-einstein txt-curr) ; we need this one now.
+				(set! do-random-actions #t)
+				(set! txt-prev txt-curr)
+			)
+		)
+		(usleep 100000) ; 100ms
+	)
+)
 
 
 ;; Instantiate functions in threads
@@ -133,5 +177,7 @@
 (display "Text input thread started.\n")
 
 
-(define output-thread (call-with-new-thread output-to-tts))
+;(define output-thread (call-with-new-thread output-to-tts))   ; we don't need this now. 
+(define output-thread (call-with-new-thread output-to-einstein))
 (display "Text output thread started.\n")
+

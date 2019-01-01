@@ -13,11 +13,11 @@ BoxTracker::BoxTracker(Mat init_frame,Rect2d init_box,
 	ok=false;
 	switch(tt)
 	{
-		case BOOSTING: tracker = cv::TrackerBoosting::create("BOOSTING"); break;
-		case TLD: tracker = cv::TrackerTLD::create("TLD"); break;
+		case BOOSTING: tracker = TrackerBoosting::create(); break;
+		case TLD: tracker = TrackerTLD::create(); break;
 		case MEDIAN_FLOW:
 		default: 
-		    tracker = cv::TrackerMedianFlow::create("MEDIANFLOW");
+		    tracker = cv::TrackerMedianFlow::create();
 	}
 	if (tracker == NULL) return;
 	if (!tracker->init(init_frame,init_box)) return;

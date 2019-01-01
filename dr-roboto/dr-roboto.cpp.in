@@ -34,7 +34,7 @@
     #include "sense/vision/Vision.hpp"
 #endif
 #include "act/audio/FestivalTTS.hpp"
-
+#include "comm/rpc/RPC_Client_Face_Emotion.hpp"
 
 //debug consts 
 #define _NEED_GUI_
@@ -48,9 +48,9 @@
 #include <opencog/truthvalue/TruthValue.h>
 #include <opencog/truthvalue/AttentionValue.h>
 
-#include <opencog/atoms/proto/FloatValue.h>
-#include <opencog/atoms/proto/LinkValue.h>
-#include <opencog/atoms/proto/StringValue.h>
+#include <opencog/atoms/value/FloatValue.h>
+#include <opencog/atoms/value/LinkValue.h>
+#include <opencog/atoms/value/StringValue.h>
 
 #include <opencog/guile/SchemePrimitive.h>
 
@@ -70,11 +70,6 @@ class DrRoboto
 		thread *run;
 		static void sensor_loop(DrRoboto *);
 		
-		/*#if _DR_ROBOTO_RPI_
-			RaspiCamCapture *cap;
-		#else //_DR_ROBOTO_RPI_
-			CamCapture *cap;
-		#endif //_DR_ROBOTO_RPI_*/
 		ImageSource *cap;
 
 		ITColor2Gray c2g;
@@ -86,6 +81,7 @@ class DrRoboto
 		FingersCount fc;
 		DSaliency sal_d;
 		FestivalTTS tts;
+		RPC_Client_Face_Emotion ferpc;
 
 	public:
 		/* 
@@ -120,7 +116,7 @@ extern "C" {
 
 
 DrRoboto::DrRoboto() : c2g("c2g") , eh("eh") , fcd("fcd") , smd("smd") , 
-                       dh("dh") , fc("fc") , sal_d(SAL_STATIC, SAL_FINE_GRAINED)
+                       dh("dh") , fc("fc") , sal_d(SAL_FINE_GRAINED)
 {
 	ok = false;
 	#ifdef _DEBUG
@@ -149,17 +145,21 @@ void DrRoboto::cap_from_file(std::string file_name)
 void DrRoboto::sensor_loop(DrRoboto *dr)
 {
 	cv::Mat frame, img, gr, he;
-	std::vector<cv::Rect> faces, smile, hands;
+	std::vector<cv::Rect> faces, smile, hands, emo_boxes;
 	facial_lms f_lms;
 	cv::Point2d cent;
 	std::string str;
+	std::vector<std::string> emo_preds;
 	size_t idx = 0, didx = 0;
 	//XXX clean this up! lash new! maybe have all required nodes created from
 	//   within the scheme code
 	Handle h;
 	Handle hl;
+	Handle fs = dr->_as->add_node(CONCEPT_NODE, "face");
 	Handle sm = dr->_as->add_node(PREDICATE_NODE, "smile");
 	Handle lk = dr->_as->add_node(PREDICATE_NODE, "look");
+	Handle em = dr->_as->add_node(PREDICATE_NODE, "emotion");
+	Handle nof = dr->_as->add_node(PREDICATE_NODE, "number_of");
 	Handle ey = dr->_as->add_node(CONCEPT_NODE, "eyes");
 	Handle hh = dr->_as->add_node(CONCEPT_NODE, "hand");
 	Handle fi = dr->_as->add_node(CONCEPT_NODE, "fingers");
@@ -168,7 +168,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 	Handle rate_h = dr->_as->add_node(CONCEPT_NODE, "rate");
 	//sen_h->setValue(rate_h, createFloatValue(1000)); //u-secs to delay sensor
 
-	ProtoAtomPtr pap;
+	ValuePtr pap;
 	
 	while(dr->ok) {
 		frame = dr->cap->getCurrentFrame();
@@ -180,11 +180,25 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 
 		gr = dr->c2g.Transform(frame);
 		he = dr->eh.Transform(gr);
+
+		/*
+			Face Detected
+				Value
+					ConceptNode "position"
+					ConceptNode "face_x"
+					FloatValue X Y
+		*/
 		faces = dr->fcd.Transform(he);
 		for(idx = 0; idx < faces.size(); idx++) {
-			str = "face_" + std::to_string(idx);
+			str = "face_" + std::to_string(idx+1);
 			h = dr->_as->add_node(CONCEPT_NODE, str.c_str());
-			smile = dr->smd.Transform(he(faces[idx])); //only check on the smaller face region 
+
+			pap = createFloatValue(std::vector<double>({(double) faces[idx].x + faces[idx].width/2,
+			                                            (double) faces[idx].y + faces[idx].height/2}));
+			h->setValue(pos_h, pap);
+
+			img = he(faces[idx]);
+			smile = dr->smd.Transform(img); //only check on the smaller face region 
 			if(!smile.empty())
 				pap = createFloatValue(1.0);
 			else 
@@ -216,27 +230,49 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 				once the emo is detected, make a link to the current face 
 				with the conceptnode for the emo type and set stv based on 
 				confidence (if possible) 
-				    Link
+				
+				current implementation
+					 Value
+				        PredicateNode "emotion"
 				        ConceptNode "face_x"
-				        ConceptNode "emotion_x"
-				        STV x.y x.z
+				        StringValue "emotion_x"
 			*/
+			if(dr->ferpc.detect_emotion(img, emo_preds, emo_boxes)) {
+				if(emo_preds.size() == 1) {
+					pap = createStringValue(emo_preds[0]);
+					h->setValue(em, pap);
+					#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
+						cv::putText(_dbg_img, emo_preds[0], 
+						            cv::Point(faces[idx].x + faces[idx].x*0.15, 
+						                      faces[idx].y + faces[idx].y*0.05),
+						            FONT_HERSHEY_COMPLEX_SMALL, 0.4, cv::Scalar(0, 255, 0),
+						            0.8, CV_AA);
+					#endif
+				}
+			}
 			
 			// TODO do eye state here
 		} // end of for faces
+
+		/*
+			set number of faces
+				Value
+					ConceptNode "face"
+					PredicateNode "number_of"
+					FloatValue X
+
+		*/
+		fs->setValue(nof, createFloatValue((double)faces.size()));
 
 		/*
 			salient point
 				Valuation
 				    PredicateNode "look"
 				    ConceptNode "eyes"
-				    LinkValue
-				        FloatValue X
-				        FloatValue Y
+				    FloatValue X Y
 		*/
 		cent = dr->sal_d.sal_point(gr, gr);
-		pap = createLinkValue(std::vector<ProtoAtomPtr>({createFloatValue((float)cent.x),
-																		createFloatValue((float)cent.y)}));
+		pap = createFloatValue(std::vector<double>({(double)cent.x, (double)cent.y}));
 		ey->setValue(lk, pap);
 
 		#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
@@ -250,14 +286,12 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 			Valuation
 				PredicateNode "position"
 				ConceptNode "hand"
-				LinkValue
-				    FloatValue X
-				    FloatValue Y
+				FloatValue X Y
 
 			** finger count ** XXX not sure if this is the right way
 			Valuation
-			    ConceptNode "hand_x"
 			    ConceptNode "fingers"
+			    ConceptNode "hand_x"
 			    FloatValue X
 		*/
 		cv::threshold(he, he, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
@@ -270,11 +304,9 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 			
 			str = "hand_" + std::to_string(idx);
 			h = dr->_as->add_node(CONCEPT_NODE, str.c_str());
-			
-			pap = createLinkValue(
-			          std::vector<ProtoAtomPtr>({
-			                  createFloatValue((float)hands[idx].x+(hands[idx].width/2)),
-			                  createFloatValue((float)hands[idx].y+(hands[idx].height/2))}));
+			pap = createFloatValue(std::vector<double>({
+			                        (double)hands[idx].x+(hands[idx].width/2), 
+											(double)hands[idx].y+(hands[idx].height/2)}));
 			h->setValue(pos_h, pap);
 								
 			pap = createFloatValue((float)dr->fc.num_fingers(img));
