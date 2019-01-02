@@ -45,8 +45,8 @@
 #define HAVE_GUILE
 
 #include <opencog/atomspace/AtomSpace.h>
-#include <opencog/truthvalue/TruthValue.h>
-#include <opencog/truthvalue/AttentionValue.h>
+#include <opencog/atoms/truthvalue/TruthValue.h>
+#include <opencog/atoms/truthvalue/AttentionValue.h>
 
 #include <opencog/atoms/value/FloatValue.h>
 #include <opencog/atoms/value/LinkValue.h>
@@ -183,10 +183,10 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 
 		/*
 			Face Detected
-				Value
-					ConceptNode "position"
-					ConceptNode "face_x"
-					FloatValue X Y
+			  Value
+			    ConceptNode "position"
+			    ConceptNode "face_x"
+			    FloatValue X Y
 		*/
 		faces = dr->fcd.Transform(he);
 		for(idx = 0; idx < faces.size(); idx++) {

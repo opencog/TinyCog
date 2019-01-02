@@ -63,7 +63,7 @@
 
 ; send einstein command through a socket to port 8080 which is the default for the robot
 (define-public (send-cmd STR)
-   (display (cmd-to-einstein STR) sck)
+	(display (cmd-to-einstein STR) sck)
 	(display (cmd-to-einstein STR)) (newline))
 
 ; pause the random actions thread when sending a command

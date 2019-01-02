@@ -22,6 +22,7 @@
    (opencog query)
    (opencog nlp)
    (opencog nlp relex2logic)
+   (opencog attention)
    (opencog openpsi)
    (opencog ghost)
    (opencog ghost procedures))

@@ -12,13 +12,6 @@
 (ghost-parse-file (string-append TOPDIR "/ghost/intro1.ghost"))
 (begin (display "Done Loading Ghost Scripts.") (newline))
 
-;(define-public (act-face-a-point xy) (begin (display "facingggggggggggggggggg") (newline)))
-
-
-(define-public (cog-value->int cv)
-	(if (cog-value? cv)
-		(inexact->exact (car (cog-value->list cv)))
-		0))
 
 ;; Behavior: where to look
 ; utility vars
@@ -27,13 +20,9 @@
 (define-public nonneutral-face-idx 0)
 (define-public loc_smiling_face 0)
 
-; before looking at face check if any faces first and return false if none
-(define-public (look-face atom)
-	(cog-evaluate! behave-find-face-to-look))
-
 ; check if a face in sight
 (define-public (sense-any-face? atom)
-	(set! no_faces (cog-value->int (cog-value Afs Anof)))
+	(set! no_faces (cog-value->exact (cog-value Afs Anof)))
 	(if (> no_faces 0)
 		(cog-new-stv 1 1)
 		(cog-new-stv 0 1)))
@@ -43,7 +32,7 @@
 ; is sensed. The sensors would set a floatvalue with 
 ; the arg node as the atom and the (PredicateNode "number_of") as key
 (define-public (sense-any? atom)
-	(set! no_faces (cog-value->int (cog-value atom Anof)))
+	(set! no_faces (cog-value->exact (cog-value atom Anof)))
 	(if (> no_faces 0)
 		(cog-new-stv 1 1)
 		(cog-new-stv 0 1)))
@@ -64,6 +53,10 @@
 			(if (not (string=? "neutral"
 			              (car (cog-value->list (cog-value Aem (ConceptNode (format #f "face_~d" i)))))))
 				(set! nonneutral-face-idx i)))))
+
+; before looking at face check if any faces first and return false if none
+(define-public (look-face atom)
+	(cog-evaluate! behave-find-face-to-look))
 
 
 (define-public (look-select-face atom)
@@ -108,7 +101,7 @@
 			(cog-new-stv 1 1))))
 
 ; face one of the neutral faces just at random
-(define-public (look-normal-face atom)
+(define-public (look-random-face atom)
 	(if (eq? no_faces 0)
 		(cog-new-stv 0 1)
 		(begin
@@ -126,6 +119,7 @@
 	(begin
 		(act-face-a-point (cog-value->list (cog-value Aey Apos_h)))
 		(cog-new-stv 1 1)))
+
 
 (define-public behave-find-face-to-look
 	(SequentialAndLink 
@@ -150,13 +144,12 @@
 			(GroundedPredicateNode "scm: look-emotional-face")
 			(PredicateNode "look"))
 		(EvaluationLink
-			(GroundedPredicateNode "scm: look-normal-face")
+			(GroundedPredicateNode "scm: look-random-face")
 			(PredicateNode "look"))))
 
-;(define-public (look-face at) (begin (display "loooooook face") (newline)) (cog-new-stv 0 1))
-;(define-public (look-salient-point at) (begin (display "loooooook salient") (newline)) (cog-new-stv 1 1))
-
-
+; looking behavior... first to try to look at a face, an interesting one
+; if possible then if no face at all, just move on to looking at a salient
+; point
 (define-public behave-looking
 	(SequentialOrLink
 		(EvaluationLink

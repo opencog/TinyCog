@@ -1,14 +1,10 @@
 ;; File: functions.scm
 ;; Author: Eskender Besrat <eskenderbesrat@gmail.com>
+;;         Dagim Sisay <dagiopia@gmail.com>
 ;; License: AGPL
 ;; Date: May, 2018
 
-;;;; These file contains functions used by Ghost or OpenPsi rules
-;;;; Rule is like	context ==> action
-
-;; Functions for context part
-;; Need to return either (stv 0 1) or (stv 1 1) which are like false and true
-
+;; this file contains utility values and functions
 
 ; Atoms of sensors
 ;; Sensor values are stored in the atomspace using values with 
@@ -57,7 +53,6 @@
 	(stv 1 1)
 )
 
-
 ; remap a value from one range to another
 (define-public (remap val mi1 mx1 mi2 mx2)
 	(+ mi2 (/ (* (- val mi1) (- mx2 mi2)) (exact->inexact (- mx1 mi1))))
@@ -76,7 +71,7 @@
 	(remap val 0 IMAGE_HEIGHT 0 1)
 )
 
-
+; append space at the end of string
 (define-public (append-space STR) (string-append STR " "))
 
 ; Convert string to ListLink of WordNodes
@@ -87,6 +82,12 @@
 (define-public (wordlist-to-str wrdlst)
 	(string-concatenate (map append-space (map cog-name (wrdlst)))))
 
+; function to convert a FloatValue to exact number
+; only the first of the FloatValue array
+(define-public (cog-value->exact cv)
+	(if (cog-value? cv)
+		(inexact->exact (car (cog-value->list cv)))
+		0))
 
 ; Check if a number is between 0 and 1
 (define-public (bn-zero-one? VAL)
