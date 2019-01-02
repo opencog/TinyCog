@@ -6,6 +6,7 @@
 ;; License: AGPL
 
 (use-modules (ice-9 hash-table)
+             (ice-9 regex)
              (json))
 
 
@@ -14,7 +15,7 @@
 ;     in the time I have now. 
 (define sck (socket PF_INET SOCK_STREAM 0))
 ;; // XXX uncomment the following line and the one in the function send-to-einstein
-;(connect sck AF_INET (inet-pton AF_INET "192.168.1.1") 8080)
+(connect sck AF_INET (inet-pton AF_INET "192.168.1.1") 8080)
 
 ; whwn the robot remains idle for sometime, it shuts down.
 ; to avoid that, we're gonna have a thread that sends
@@ -30,11 +31,11 @@
 
 ; the command codes
 (define einstein-cmds (make-hash-table))
-(hash-set! einstein-cmds "head_right" "<MO=HT,1,0.5>")
+(hash-set! einstein-cmds "head_right" "<MO=HT,1,0.1>")
 (hash-set! einstein-cmds "head_center" "<MO=HT,0.5,0.5>")
-(hash-set! einstein-cmds "head_left" "<MO=HT,0,0.5>")
-(hash-set! einstein-cmds "head_up" "<MO=HN,1,0.5>")
-(hash-set! einstein-cmds "head_down" "<MO=HN,0,0.5>")
+(hash-set! einstein-cmds "head_left" "<MO=HT,0,0.0>")
+(hash-set! einstein-cmds "head_up" "<MO=HN,1,0.0>")
+(hash-set! einstein-cmds "head_down" "<MO=HN,0,0.1>")
 (hash-set! einstein-cmds "mouth_open" "<MO=MO,1,0.5>")
 (hash-set! einstein-cmds "mouth_close" "<MO=MO,0,0.5>")
 (hash-set! einstein-cmds "eyebrow_up" "<MO=EB,1,0.5>")
@@ -55,13 +56,14 @@
 
 ; function to encode commands to the einstein robot.
 (define-public (cmd-to-einstein cmd)
-	(define fcmd (scm->json-string `(("data" . (("output" ,@cmd))) ("cmd" . "activity.recieved"))))
+	(define fcmd (scm->json-string `(("data".(("output",@cmd)))("cmd"."activity.recieved"))))
+	(set! fcmd (regexp-substitute/global #f "[ \t]+"  fcmd 'pre "" 'post))
 	(string-append (format #f "~5,'0d" (string-length fcmd)) fcmd))
 
 
 ; send einstein command through a socket to port 8080 which is the default for the robot
 (define-public (send-cmd STR)
-   ;(display (cmd-to-einstein STR) sck)
+   (display (cmd-to-einstein STR) sck)
 	(display (cmd-to-einstein STR)) (newline))
 
 ; pause the random actions thread when sending a command
@@ -111,14 +113,14 @@
 ; XXX this routine is no good look into increasing the speed of the motor esti
 (define-public (act-head-hshake)
 	(define act (list "head_left" "head_right" "head_left" "head_right"
-	                  "head_left" "head_right" "head_center"))
-	(define del (list 0.4 0.4 0.4 0.4 0.4 0.4 0.4))
+	                   "head_center"))
+	(define del (list 0.4 0.4 0.4 0.4 0.4))
 	(map send-delay act del))
 
 ; Shake head vertically - nod yes
 (define-public (act-head-vshake)
-	(define act (list "head_up" "head_down" "head_up" "head_down" "head_up"))
-	(define del (list 0.4 0.4 0.4 0.4 0.4))
+	(define act (list "head-center" "head_up" "head_down" "head_up" "head_down" "head_up"))
+	(define del (list 0.4 0.4 0.4 0.4 0.4 0.4))
 	(map send-delay act del))
 
 (define-public (look-side-to-side)
