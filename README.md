@@ -23,15 +23,16 @@ Everything here is meant to run on a rpi3 computer; one can also
 compile everything on a standard Linux desktop computer. 
 
 A fully prepped raspbian image is available 
-[here](http://144.76.153.5/rpi3)
-Use xzcat to clone the image as shown here replacing sdx with your device.
+[here](http://144.76.153.5/rpi3/64bit/)
+
+Use xzcat to clone the image as shown here replacing sdX with your device.
 ```
-    xzcat oc-raspbian-1.img.xz | sudo dd of=/dev/sdx
+    xzcat oc-debian-stretch-arm64.img.xz | sudo dd of=/dev/sdX
 ```
 
-When you first boot with this image, it automatically logs in to the
-default user 'oc' and expands the filesystem to occupy the entire root
-partition and then it reboots by itself.
+When you first boot with this image, and login with the default credentials,
+it automatically expands the filesystem to occupy the entire /
+partition and then it reboots.
 
 The default credentials:
 ```
@@ -40,13 +41,16 @@ The default credentials:
 ```
 
 The image contains the opencog version at the time of it's building
-and other libraries such as opencv and dlib (3.2 and 19.7).
+and other libraries such as opencv and dlib (3.4 and 19.15).
 To see the opencog commit version, pkg-config can be used.
 ```    
     pkg-config --variable=cogutil opencog    #shows cogutil commit version
     pkg-config --variable=atomspace opencog    #shows opencog commit version
     pkg-config --variable=opencog opencog    #shows opencog commit version
 ```
+
+There is a problem with this image, no driver for piCamera as it's not available
+as a 64bit binary. 
 
 ### Install 
 
