@@ -80,7 +80,7 @@
 
 ; Convert list of WordNode to string
 (define-public (wordlist-to-str wrdlst)
-	(string-concatenate (map append-space (map cog-name (wrdlst)))))
+	(string-concatenate (map append-space (map cog-name wrdlst))))
 
 ; function to convert a FloatValue to exact number
 ; only the first of the FloatValue array

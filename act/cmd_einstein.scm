@@ -9,6 +9,7 @@
              (ice-9 regex)
              (json))
 
+;(include-from-path "behavior/functions.scm")
 
 ; XXX there should be error checks here... just have to make sure the robot has its
 ;     port 8080 open before starting this script. Don't know how to do the error checks
@@ -151,7 +152,7 @@
 (define-public (act-pan-head POS)
 	(if (bn-zero-one? POS)
 		(begin
-			(send-to-einstein (format #f "<MO=HT,~f,0.5>" POS))
+			(send-to-einstein (format #f "<MO=HT,~f,0.5>" (format #f "~4f" POS)))
 			(stv 1 1))
 		(stv 0 1)))
 
@@ -159,7 +160,7 @@
 (define-public (act-tilt-head POS)
 	(if (bn-zero-one? POS)
 		(begin
-			(send-to-einstein (format #f "<MO=HN,~f,0.5>" POS))
+			(send-to-einstein (format #f "<MO=HN,~f,0.5>" (format #f "~4f" POS)))
 			(stv 1 1))
 		(stv 0 1)))
 
@@ -188,4 +189,4 @@
 ; go to sleep. When a speech or intentional command is to be sent, 
 ; do-random-actions should be set to false so that no interfering cmnds
 ; are sent during that time and then reenabled again. 
-(call-with-new-thread random-cmds)
+;(call-with-new-thread random-cmds)
