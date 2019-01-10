@@ -93,3 +93,8 @@
 (define-public (bn-zero-one? VAL)
 	(and (>= VAL 0) (<= VAL 1))
 )
+
+; time to delay waiting for the prof to finish speaking
+; reply in us
+(define-public (speech-delay STRLEN)
+	(inexact->exact (ceiling (* STRLEN 69885.375))))

@@ -29,6 +29,8 @@
 ; the loop should go around and check the value of that variable
 ; as frequently as possible.
 (define-public do-random-actions #t)
+(define-public CMD-TO-SAY #f)
+(define-public TIME-TO-SAY 0)
 
 ; the command codes
 (define einstein-cmds (make-hash-table))
@@ -58,7 +60,7 @@
 ; function to encode commands to the einstein robot.
 (define-public (cmd-to-einstein cmd)
 	(define fcmd (scm->json-string `(("data".(("output",@cmd)))("cmd"."activity.recieved"))))
-	(set! fcmd (regexp-substitute/global #f "[ \t]+"  fcmd 'pre "" 'post))
+	;(set! fcmd (regexp-substitute/global #f "[ \t]+"  fcmd 'pre "" 'post))
 	(string-append (format #f "~5,'0d" (string-length fcmd)) fcmd))
 
 
@@ -72,6 +74,7 @@
 (define-public (send-to-einstein CMD)
 	(set! do-random-actions #f)
 	(send-cmd CMD)
+	(if CMD-TO-SAY (begin (usleep TIME-TO-SAY) (set! CMD-TO-SAY #f)))
 	(set! do-random-actions #t))
 
 
