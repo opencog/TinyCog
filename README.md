@@ -32,7 +32,9 @@ Use xzcat to clone the image as shown here replacing sdX with your device.
 
 When you first boot with this image, and login with the default credentials,
 it automatically expands the filesystem to occupy the entire /
-partition and then it reboots.
+partition and then it reboots. 
+This is a 64bit Debian Stretch OS for RPI3 which means that PiCamera driver
+is not available. A USB camera should be used for this image.
 
 The default credentials:
 ```
@@ -66,11 +68,14 @@ On rpi3 only
 * [WiringPi](http://wiringpi.com/download-and-install/)
 
 Use cmake for building. 
+Default build mode is Debug mode. Set CMAKE_BUILD_TYPE to Release to disable debug mode.
+For the emotion recognition service you should set the variable 
+SERVER_ADDRESS to "34.216.72.29:6205"
 ```
     cd to TinyCog dir
     mkdir build
     cd build
-    cmake ..  # default build is Debug mode. Set CMAKE_BUILD_TYPE to Release to disapble debug mode. 
+    cmake ..  # -DCMAKE_BUILD_TYPE=Release -DSERVER_ADDRESS="34.216.72.29:6205" 
     make
 ```
 
@@ -92,22 +97,54 @@ which opens up the camera and does a live view of the camera with markings for t
 * Start relex [server](https://github.com/opencog/relex#opencog-serversh)
 * run [run.sh](run.sh)
 ```
-    $ ./run.sh
-```
-* A guile shell starts up where you can test behavorial functions with simulated functions.
-```
-    guile> (test-set-face-event)
+    $ guile -l dr-roboto.scm
 ```
 * In another terminal, connect to port 5555 via telnet to input speech
 ```
     $ telnet localhost 5555
 ```
-* You can see response output either from the guile instance above or by telneting to port 6666
-```
-    $ telnet localhost 6666
-```
+
 
 ## Implementation
+
+### Overall Description
+
+The [dr-roboto.cpp](dr-roboto/dr-roboto.cpp.in) file is compiled to a guile
+extension which is loaded with the scheme [dr-roboto.scm](dr-roboto.scm) file.
+This guile extension is written in C++ and it's main job is to open the camera
+and sense stuff. When the scheme program loads the extension, the first thing
+it does is it sends the address of its atomspace to the extension so that the
+two can share an atomspace. Then the sensors are started which is a loop run in
+a separate thread that just collects information and places them in the atomspace.
+Most sensory values are stored with Atomspace Values in the following format:
+```
+    Value
+        ConceptNode "position"
+        ConceptNode "face_x"
+        FloatValue X Y
+```
+
+The scheme program [dr-roboto.scm](dr-roboto.scm) includes the
+[behavior/behavior.scm](behavior/behavior.scm) code that contains a very small
+model of OpenCog behavior tree. The behavior is a looking behavior which first
+goes through checking if there is a face, if there is only one then just look at
+that one, if there are more than one then check if one of them is smiling, if not,
+check if any of them has a non-neutral facial expression, if not just look at
+one of the faces randomly. If there are no faces in view then just look at the
+salient point. The behavior tree calls functions that simply check the atomspace
+for the information they require.
+The [behavior/behavior.scm](behavior/behavior.scm) file also loads the ghost
+scripts located [here](ghost/)
+When the behavior program wants to command the Professor Einstein robot of Hanson
+Robotics, it calls functions defined in [cmd_einstein.scm](act/cmd_einstein.scm)
+This program connects to the Professor Einstein robot through its socket api
+and sends it commands.
+The [fuctions.scm](behavior/functions.scm) file contains some utility functions
+used by other scheme source files such as converting ghost results which are a
+list of WordNodes to a single string to be spoken by the robot and mapping of
+values between the image dimensions and the robot's pan/tilt limit.
+
+
 
 ### Sensors
 
@@ -124,6 +161,9 @@ commands and simple conversation.
 
 ### Act
 
+For Hanson Robotic's Professor Einstein robot, the 
+[cmd_einstein.scm](act/cmd_einstein.scm) file contains the code necessary
+to command it.
 The robot should also act as well as sense. It must speak and move around. 
 The speech synthesis utilizes festival. The code is in [act/audio](act/audio).
 Movement was intended to be with SPI communication with the hardware but 
@@ -131,24 +171,16 @@ that has changed. However the spi interface is in [comm/spi](comm/spi)
 
 ### Behavior
 
-* Code connecting the behavior module to the  STT is found in [socket/socket.scm](behavior/socket/socket.scm)
+* Code connecting the behavior module to the  STT is found in [socket/socket.scm](socket/socket.scm)
 * Behavior rules are in [behavior/](behavior/)
-    * Ghost rules that list all syntax found in [behavior/test.top](behavior/test.top)
-    * For non-speech triggered actions, OpenPsi's dynamic module is used to indirectly trigger ghost rules. 
-```
-        event ==> phony speech                          (Dynamic OpenPsi rule)
-        phony speech ==> speech or some action          (Ghost rule)
-```
-    * Events and event monitoring functions are in [beavior/events.scm](behavior/events.scm)
-    * Dynamic OpenPsi rules are found in [behavior/interaction-rules.scm](behavior/interaction-rules.scm)
-    * Functions/actions used by Ghost rules are found at [behavior/functions.scm](behavior/functions.scm)
-    * Testing functions in [behavior/test.scm](behavior/test.scm)
-* Scheme-C++ binding in [dr-roboto/dr-roboto.cpp](dr-roboto/dr-roboto.scm)
-* Scratch interface in [behavior/scratch](behavior/scratch/)
+    * Ghost rules that list all syntax found in [ghost/](ghost/)
+    * For non-speech triggered actions, an OpenCog behavior tree is used. 
+    * Events and event monitoring functions are in [beavior/events.scm](behavior/behavior.scm)
+    * Functions/actions used by various scheme code are found at [behavior/functions.scm](behavior/functions.scm)
+* Scheme-C++ binding in [dr-roboto/dr-roboto.cpp](dr-roboto/dr-roboto.cpp.in)
+* Scratch interface in [behavior/scratch](scratch/)
 
 ## ToDo
-* Emotion recognition
 * Improve STT
 * Ghost rules
 * Stories for a specific identity we need the robot to have
-* Access to Singnet applications
