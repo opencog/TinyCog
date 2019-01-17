@@ -154,19 +154,20 @@
 	(define txt-prev "")
 	(define txt-curr "")
 	(while #t 
-		(set! txt-curr (map cog-name (ghost-get-result)))
-		(set! txt-curr (string-concatenate (map append-space txt-curr)))
+		(set! txt-curr (wordlist-to-str (ghost-get-result)))
 		(if (or (equal? txt-prev txt-curr) (equal? txt-curr ""))
 			(continue)
 			(begin 
 				;(act-say txt-curr) ; send directly to speaker ... but we don't need this now. 
-				(set! do-random-actions #f)
-				(send-to-einstein txt-curr) ; we need this one now.
-				(set! do-random-actions #t)
+				;(set! do-random-actions #f)
+				(begin (set! CMD-TO-SAY #t) (send-to-einstein txt-curr)) ; we need this one now.
+				;(set! do-random-actions #t)
 				(set! txt-prev txt-curr)
 			)
 		)
-		(usleep 100000) ; 100ms
+		; prof einstein takes approximately 0.4 seconds per word when speaking. 
+		; decided to do it with characters, approximately 0.07 seconds per character
+		(usleep (speech-delay (string-length txt-curr))) ; 100ms
 	)
 )
 

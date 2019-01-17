@@ -9,6 +9,7 @@
              (ice-9 regex)
              (json))
 
+;(include-from-path "behavior/functions.scm")
 
 ; XXX there should be error checks here... just have to make sure the robot has its
 ;     port 8080 open before starting this script. Don't know how to do the error checks
@@ -28,6 +29,8 @@
 ; the loop should go around and check the value of that variable
 ; as frequently as possible.
 (define-public do-random-actions #t)
+(define-public CMD-TO-SAY #f)
+(define-public TIME-TO-SAY 0)
 
 ; the command codes
 (define einstein-cmds (make-hash-table))
@@ -57,7 +60,7 @@
 ; function to encode commands to the einstein robot.
 (define-public (cmd-to-einstein cmd)
 	(define fcmd (scm->json-string `(("data".(("output",@cmd)))("cmd"."activity.recieved"))))
-	(set! fcmd (regexp-substitute/global #f "[ \t]+"  fcmd 'pre "" 'post))
+	;(set! fcmd (regexp-substitute/global #f "[ \t]+"  fcmd 'pre "" 'post))
 	(string-append (format #f "~5,'0d" (string-length fcmd)) fcmd))
 
 
@@ -71,6 +74,7 @@
 (define-public (send-to-einstein CMD)
 	(set! do-random-actions #f)
 	(send-cmd CMD)
+	(if CMD-TO-SAY (begin (usleep TIME-TO-SAY) (set! CMD-TO-SAY #f)))
 	(set! do-random-actions #t))
 
 
@@ -151,7 +155,7 @@
 (define-public (act-pan-head POS)
 	(if (bn-zero-one? POS)
 		(begin
-			(send-to-einstein (format #f "<MO=HT,~f,0.5>" POS))
+			(send-to-einstein (format #f "<MO=HT,~f,0.5>" (format #f "~4f" POS)))
 			(stv 1 1))
 		(stv 0 1)))
 
@@ -159,7 +163,7 @@
 (define-public (act-tilt-head POS)
 	(if (bn-zero-one? POS)
 		(begin
-			(send-to-einstein (format #f "<MO=HN,~f,0.5>" POS))
+			(send-to-einstein (format #f "<MO=HN,~f,0.5>" (format #f "~4f" POS)))
 			(stv 1 1))
 		(stv 0 1)))
 
@@ -188,4 +192,4 @@
 ; go to sleep. When a speech or intentional command is to be sent, 
 ; do-random-actions should be set to false so that no interfering cmnds
 ; are sent during that time and then reenabled again. 
-(call-with-new-thread random-cmds)
+;(call-with-new-thread random-cmds)

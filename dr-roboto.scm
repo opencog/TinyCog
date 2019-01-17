@@ -9,6 +9,7 @@
 
 (define-public TOPDIR (getcwd))
 (add-to-load-path TOPDIR)
+(add-to-load-path (string-append TOPDIR "/util/guile-json"))
 (setenv "LTDL_LIBRARY_PATH" 
 	(string-append (getenv "LTDL_LIBRARY_PATH") ":" (string-append TOPDIR "/build")))
 

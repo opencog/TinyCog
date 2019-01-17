@@ -80,7 +80,7 @@
 
 ; Convert list of WordNode to string
 (define-public (wordlist-to-str wrdlst)
-	(string-concatenate (map append-space (map cog-name (wrdlst)))))
+	(string-concatenate (map append-space (map cog-name wrdlst))))
 
 ; function to convert a FloatSeqValue to exact number
 ; only the first of the FloatSeqValue array
@@ -93,3 +93,8 @@
 (define-public (bn-zero-one? VAL)
 	(and (>= VAL 0) (<= VAL 1))
 )
+
+; time to delay waiting for the prof to finish speaking
+; reply in us
+(define-public (speech-delay STRLEN)
+	(inexact->exact (ceiling (* STRLEN 69885.375))))
