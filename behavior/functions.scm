@@ -16,14 +16,14 @@
 ;;      Value
 ;;         PredicateNode "emotion"
 ;;         ConceptNode "face_0"
-;;         StringValue "angry"
+;;         StringSeqValue "angry"
 ;;
 ;; The same thing for the other sensors. 
 ;; 
 ;; The "sense" and "rate" nodes are used to set the delay for
 ;; each loop of the sensors. Setting the following delays each
 ;; sensor iteration by 1000 us
-;;      (cog-set-value sen_h rate_h (FloatValue 1000))
+;;      (cog-set-value sen_h rate_h (FloatSeqValue 1000))
 
 (define-public Afs (ConceptNode "face"))
 (define-public Asm (PredicateNode "smile"))
@@ -40,8 +40,8 @@
 ; some default values
 (define-public IMAGE_WIDTH 320)
 (define-public IMAGE_HEIGHT 240)
-(cog-set-value! Afs Anof (FloatValue 0))
-(cog-set-value! Aey Apos_h (FloatValue 0 0))
+(cog-set-value! Afs Anof (FloatSeqValue 0))
+(cog-set-value! Aey Apos_h (FloatSeqValue 0 0))
 
 ; A function which always returns false
 (define-public (func-false)
@@ -82,8 +82,8 @@
 (define-public (wordlist-to-str wrdlst)
 	(string-concatenate (map append-space (map cog-name (wrdlst)))))
 
-; function to convert a FloatValue to exact number
-; only the first of the FloatValue array
+; function to convert a FloatSeqValue to exact number
+; only the first of the FloatSeqValue array
 (define-public (cog-value->exact cv)
 	(if (cog-value? cv)
 		(inexact->exact (car (cog-value->list cv)))

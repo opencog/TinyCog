@@ -48,9 +48,9 @@
 #include <opencog/atoms/truthvalue/TruthValue.h>
 #include <opencog/atoms/truthvalue/AttentionValue.h>
 
-#include <opencog/atoms/value/FloatValue.h>
-#include <opencog/atoms/value/LinkValue.h>
-#include <opencog/atoms/value/StringValue.h>
+#include <opencog/atoms/value/FloatSeqValue.h>
+#include <opencog/atoms/value/SeqValue.h>
+#include <opencog/atoms/value/StringSeqValue.h>
 
 #include <opencog/guile/SchemePrimitive.h>
 
@@ -166,7 +166,7 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 	Handle pos_h = dr->_as->add_node(CONCEPT_NODE, "position");
 	Handle sen_h = dr->_as->add_node(CONCEPT_NODE, "sense");
 	Handle rate_h = dr->_as->add_node(CONCEPT_NODE, "rate");
-	//sen_h->setValue(rate_h, createFloatValue(1000)); //u-secs to delay sensor
+	//sen_h->setValue(rate_h, createFloatSeqValue(1000)); //u-secs to delay sensor
 
 	ValuePtr pap;
 	
@@ -186,30 +186,30 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 			  Value
 			    ConceptNode "position"
 			    ConceptNode "face_x"
-			    FloatValue X Y
+			    FloatSeqValue X Y
 		*/
 		faces = dr->fcd.Transform(he);
 		for(idx = 0; idx < faces.size(); idx++) {
 			str = "face_" + std::to_string(idx+1);
 			h = dr->_as->add_node(CONCEPT_NODE, str.c_str());
 
-			pap = createFloatValue(std::vector<double>({(double) faces[idx].x + faces[idx].width/2,
+			pap = createFloatSeqValue(std::vector<double>({(double) faces[idx].x + faces[idx].width/2,
 			                                            (double) faces[idx].y + faces[idx].height/2}));
 			h->setValue(pos_h, pap);
 
 			img = he(faces[idx]);
 			smile = dr->smd.Transform(img); //only check on the smaller face region 
 			if(!smile.empty())
-				pap = createFloatValue(1.0);
+				pap = createFloatSeqValue(1.0);
 			else 
-				pap = createFloatValue(0.0);
+				pap = createFloatSeqValue(0.0);
 			h->setValue(sm, pap);
 			/*
 				^ this is 
 				    Valuation
 				      PredicateNode "smile"
 				      ConceptNode "face_x"
-				      FloatValue x.x
+				      FloatSeqValue x.x
 			*/
 
 			#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
@@ -235,11 +235,11 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 					 Value
 				        PredicateNode "emotion"
 				        ConceptNode "face_x"
-				        StringValue "emotion_x"
+				        StringSeqValue "emotion_x"
 			*/
 			if(dr->ferpc.detect_emotion(img, emo_preds, emo_boxes)) {
 				if(emo_preds.size() == 1) {
-					pap = createStringValue(emo_preds[0]);
+					pap = createStringSeqValue(emo_preds[0]);
 					h->setValue(em, pap);
 					#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
 						cv::putText(_dbg_img, emo_preds[0], 
@@ -259,20 +259,20 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 				Value
 					ConceptNode "face"
 					PredicateNode "number_of"
-					FloatValue X
+					FloatSeqValue X
 
 		*/
-		fs->setValue(nof, createFloatValue((double)faces.size()));
+		fs->setValue(nof, createFloatSeqValue((double)faces.size()));
 
 		/*
 			salient point
 				Valuation
 				    PredicateNode "look"
 				    ConceptNode "eyes"
-				    FloatValue X Y
+				    FloatSeqValue X Y
 		*/
 		cent = dr->sal_d.sal_point(gr, gr);
-		pap = createFloatValue(std::vector<double>({(double)cent.x, (double)cent.y}));
+		pap = createFloatSeqValue(std::vector<double>({(double)cent.x, (double)cent.y}));
 		ey->setValue(lk, pap);
 
 		#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
@@ -286,13 +286,13 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 			Valuation
 				PredicateNode "position"
 				ConceptNode "hand"
-				FloatValue X Y
+				FloatSeqValue X Y
 
 			** finger count ** XXX not sure if this is the right way
 			Valuation
 			    ConceptNode "fingers"
 			    ConceptNode "hand_x"
-			    FloatValue X
+			    FloatSeqValue X
 		*/
 		cv::threshold(he, he, 70, 255, CV_THRESH_BINARY_INV | CV_THRESH_OTSU);
 		hands = dr->dh.Transform(he);
@@ -304,12 +304,12 @@ void DrRoboto::sensor_loop(DrRoboto *dr)
 			
 			str = "hand_" + std::to_string(idx);
 			h = dr->_as->add_node(CONCEPT_NODE, str.c_str());
-			pap = createFloatValue(std::vector<double>({
+			pap = createFloatSeqValue(std::vector<double>({
 			                        (double)hands[idx].x+(hands[idx].width/2), 
 											(double)hands[idx].y+(hands[idx].height/2)}));
 			h->setValue(pos_h, pap);
 								
-			pap = createFloatValue((float)dr->fc.num_fingers(img));
+			pap = createFloatSeqValue((float)dr->fc.num_fingers(img));
 			h->setValue(fi, pap);
 
 			#ifdef _DEBUG_ //XXX REMOVE WHEN DONE
