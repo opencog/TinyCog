@@ -1,3 +1,9 @@
+// SPEEDVOLTAGECONSTANT is minimum delay of the motor that could bring the maximum rotation multiplied by 100.
+//It is dependent on voltage supplied. forexample 1.8 is SPEEDVOLTAGECONSTANT for 5V supply
+//'isOpened' boolean return true for objects opened more than 11 degrees else it returns false 
+// currentPosition is valid only the whole life of one uploaded program, else it returns zero.
+//It is better always to start by reset(), unless CurrentPosition Absolute move commands may not bring expected results.
+
 #ifndef BASIC_H_
 #include<iostream>
 #include <vector>
