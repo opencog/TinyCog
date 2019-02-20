@@ -249,3 +249,6 @@ install(FILES
 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake)
 
 configure_file(examples/TestDrRoboto.scm TestDrRoboto.scm COPYONLY)
+add_executable(manual manualCommands.cpp)
+find_library(wiringPi_LIB wiringPi)
+target_link_libraries(manual ${wiringPi_LIB})
