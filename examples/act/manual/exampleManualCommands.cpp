@@ -15,7 +15,7 @@ if(wiringPiSetupPhys()==-1){ cout<<"Setup wiring pi failed";
 return 1;
 }
 
-/*the follwing some common facial expressions
+/*the follwing are some common facial expressions
   Winking,yawning and laughing.
 */
 
