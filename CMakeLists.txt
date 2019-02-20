@@ -249,10 +249,7 @@ install(FILES
 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/cmake)
 
 configure_file(examples/TestDrRoboto.scm TestDrRoboto.scm COPYONLY)
-set (CMAKE_CXX_STANDARD 11)
-add_executable(cute basic.cpp)
-find_package (Threads)
+add_executable(manual manualCommands.cpp)
 find_library(wiringPi_LIB wiringPi)
-target_link_libraries(cute ${wiringPi_LIB})
-target_link_libraries (cute ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(manual ${wiringPi_LIB})
 
