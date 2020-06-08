@@ -568,7 +568,7 @@ concept: ~MOTHER
   ma mama mamma mammy mom momma mommy mother mum mummy mother step-mother stepmother
 )
 
-concept: ~FAMILY_AUDLT_FEMALE
+concept: ~FAMILY_ADULT_FEMALE
 (
   ~MOTHER AUNT AUNTY GODMOTHER GRAN GRANDMA GRANDMOM GRANDMOTHER GRANNY MATRIARCH MOTHER-IN-LAW SISTER WIDOW WIFE
 )
