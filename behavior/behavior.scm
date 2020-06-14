@@ -122,7 +122,7 @@
 			(cog-new-stv 1 1))))
 
 ; set some deault values
-(cog-set-value! Aey Apos_h (FloatValue 0 0))
+(cog-set-value! Aey Apos_h (FloatSeqValue 0 0))
 
 ; look at a salient point
 (define-public (look-salient-point atom)
